@@ -1,0 +1,105 @@
+\documentclass[phd,tocprelim]{cornell}
+%% Added to avoid the \ifpdf name clash error
+\let\ifpdf\relax
+%
+% tocprelim option must be included to put the roman numeral pages in the
+% table of contents
+%
+% The cornellheadings option will make headings completely consistent with
+% guidelines.
+%
+% This sample document was originally provided by Blake Jacquot, and
+% fixed up by Andrew Myers.
+%
+%Some possible packages to include
+\usepackage{graphicx,pstricks}
+\usepackage{graphics}
+\usepackage{moreverb}
+\usepackage{subfigure}
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage{hangcaption}
+\usepackage{txfonts}
+\usepackage{palatino}
+
+%if you're having problems with overfull boxes, you may need to increase
+%the tolerance to 9999
+\tolerance=9999
+
+\bibliographystyle{plain}
+%\bibliographystyle{IEEEbib}
+
+\renewcommand{\caption}[1]{\singlespacing\hangcaption{#1}\normalspacing}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+
+%% \title {Structural variations in cancer genomes: representation, inference, and applications}
+\title{Genome graph for studying structural variations from cancer to population}
+\author {Xiaotong Yao}
+\conferraldate {March}{2021}
+\degreefield {Ph.D. Computational Biology}
+\copyrightholder{Xiaotong Yao}
+\copyrightyear{2021}
+
+\begin{document}
+
+\maketitle
+\makecopyright
+
+\begin{abstract}
+
+\end{abstract}
+
+\begin{biosketch}
+Xiaotong Yao is a PhD student in the Tri-institute Program in Computational Biology and Medicine at Weill Cornell Medicine.
+\end{biosketch}
+
+\begin{dedication}
+To Rosalind Yao and Shan Huang.
+\end{dedication}
+
+% \begin{acknowledgements}
+% Never enough gratitude to my mentor Dr. Marcin Imielinski for showing me how scientific questions are identified, defined, and can be answered through mining the data.
+% \end{acknowledgements}
+
+\contentspage
+\tablelistpage
+\figurelistpage
+
+\normalspacing \setcounter{page}{1} \pagenumbering{arabic}
+\pagestyle{cornell} \addtolength{\parskip}{0.5\baselineskip}
+
+%% Chapter 1: introduction
+%% To motivate what comes next.
+\chapter{Introduction}
+
+\section{Characterization of structural variations through genome graphs}
+
+\section{Mutational processes of structural variations}
+
+\section{Evolution of SV}
+
+%% Chapter 2: formalize genome graphs and JaBbA
+\chapter{Junction-balanced genome graphs as a representation of structurally altered genomes}
+
+%% 2.1 Define, implement genome graph data structure
+\section{Genome graph definition and implementation}
+Formal definition. Intuition. Links and contrasts to graph genomes and assembly graphs. Structure of gGnome framework.
+
+%% 2.2
+\section{Inferrring copy numbers for junction-balanced genome graphs}
+
+%% Chapter 3: discovery of novel SV patterns
+\chapter{Novel SV patterns revealed in pan-cancer analysis of genome graphs}
+
+%% Chapter 4: nominating recurrent SV drivers, from stats to experiments
+%% \chapter{}
+
+\appendix
+\chapter{Chapter 1 of appendix}
+Appendix chapter 1 text goes here
+
+\bibliography{sampleThesis}
+
+\end{document}
