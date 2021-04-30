@@ -35,9 +35,9 @@
 \renewcommand{\floatpagefraction}{0.75}
 
 %% \title {Structural variations in cancer genomes: representation, inference, and applications}
-\title{Genome graph for studying structural variations from cancer to population}
+\title{Illuminating rearranged cancer genome structures through genome graphs}
 \author {Xiaotong Yao}
-\conferraldate {March}{2021}
+\conferraldate {May}{2021}
 \degreefield {Ph.D. Computational Biology}
 \copyrightholder{Xiaotong Yao}
 \copyrightyear{2021}
@@ -48,7 +48,7 @@
 \makecopyright
 
 \begin{abstract}
-
+Cancer genomes harbor structural variations (SV). Whole genome sequencing (WGS) characterizes SVs. They contain drivers, their patterns reflect mutational processes, and their evolution chronicles that of the cell populations. Many simple and complex patterns of SVs are discovered. Yet, one of the biggest hurdles before we wield this powerful data to achieve a more complete understanding of cancer, is that there lacks flexible and general analytical frameworks to elucidate the complexity of SVs. This is because SVs inherently alter the coordinate system of the reference genome, thus the interpretation of any junction is dependent on other overlapping junctions. Plus, due to the limited scope of short-read WGS, we cannot yet phase most junctions nor obtain long linear sequences of the rearranged chromosome. Thereby, I present genome graph framework implemented in the R packages gGnome and JaBbA, which treats rearranged genome sequences as directed graphs, where 
 \end{abstract}
 
 \begin{biosketch}
@@ -59,46 +59,93 @@ Xiaotong Yao is a PhD student in the Tri-institute Program in Computational Biol
 To Rosalind Yao and Shan Huang.
 \end{dedication}
 
-% \begin{acknowledgements}
-% Never enough gratitude to my mentor Dr. Marcin Imielinski for showing me how scientific questions are identified, defined, and can be answered through mining the data.
-% \end{acknowledgements}
+\begin{acknowledgements}
+Never enough gratitude to my mentor Dr. Marcin Imielinski for showing me how scientific questions are identified, defined, and can be answered through mining the data.
+\end{acknowledgements}
+
+
 
 \contentspage
 \tablelistpage
 \figurelistpage
+\abbrlist
+
+SV -- structural variation
+
+WGS -- whole genome sequencing
+
+CN -- copy number
+
+CNA -- copy number aberration
+
+JaBbA -- Junction Balance Analysis
+
+\symlist
 
 \normalspacing \setcounter{page}{1} \pagenumbering{arabic}
 \pagestyle{cornell} \addtolength{\parskip}{0.5\baselineskip}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 1: introduction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% To motivate what comes next.
 \chapter{Introduction}
-
+\section{Complexity of SVs in the cancer genomes}
+\section{Copy number and junctions are two facets of the same structure}
 \section{Characterization of structural variations through genome graphs}
+\section{From patterns to etiology}
+\section{Evolution of SVs after telomere crisis}
 
-\section{Mutational processes of structural variations}
-
-\section{Evolution of SV}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 2: formalize genome graphs and JaBbA
-\chapter{Junction-balanced genome graphs as a representation of structurally altered genomes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Junction-balanced genome graphs represent structurally altered genomes}
+In \cite{Hadi2020-um}, we described
 
-%% 2.1 Define, implement genome graph data structure
-\section{Genome graph definition and implementation}
-Formal definition. Intuition. Links and contrasts to graph genomes and assembly graphs. Structure of gGnome framework.
+\section{Genome graph as a general data structure to represent rearranged genome}
+\section{Walks on a genome graph correspond to linear DNA sequences}
+Genomic sequences are strings of nucleotides and not graphs.
 
-%% 2.2
-\section{Inferrring copy numbers for junction-balanced genome graphs}
+\section{Inferring copy numbers on genome graphs from whole genome sequencing with Junction Balance Analysis}
+\section{Overview of the JaBbA algorithm}
+\section{Formulation of the mixed-integer quadratic programming}
+\section{Data preprocessing and graph partitioning}
+\section{Automated tuning of }
+\section{Post processing and allelic CN fitting}
+\section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
+\section{Interactive visualization of genome graphs in arbitrary genomic windows}
+\section{Applications of genome graphs in clinical WGS}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
-\chapter{Novel SV patterns revealed in pan-cancer analysis of genome graphs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Distinct Classes of Complex Structural Variation Uncovered across Thousands of Cancer Genome Graphs}
+\section{Constructing pan-cancer genome graphs}
+\section{Low JCN clusters of deletion-like junctions form rigma}
+\section{Rigma is preferentially affecting late replicating, fragile sites in gastrointestinal tumors}
+\section{Low JCN clusters of tandem duplication-like junctions form pyrgo}
+\section{Pyrgo is overrepresented in early replicating regions and superenhancers}
+\section{Amplified subgraphs with high JCN junctions show three stable subtypes}
+\section{Tyfonas is massive amplicon heavily burdened by junctions of heterogeneous JCNs}
 
-%% Chapter 4: nominating recurrent SV drivers, from stats to experiments
-%% \chapter{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter 4: SV evolution after telomere crisis
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Structural variant evolution after telomere crisis}
+\section{}
 
 \appendix
 \chapter{Chapter 1 of appendix}
 Appendix chapter 1 text goes here
+
+\cite{aiw}
+
+\begin{equation}
+    k_1=\frac{\omega }{c({1/\varepsilon_m + 1/\varepsilon_i})^{1/2}}=k_2=\frac{\omega
+    sin(\theta)\varepsilon_{air}^{1/2}}{c}
+\end{equation}
+
 
 \bibliography{sampleThesis}
 
