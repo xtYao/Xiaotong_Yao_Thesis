@@ -37,7 +37,7 @@
 %% \title {Structural variations in cancer genomes: representation, inference, and applications}
 \title{Illuminating rearranged cancer genome structures through genome graphs}
 \author {Xiaotong Yao}
-\conferraldate {May}{2021}
+\conferraldate {Aug}{2021}
 \degreefield {Ph.D. Computational Biology}
 \copyrightholder{Xiaotong Yao}
 \copyrightyear{2021}
@@ -48,7 +48,7 @@
 \makecopyright
 
 \begin{abstract}
-Cancer genomes harbor structural variations (SV). Whole genome sequencing (WGS) characterizes SVs. They contain drivers, their patterns reflect mutational processes, and their evolution chronicles that of the cell populations. Many simple and complex patterns of SVs are discovered. Yet, one of the biggest hurdles before we wield this powerful data to achieve a more complete understanding of cancer, is that there lacks flexible and general analytical frameworks to elucidate the complexity of SVs. This is because SVs inherently alter the coordinate system of the reference genome, thus the interpretation of any junction is dependent on other overlapping junctions. Plus, due to the limited scope of short-read WGS, we cannot yet phase most junctions nor obtain long linear sequences of the rearranged chromosome. Thereby, I present genome graph framework implemented in the R packages gGnome and JaBbA, which treats rearranged genome sequences as directed graphs, where 
+Cancer genomes harbor structural variations (SV), producing various drivers and reflecting . Whole genome sequencing (WGS) characterizes SVs in the form of copy number aberrations (CNA) and junctions. Many simple and complex patterns of SVs have been discovered. Yet, one of the biggest hurdles to analyze SVs is the lack of flexible and general framework to account for the complexity of SVs. SVs inherently alter the coordinate system of the reference genome, thus the interpretation of any junction is dependent on other overlapping junctions. Plus, with short-read WGS, we can only rely on relatively local sequence readouts, making it challenging to reconstruct the long range linear structures of the DNA. To these ends, I present genome graph as a general framework to represent rearranged genomes, which treats genomic sequences as directed graphs, where vertices are single-stranded DNA segments and edges are 3'-5' phosphodiester bonds joining adjacent vertices. Within this framework, I then present a mixed-integer programming algorithm Junction Balance Analysis (JaBbA) to infer integer copy numbers (CN) for vertices and edges from the WGS of a tumor sample. I show that JaBbA not only achieves more accurate CN estimation, more complete genome graphs than other methods, its robust recapitulation of junction copy numbers (JCN) serves a pivotal role in discovering distinct patterns of complex rearrangements from large-scale pan-cancer WGS studies. Finally, to investigate the SV outcomes of natural telomere crisis, an inevitable obstacle most cancer must overcome and has been linked to complex SV patterns, I use the genome graph framework to reconstruct the SV events in lineages of human fibroblast cells surviving natural telomere crisis by induced telomerase expression. To sum up, genome graph with the Junction Balance Analysis algorithm enable a general, robust analysis framework that help elucidate the complexity of SVs in cancer genome.
 \end{abstract}
 
 \begin{biosketch}
@@ -60,7 +60,7 @@ To Rosalind Yao and Shan Huang.
 \end{dedication}
 
 \begin{acknowledgements}
-Never enough gratitude to my mentor Dr. Marcin Imielinski for showing me how scientific questions are identified, defined, and can be answered through mining the data.
+
 \end{acknowledgements}
 
 
@@ -90,54 +90,128 @@ JaBbA -- Junction Balance Analysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% To motivate what comes next.
 \chapter{Introduction}
+
 \section{Complexity of SVs in the cancer genomes}
+Genomic instability is a hallmark of cancer. With whole genome sequencing (WGS), we are profiling large numbers of cancer genomes revealing ubiquitous yet heterogeneous patterns of single nucleotide variations (SNV), insertions and deletions (INDEL), and structural variations (SV). However, the discoveries in SNVs and INDELs have been outpacing that of SVs, exemplified by the distillation of mutation signatures from large-scale mutation profiles described in local sequence context of the substitution. Even though we have known for a long time that cancer genomes present widespread aneuploidy and rearrangements, it still remains challenging to characterize the full spectrum of SVs in cancer.
+
+There are many reasons to this, but a fundamental one is that the SVs in cancer genomes are complex and there lacks a suitable framework to account for it. Cancer WGS studies have revealed a plethora of complex SV patterns that can involve up to hundreds of junctions. A prominent example is chromothripsis, theorized to originate from  shattering a chromosome arm and erroroneously repaired in random order with interspersed loss of genetic materials. Such processes can generate up to hundreds of junctions with random location and orientations. Setting aside the debate about the definition of chromothripsis for later chapters, chromothripsis-like events are estimated to be seen in as many as xx\% of pan-cancer genomes (cite PCAWG SV and Park).
+
+In sharp contrast, most studies on genomic structural variations have been geared towards germline genomes, which are dominated by simple SV classes, exemplified by tandem duplications, simple deletions, and inversions. Although more complex patterns have also been detected and characterized, they are (expectedly) rare relative to the simpler ones. Since each simple SV only contains one (tandem duplications and deletions) or two junctions (inversions and balanced translocations), it is usually convenient to apply the substitution model that has long been the de facto standard in representing and storing small genomic variants, such that one variant is represented as an edit of a fixed location of the reference genome and in most cases each variant can be interepreted independently from the other variants.
+
+The limitation of this approach is visible even in the simplest form of complexity. Considering the toy model in (Fig 1A, adapted from MI/JM's review), where a unrearranged genomic contig \textit{ABCDE} underwent two rounds of tandem duplications, yet when mapped to the reference genome, the second junction appeared to be consistent with a deletion. As a result, the development of a general framework to analyze complex SVs is needed. 
+
+\section{Representation of structural variations with genome graphs}
+
+
 \section{Copy number and junctions are two facets of the same structure}
-\section{Characterization of structural variations through genome graphs}
-\section{From patterns to etiology}
+
+
+\section{From patterns to mechanisms to etiology}
+
 \section{Evolution of SVs after telomere crisis}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 2: formalize genome graphs and JaBbA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Junction-balanced genome graphs represent structurally altered genomes}
-In \cite{Hadi2020-um}, we described
+In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can encapsulate a diverse array of putative functional events including fusion genes and enhancer hijiacking. Last but not least, taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for oncologists to fully take advantage of cancer WGS data.
 
+% 1.1
 \section{Genome graph as a general data structure to represent rearranged genome}
-\section{Walks on a genome graph correspond to linear DNA sequences}
-Genomic sequences are strings of nucleotides and not graphs.
+% definition in as plain language as possible
+Based on a reference genome, we define genome graph $G = (V, E)$, where the vertices $V$ is a set of signed intervals ($+$ if referring to the sequence of the reference, $-$ if reverse complement, more details in Appendix A), and edges $E$ is a set of directed adjacencies representing the 3-5 phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement" \cite{Goldberg1996-qm}, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each symmetric pair of vertices represent a double stranded DNA segment within the reference genome. Subsequently, there are two types of edges. \textit{REF} edges are the ones that are connecting vertices adjacent in the reference genome, and \textit{ALT} are neo-adjacencies that are not present in the reference genome resulting from rearrangements (Fig2).
+
+Extending the properties of $r$ to any metadata field that associate with vertices or edges, we can define a projection $f(v), v \in V(G)$ or $f(e), e \in E(G)$ as skew-symmetric if $f(v) = f(\bar{v})$, $f(e)=f(\bar{e})$. One such projection is copy number $\kappa : G \rightarrow \mathbb{N}$, as for double stranded DNA the copy number of one strand should always be equal to its reverse complement.
+
+% 
+Following the above definitions, except for 1) whole genome/chromosome/contig gain or losses or 2) foreign sequence insertions, every structural change of a genome sequence can be effectively seen as generating new adjacencies (edges) between previously non-adjacent vertices. Note that this abstraction does not make assumptions about the mechanism by which the new adjacencies arise, rather it describes the difference of states after an SV event. 
+
+Intuitively, a walk along on a genome graph maps to a DNA sequence and a genome graph is a compilation of all possible linear sequences that could result from rearranging the reference genome assuming the junctions are completely known. This idea is similar to the assembly graph in \textit{de novo} assembly, except we are pre-defined within a linear reference genome and adding further rearrangements.
+
+\section{Implementation of genome graphs in gGnome package}
+% noteworthy implementation details
+
+% construction
+In the most basic form, a genome graph can be initiated with a reference genome alone, where each node is a chromosome and no edges exist (\texttt{gG()}). On top of that, we can segment the whole genome based on a set of breakpoint coordinates, by automatically connecting two consecutive nodes with a (pair of reverse complement) REF edge (\texttt{gG(breaks = breakpoints)}). When a ALT junction emerges, it joins two breakends that are not adjacent in reference genome to form new (pair of reverse complement) ALT edges (\texttt{gG(juncs = junctions)}).
+
+More often in practical scenarios, we start from a copy number-annotated genome graph inferred from WGS. gGnome allows one to parse the results from most of the existing genome graph reconstruction methods (JaBbA, ReMixT, Weaver, PREGO, RCK, CouGaR, AmpliconArchitect). 
+
+% subgraph
+With a genome graph, we can make a series of queries based on vertex and edge metadata.
+
+% paths
+Immediately following our genome graph definition, any walk (paths and cycles) on the graph correspond to a DNA sequence that can be obtained from rearranging the reference genome.
+
+
+
 
 \section{Inferring copy numbers on genome graphs from whole genome sequencing with Junction Balance Analysis}
-\section{Overview of the JaBbA algorithm}
-\section{Formulation of the mixed-integer quadratic programming}
+
+
+\section{Formulation of the mixed-integer quadratic programming problem}
+
+
 \section{Data preprocessing and graph partitioning}
-\section{Automated tuning of }
+
+% \section{Automatic tuning of convergence criteria to improve the performance of harder problems}
+
 \section{Post processing and allelic CN fitting}
+
 \section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
+
 \section{Interactive visualization of genome graphs in arbitrary genomic windows}
+
 \section{Applications of genome graphs in clinical WGS}
+
+\section{Discussion}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Distinct Classes of Complex Structural Variation Uncovered across Thousands of Cancer Genome Graphs}
+In this chapter I will describe the discovery of three distinct types of complex SV events 
+
 \section{Constructing pan-cancer genome graphs}
+
 \section{Low JCN clusters of deletion-like junctions form rigma}
+
 \section{Rigma is preferentially affecting late replicating, fragile sites in gastrointestinal tumors}
+
 \section{Low JCN clusters of tandem duplication-like junctions form pyrgo}
+
 \section{Pyrgo is overrepresented in early replicating regions and superenhancers}
+
 \section{Amplified subgraphs with high JCN junctions show three stable subtypes}
+
 \section{Tyfonas is massive amplicon heavily burdened by junctions of heterogeneous JCNs}
+
+\section{Clusters of pan-cancer patients based on SV event burdens show differential prognosis and is associated with tumor types and genetic backgrounds}
+
+\section{Discussion}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 4: SV evolution after telomere crisis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Structural variant evolution after telomere crisis}
-\section{}
+In this chapter I set out to capture the SV events in human cell lines directly resulting from natural telomere crisis
+
+\section{Both simple and complex SVs detected in previously described post-crisis cell lines}
+
+\section{An \textit{in vitro} model of natural telomere crisis in human lung fibroblast cell line MRC5}
+
+\section{Screening for structural alterations in post-crisis MRC5 clones using low-pass WGS}
+
+\section{Integrate SVs and SNVs to Reconstruct phylogeny of post-crisis clones with high-pass WGS}
+
+\section{One allele of chromosome 12p with the shortest telomere length is the origin of genome instability during telomere crisis}
+
+\section{Discussion}
 
 \appendix
-\chapter{Chapter 1 of appendix}
-Appendix chapter 1 text goes here
+\chapter{Appendix A}
+
+\section{Definition of an interval on the reference genome}
 
 \cite{aiw}
 
