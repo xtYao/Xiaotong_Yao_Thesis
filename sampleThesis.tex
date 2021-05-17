@@ -133,6 +133,7 @@ Intuitively, a walk along on a genome graph maps to a DNA sequence and a genome 
 
 \section{Implementation of genome graphs in gGnome package}
 % noteworthy implementation details
+We implemented 
 
 % construction
 In the most basic form, a genome graph can be initiated with a reference genome alone, where each node is a chromosome and no edges exist (\texttt{gG()}). On top of that, we can segment the whole genome based on a set of breakpoint coordinates, by automatically connecting two consecutive nodes with a (pair of reverse complement) REF edge (\texttt{gG(breaks = breakpoints)}). When a ALT junction emerges, it joins two breakends that are not adjacent in reference genome to form new (pair of reverse complement) ALT edges (\texttt{gG(juncs = junctions)}).
@@ -141,11 +142,6 @@ More often in practical scenarios, we start from a copy number-annotated genome 
 
 % subgraph
 With a genome graph, we can make a series of queries based on vertex and edge metadata.
-
-% paths
-Immediately following our genome graph definition, any walk (paths and cycles) on the graph correspond to a DNA sequence that can be obtained from rearranging the reference genome.
-
-
 
 
 \section{Inferring copy numbers on genome graphs from whole genome sequencing with Junction Balance Analysis}
@@ -162,9 +158,10 @@ Immediately following our genome graph definition, any walk (paths and cycles) o
 
 \section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
 
-\section{Interactive visualization of genome graphs in arbitrary genomic windows}
+\section{}
 
-\section{Applications of genome graphs in clinical WGS}
+
+\section{Interactive visualization of genome graphs in arbitrary genomic windows}
 
 \section{Discussion}
 
