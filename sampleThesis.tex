@@ -52,7 +52,7 @@ Cancer genomes harbor structural variations (SV), producing various drivers and 
 \end{abstract}
 
 \begin{biosketch}
-Xiaotong Yao is a PhD student in the Tri-institute Program in Computational Biology and Medicine at Weill Cornell Medicine.
+Xiaotong Yao has had strong interest in biology from an early age and later developed an appreciation for using computational methods to answer biological questions. His interest for computational biology started with systems biology and synthetic biology by participating in the 2011 International Genetically Engineered Machine Competition. Subsequently, he curated lipid metabolic pathways in the \textit{Streptomyces avermitilis} metabolic network. To get formally trained in computational biology, he joined the Master's program in Bioinformatics and Systems Biology at the Biology Department of New York University, where he built predictive models for protein sumoylation from public protein function databases. Following a passion for precision medicine, in 2015, he became a PhD student in the Tri-institute Program in Computational Biology and Medicine at Weill Cornell Medicine, focusing on cancer genomics, and in 2016 he joined Dr. Marcin Imielinski's lab to persue his dissertation research in using genome graphs to model complex structural variations in cancer whole genomes.
 \end{biosketch}
 
 \begin{dedication}
@@ -60,10 +60,14 @@ To Rosalind Yao and Shan Huang.
 \end{dedication}
 
 \begin{acknowledgements}
-
+Marcin
+Kevin
+Julie
+Aditya
+Committee
+Collaborators
+Program staff
 \end{acknowledgements}
-
-
 
 \contentspage
 \tablelistpage
@@ -98,13 +102,13 @@ There are many reasons to this, but a fundamental one is that the SVs in cancer 
 
 In sharp contrast, most studies on genomic structural variations have been geared towards germline genomes, which are dominated by simple SV classes, exemplified by tandem duplications, simple deletions, and inversions. Although more complex patterns have also been detected and characterized, they are (expectedly) rare relative to the simpler ones. Since each simple SV only contains one (tandem duplications and deletions) or two junctions (inversions and balanced translocations), it is usually convenient to apply the substitution model that has long been the de facto standard in representing and storing small genomic variants, such that one variant is represented as an edit of a fixed location of the reference genome and in most cases each variant can be interepreted independently from the other variants.
 
-The limitation of this approach is visible even in the simplest form of complexity. Considering the toy model in (Fig 1A, adapted from MI/JM's review), where a unrearranged genomic contig \textit{ABCDE} underwent two rounds of tandem duplications, yet when mapped to the reference genome, the second junction appeared to be consistent with a deletion. As a result, the development of a general framework to analyze complex SVs is needed. 
+The limitation of this approach is visible even in the simplest form of complexity. Considering the toy model in (Fig 1A, adapted from MI/JM's review), where a unrearranged genomic contig \textit{ABCDE} underwent two rounds of tandem duplications, yet when mapped to the reference genome, the second junction appeared to be consistent with a deletion. As a result, the development of a general framework to analyze complex SVs is needed.
 
 \section{Representation of structural variations with genome graphs}
+Graphs have been widely used to model genomic sequences for decades, with \textit{de novo} assembly as one of the fields most heavily reliant (citation SGA, Fermi, etc.). One way to describe sequence as graphs is that each vertex is the sequence of a contiguous DNA segment (contig) and following the adjacencies among vertices one can thread a path (or cycle) to obtain longer sequence and eventually approach a genome. In resequencing studies, we map reads to locations in an existing reference genome, and identify variants based on the discrepancy between reads and the mapped reference sequence. Nevertheless, we can apply a similar idea of modeling, now replacing actual DNA sequences to the genomic intervals they map to in the reference. There have been several studies employed the concept of \textit{interval graph} to model the somatic SVs in cancer genomes. which treats xxx (describe the interval graph models).
 
-
-\section{Copy number and junctions are two facets of the same structure}
-
+\section{Reconstruction of genome graphs}
+While conceptually interval graph has been an advancement over the over-simplistic substitution model, the cancer genomics research community has not fully adopted it as the mainstream framework for SV analysis. The 
 
 \section{From patterns to mechanisms to etiology}
 
@@ -119,13 +123,12 @@ In this chapter, I give formal definitions of a genome graph, a junction balance
 \section{Genome graph as a general data structure to represent rearranged genome}
 % definition in as plain language as possible
 % need to define: reference genome, interval, signed interval, junction
-Based on a reference genome, we define genome graph $G = (V, E)$, where the vertices $V$ is a set of signed intervals ($+$ if referring to the sequence of the reference, $-$ if reverse complement, more details in Appendix A), and edges $E$ is a set of directed adjacencies representing the 3-5 phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement" \cite{Goldberg1996-qm}, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each symmetric pair of vertices represent a double stranded DNA segment within the reference genome. Subsequently, there are two types of edges. \textit{REF} edges are the ones that are connecting vertices adjacent in the reference genome, and \textit{ALT} are neo-adjacencies that are not present in the reference genome resulting from rearrangements (Fig2). A reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-stranded DNA segment (segment for short); a reverse complement pair of edges $\{e, \bar{e}\}$ compose a junction.Analogous to an assembly graph, to produce a substring in the genome, is equivalent to traveling through a walk $w = (v_1, e_1, v_2, e_2, ..., e_k, v_k)$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, ..., k-1$, at the same time its reverse complement walk $\bar{w} = (\bar{v_k}, \bar{e_k}, \bar{v_{k-1}}, ..., \bar{e_1}, \bar{v_1})$.
+Based on a reference genome, we define genome graph $G = (V, E)$, where the vertices $V$ is a set of signed intervals ($+$ if referring to the sequence of the reference, $-$ if reverse complement, more details in Appendix A), and edges $E$ is a set of directed adjacencies representing the 3-5 phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement" \cite{Goldberg1996-qm}, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each symmetric pair of vertices represent a double stranded DNA segment within the reference genome. Subsequently, there are two types of edges. \textit{REF} edges are the ones that are connecting vertices adjacent in the reference genome, and \textit{ALT} are neo-adjacencies that are not present in the reference genome resulting from rearrangements (Fig2). A reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-stranded DNA segment (segment for short); a reverse complement pair of edges $\{e, \bar{e}\}$ compose a junction. Analogous to an assembly graph, to produce a substring in the genome, is equivalent to traveling through a walk $w = (v_1, e_1, v_2, e_2, ..., e_k, v_k)$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, ..., k-1$, at the same time its reverse complement walk $\bar{w} = (\bar{v_k}, \bar{e_k}, \bar{v_{k-1}}, ..., \bar{e_1}, \bar{v_1})$.
 
 % 
 Following the above definitions, except for whole genome/chromosome/contig gain or losses or foreign sequence insertions, every structural change of a genome can be effectively seen as generating new adjacencies (ALT edges) between previously non-adjacent vertices. In other words, assuming we know all the ALT edges resulted from the 
 
 % Note that this abstraction does not make assumptions about the mechanism by which the new adjacencies arise, rather it describes the difference of states after an SV event.
-
 
 Extending the properties of $r$ to any function of vertices or edges, we call a function $f(v), v \in V(G)$ or $f(e), e \in E(G)$ as skew-symmetric if $f(v) = f(\bar{v})$, $f(e)=f(\bar{e})$. One such function is copy number $\kappa : G \rightarrow \mathbb{N}$, as for double stranded DNA the copy number of one strand should always be equal to its reverse complement.
 
@@ -133,6 +136,7 @@ Intuitively, a walk along on a genome graph maps to a DNA sequence and a genome 
 
 \section{Implementation of genome graphs in gGnome package}
 % noteworthy implementation details
+We implemented 
 
 % construction
 In the most basic form, a genome graph can be initiated with a reference genome alone, where each node is a chromosome and no edges exist (\texttt{gG()}). On top of that, we can segment the whole genome based on a set of breakpoint coordinates, by automatically connecting two consecutive nodes with a (pair of reverse complement) REF edge (\texttt{gG(breaks = breakpoints)}). When a ALT junction emerges, it joins two breakends that are not adjacent in reference genome to form new (pair of reverse complement) ALT edges (\texttt{gG(juncs = junctions)}).
@@ -142,11 +146,17 @@ More often in practical scenarios, we start from a copy number-annotated genome 
 % subgraph
 With a genome graph, we can make a series of queries based on vertex and edge metadata.
 
-% paths
-Immediately following our genome graph definition, any walk (paths and cycles) on the graph correspond to a DNA sequence that can be obtained from rearranging the reference genome.
+\section{Neo-connectivities on a genome graph encode putative functional events}
 
+As explained in the previous sections, a walk (and its reverse complement walk) on a genome graph maps to a linear DNA sequence. If there exists a possible walk between two vertices it means the genomic elements within the two vertices may be connected on a contiguous DNA segment in the sample, if and only if all the ALT edges along the walk are phased in cis. A pair of ALT edges phased in cis means there are at least one copy of them found on the same DNA molecule; while none such copy is found they are deemed phased in trans. In reality, due to the large size of the genome and the limited read-length or effective range (e.g. for linked reads), complete phasing of all junctions is near impossible for most cases. However, the connectivities between genomic regions on the un-phased or partially phased genome graphs can serve as an approximation. 
 
+As we established in earlier sections, a complete genome graph should enclose all the walks corresponding to the studied genome, so if any copy of two genomic loci are on the same part of a DNA molecule, that segment should have a corresponding walk on the complete genome graph. Based on this observation, the new genomic distance after rearrangements between any copy of two loci is summing over the width of vertices plus the within-vertex distances to the incident ends along the walk for the starting and terminating vertices. Thus, even when it is not possible to exactly decompress the graph to the walks consistent with the actual karyotypes, we know that the real shortest genomic distance between any copy of two loci should not be shorter than the shortest path distance on the complete genome graph.
 
+Admittedly, there may never be a complete genome graph constructed with the current technologies, and it is always possible that we failed to identify certain junction that cut some genomic distances even shorter. Nevertheless, as shown in (Behr 2021, BioRxiv), the state of the art short-read WGS should be effective at catching the majority of somatic rearrangements. Plus, even with the imperfect genome graphs, we can already expand the repertoire of functional genomic events. We use this approximation to show that potential functional events of arbitrary complexity can be represented as walks on genome graphs, exemplified by bridged fusion genes and enhancer hijacking. To do that, I reconstructed JBGG from PCAWG consensus somatic junctions and copy numbers with the function \textit{balance} in the gGnome package.
+
+Some fusion genes have long been established as cancer drivers (citation) and even successful drug targets (citation); some have also been shown to encode chimeric proteins that can trigger immune responses as neoantigens (citation). Expectedly, most fusion genes found to date are created by one somatic junction, as it requires fewer junctions to create and has simpler topology to detect. However, in theory, there should be no biological restraint against a more complex, multi-junction fusion gene. Indeed, recent large pan-cancer whole genome and transcriptome profiling efforts have identified numerous such examples termed bridged fusions (citation PCAWG). Naturally following our above definition, any fusion genes, no matter how many somatic junctions is involved, can be represented as a walk $w = (v_1, e_1, v_2, ..., e_{k-1}, v_k)$ on the corresponding genome graph, where the 5’ partner is at the outgoing end of $v_1$ and the 3’ partner is at the receiving end of $v_k$ (Fig x). Here I show an example walk of xxx—xxx fusion found by the PCAWG Transcriptome working group (citation) along with the supporting reads from the RNA-seq. By our graph-based SV event classification, this junction was part of a large scale xx (described in the next chapter).
+
+Another emerging class of functional SV events is enhancer hijackings, where a distal active enhancer is juxtaposed to a proto-oncogene and facilitates its transcription. On a genome graph, they can be detected as shortened genomic distances through paths over somatic junctions. One such event that has been characterized and functionally validated in thyroid carcinoma cell lines is THADA-IGF2BP3, where the enhancer near the constitutively thyroid-expressed THADA gene was juxtaposed to and subsequently activates IGF2BP3 expression (citation and read the paper deeper). This event has also been found to be recurrent in the genomes of thyroid carcinoma in PCAWG independently. I demonstrate the walks corresponding to these events (Fig xx), one (patient) of which arise from a more complex chromoplexy(?) event. Using this strategy, I found more instances of thyroid carcinoma samples with over-expressed (quantile>0.95) IGF2BP3 genes without amplification yet rearranged near 
 
 \section{Inferring copy numbers on genome graphs from whole genome sequencing with Junction Balance Analysis}
 
@@ -162,9 +172,10 @@ Immediately following our genome graph definition, any walk (paths and cycles) o
 
 \section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
 
-\section{Interactive visualization of genome graphs in arbitrary genomic windows}
+\section{}
 
-\section{Applications of genome graphs in clinical WGS}
+
+\section{Interactive visualization of genome graphs in arbitrary genomic windows}
 
 \section{Discussion}
 
