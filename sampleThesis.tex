@@ -106,10 +106,14 @@ In sharp contrast, most studies on genomic structural variations have been geare
 The limitation of this approach is visible even in the simplest form of complexity. Considering the toy model in (Fig 1A, adapted from MI/JM's review), where a unrearranged genomic contig \textit{ABCDE} underwent two rounds of tandem duplications, yet when mapped to the reference genome, the second junction appeared to be consistent with a deletion. As a result, the development of a general framework to analyze complex SVs is needed.
 
 \section{Representation of structural variations with genome graphs}
-Graphs have been widely used to model genomic sequences for decades, with \textit{de novo} assembly as one of the fields most heavily reliant (citation SGA, Fermi, etc.). One way to describe sequence as graphs is that each vertex is the sequence of a contiguous DNA segment (contig) and following the adjacencies among vertices one can thread a path (or cycle) to obtain longer sequence and eventually approach a genome. In resequencing studies, we map reads to locations in an existing reference genome, and identify variants based on the discrepancy between reads and the mapped reference sequence. Nevertheless, we can apply a similar idea of modeling, now replacing actual DNA sequences to the genomic intervals they map to in the reference. There have been several studies employed the concept of \textit{interval graph} to model the somatic SVs in cancer genomes. which treats xxx (describe the interval graph models).
+Graphs have been widely used to model genomic sequences for decades, with \textit{de novo} assembly as one of the fields most heavily reliant (citation SGA, Fermi, etc.). One way to describe sequence as graphs is that each vertex is the sequence of a contiguous DNA segment (contig) and following the adjacencies among vertices one can thread a path (or cycle) to obtain longer sequence and eventually approach a genome. In resequencing studies, we map reads to locations in an existing reference genome, and identify variants based on the discrepancy between reads and the mapped reference sequence. Nevertheless, we can apply a similar idea of modeling, now replacing actual DNA sequences to the genomic intervals they map to in the reference. There have been several studies employed the concept of \textit{interval graph} to model the somatic SVs in cancer genomes. which treats xxx (describe the interval graph models). %% TODO
+
+In our published works and this dissertation, we have formulated a directed skew-symmetric graph data structure, called \textit{genome graph}, that is dual to the variations of interval graphs decribed above.
 
 \section{Reconstruction of genome graphs}
-While conceptually interval graph has been an advancement over the over-simplistic substitution model, the cancer genomics research community has not fully adopted it as the mainstream framework for SV analysis. The main reason is that the numeric quality of the copy numbers in the reconstructed graphs have not shown high enough fidelity for the heterogeneous lanscape of complex somatic SVs, as well as varying sample purity. There have been several approaches proposed with slightly different 
+While conceptually interval graph has been an advancement over the over-simplistic substitution model, the cancer genomics research community has not fully adopted it as the mainstream framework for SV analysis. The main reason is that the numeric quality of the copy numbers in the reconstructed graphs have not shown high enough fidelity for the heterogeneous lanscape of complex somatic SVs, as well as varying sample purity. There have been several approaches proposed with slightly different objectives, nevertheless share the common theme of fitting CN to the DNA segments while deciding the subset of junctions to include. %% TODO
+
+
 
 \section{From patterns to mechanisms to etiology}
 The ultimate goal of studying patterns of SVs is to find common classes out of large panels of tumors, and link them back to the possible mechanisms from which specific SVs result, for example, telomere crisis.
@@ -184,21 +188,13 @@ Another emerging class of functional SV events is enhancer hijackings, where a d
 %% Chapter 3: discovery of novel SV patterns
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Distinct Classes of Complex Structural Variation Uncovered across Thousands of Cancer Genome Graphs}
-In this chapter I will describe the discovery of three distinct types of complex SV events 
+In this chapter I will describe the discovery of three distinct types of complex SV events from 2778 genome graphs built with JaBbA from a pan-cancer cohort of over 30 types of cancers. Furthermore, I will show that the patients in this cohort can be stratified based on 13 simple to complex rearrangement patterns to clusters of differential overall survival, tumor type enrichment, and association with specific germline or somatic alterations.
 
 \section{Constructing pan-cancer genome graphs}
 
-\section{Low JCN clusters of deletion-like junctions form rigma}
+\section{Low JCN clusters of deletion-like and duplication-like junctions form rigma and pyrgo}
 
-\section{Rigma is preferentially affecting late replicating, fragile sites in gastrointestinal tumors}
-
-\section{Low JCN clusters of tandem duplication-like junctions form pyrgo}
-
-\section{Pyrgo is overrepresented in early replicating regions and superenhancers}
-
-\section{Amplified subgraphs with high JCN junctions show three stable subtypes}
-
-\section{Tyfonas is massive amplicon heavily burdened by junctions of heterogeneous JCNs}
+\section{Tyfonas is massively rearranged amplicon associated with elevated number of fusion genes}
 
 \section{Clusters of pan-cancer patients based on SV event burdens show differential prognosis and is associated with tumor types and genetic backgrounds}
 
@@ -223,12 +219,16 @@ In this chapter I set out to capture the SV events in human cell lines directly 
 
 \section{Discussion}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Chapter 5: Whole genome analysis of RPA- lung adenocarcinoma
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Whole-genome characterization of lung adenocarcinomas lacking alterations in the RTK/RAS/RAF pathway}
+
+
 \appendix
 \chapter{Appendix A}
 
 \section{Definition of an interval on the reference genome}
-
-\cite{aiw}
 
 \begin{equation}
     k_1=\frac{\omega }{c({1/\varepsilon_m + 1/\varepsilon_i})^{1/2}}=k_2=\frac{\omega
