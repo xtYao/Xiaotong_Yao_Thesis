@@ -212,6 +212,16 @@ Another emerging class of functional SV events is enhancer hijackings, where a d
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 
+We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_formulation}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. \ref{fig:Fig1}B, Fig. \ref{fig:S1}C}, \nameref{sec:methods}).
+
+\begin{figure*}[!t]
+    \centering
+        \includegraphics[width=0.95\linewidth]{figures/600ppi/jabba_formulation.png}
+        \caption{\textbf{Formulation of Junction Balance Analysis} xxxx...}
+        \label{fig:jabba_formulation}
+    \end{figure*}
+    
+
 \subsection{JaBbA pipeline}
 \subsubsection*{Data preprocessing}
 
@@ -222,15 +232,6 @@ Another emerging class of functional SV events is enhancer hijackings, where a d
 \subsubsection*{Post processing and allelic CN fitting}
 
 \section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
-\begin{figure*}[!t]
-\centering
-    \includegraphics[width=0.95\linewidth]{jabba_formulation.png}
-    \caption{\textbf{Formulation of Junction Balance Analysis} xxxx...}
-    \label{fig:jabba_formulation}
-\end{figure*}
-
-We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_formulation}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. \ref{fig:Fig1}B, Fig. \ref{fig:S1}C}, \nameref{sec:methods}). 
-
 JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and explicit accounting of false negative junctions, also called loose ends (see \nameref{sec:methods}). In our benchmarking experiments, JaBbA inferred JCN with consistently higher fidelity than published genome graph-based methods (ReMixT \cite{McPherson2017-ry}, Weaver \cite{Li2016-qa}, PREGO \cite{Oesper2012-vw}) across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}D-E}). In addition, JaBbA qualitatively outperformed genome graph-based methods and even classic (i.e. non-graph based) CNA callers (BIC-seq \cite{Xi2011-oa} and CONSERTING \cite{Chen2015-sw}) in estimating interval CN and change point locations across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}F-I}). These results show that JaBbA is the first genome graph SV caller to accurately infer the topology of JCN while approaching (or exceeding) the fidelity of classic CNA callers. 
 
 We also validated JaBbA's estimates of JCN from short-read WGS with 10X Chromium linked-read WGS, which provides a more direct readout of JCN with its high number of long junction-spanning fragments. In the breast cancer cell line HCC1954, JaBbA-derived JCN estimates closely correlated with the coverage of junction-spanning linked-read barcodes ($R^2 = 0.91$, \textbf{Fig. \ref{fig:Fig1}C}). This included examples of low JCN (e.g. JCN = 1) junctions connecting both low and high CN intervals, as well as high JCN (JCN = 10)  junctions (\textbf{Fig. \ref{fig:Fig1}D}). These results show that JCN is a property that can be robustly inferred from short-read WGS and is independent from (interval) CN. 
