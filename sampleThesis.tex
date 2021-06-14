@@ -24,6 +24,35 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
+\usepackage{enumitem,amssymb}
+\usepackage{courier}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algorithmicx}
+\usepackage{amsmath}
+\usepackage{mathtools, nccmath}
+\usepackage{siunitx}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\nint}\lfloor\rceil
+\DeclarePairedDelimiter{\abs}\lvert\rvert
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+% -------
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\ttt}[1]{\texttt{#1}}
+\setlength{\parskip}{0em}
+\setlength{\parindent}{1em}
+
+
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -122,7 +151,7 @@ While conceptually interval graph has been an advancement over the over-simplist
 
 
 \section{From patterns to mechanisms to etiology}
-The ultimate goal of studying patterns of SVs is to find common classes out of large panels of tumors, and link them back to the possible mechanisms from which specific SVs result, for example, telomere crisis.
+The ultimate goal of studying patterns of SVs is to find common classes out of large panels of tumors, and link them back to the possible mechanisms from which specific SVs arise. For example, telomere crisis.
 
 Early efforts in this realm successfully identified many distinct patterns.
 
@@ -132,7 +161,7 @@ Early efforts in this realm successfully identified many distinct patterns.
 %% Chapter 2: formalize genome graphs and JaBbA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Junction-balanced genome graphs represent structurally altered genomes}
-In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can encapsulate a diverse array of putative functional events including fusion genes and enhancer hijiacking. Last but not least, taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for oncologists to fully take advantage of cancer WGS data.
+In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can unify a diverse array of putative functional events including fusion genes and enhancer hijiacking. Last but not least, taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for oncologists to fully take advantage of cancer WGS data.
 
 \section{Genome graph as a general data structure to represent rearranged genome}
 We start by formally defining a reference genome, a genome graph, a junction.
@@ -143,7 +172,7 @@ Let the reference genome $\mathcal{C}$ comprise $c$ pairs of strings, labeled $C
 \subsection{Genome graph}
 % definition in as plain language as possible
 % need to define: reference genome, interval, signed interval, junction
-Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement" \cite{Goldberg1996-qm}, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represent a double stranded DNA segment within the reference genome.
+Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a multi-set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement"  (Goldberg1996), such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represent a double stranded DNA segment within the reference genome.
 
 To denote the location of edges, suppose we have an edge $e = (v_1, v_2), v_1$
 
@@ -161,16 +190,17 @@ To describe a rearranged and copy number altered reference genome, we partition 
 \subsection{Junction-balanced genome graph}
 We define a mapping $\kappa:\{V_I \cup E\}\rightarrow \mathbb{N}$ of non-negative integer copy number (CN) to vertices and edges of $G$, where $\kappa(v),v \in V_I$ and  $\kappa(e),e \in E$ represent the CN of vertex $v$ and edge $e$, respectively.  The principle of \textit{junction balance} constrains the CN of every vertex to be equal to the sum of its incoming edges and the sum of its outgoing edges.  Formally, the junction balance constraint is stated as follows:
 
-\begin{equation} \label{eq:junctionbalanceconstraint}
+\begin{equation} \label{eq:junction_balance_constraint}
 \kappa(v)= \sum_{e\in E^-(v)} \kappa(e) = \sum_{e\in E^+(v)} \kappa(e)
 \end{equation}
 
 In addition we require the CN $\kappa$ to obey \textit{skew-symmetry}, which means that every vertex must have the same copy number as its RC.
-\begin{equation}  \label{eq:skewsymmetryconstraints}
+
+\begin{equation}  \label{eq:skew_symmetry}
 \kappa(v) = \kappa(\bar{v}),\ \forall_{v \in V} \quad \kappa(e) = \kappa(\bar{e}),\ \forall_{e \in E} 
 \end{equation}
 
-We call the combination $(G,\kappa)$ for which $\kappa$ satisfies Eqs. \ref{eq:junctionbalanceconstraint}-\ref{eq:skewsymmetryconstraints} a \textit{junction-balanced genome graph} (JBGG).
+We call the combination $(G,\kappa)$ for which $\kappa$ satisfies Eqs. \ref{eq:junction_balance_constraint}-\ref{eq:skew_symmetry} a \textit{junction-balanced genome graph} (JBGG).
 
 
 
@@ -212,15 +242,14 @@ Another emerging class of functional SV events is enhancer hijackings, where a d
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 
-We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_formulation}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. \ref{fig:Fig1}B, Fig. \ref{fig:S1}C}, \nameref{sec:methods}).
-
 \begin{figure*}[!t]
     \centering
-        \includegraphics[width=0.95\linewidth]{figures/600ppi/jabba_formulation.png}
-        \caption{\textbf{Formulation of Junction Balance Analysis} xxxx...}
-        \label{fig:jabba_formulation}
-    \end{figure*}
-    
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/jabba_formulation.png}
+    \caption{\textbf{Formulation of Junction Balance Analysis} xxxx...}
+    \label{fig:jabba_formulation}
+\end{figure*}
+
+We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_formulation}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
 
 \subsection{JaBbA pipeline}
 \subsubsection*{Data preprocessing}
