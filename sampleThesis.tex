@@ -21,9 +21,15 @@
 \usepackage{hangcaption}
 \usepackage{txfonts}
 \usepackage{palatino}
+\usepackage[LGRx,T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage[greek,english]{babel}
+\usepackage{hyperref}
 
+\usepackage{textcomp} % defines \textmu, which is now what inputenx seems to use for μ - probably due inpmath.. also \textdegree... but not \textrho
+\usepackage{textgreek}
+
+% JaBbA document dependency
 \usepackage{enumitem,amssymb}
 \usepackage{courier}
 \newlist{todolist}{itemize}{2}
@@ -160,19 +166,21 @@ Early efforts in this realm successfully identified many distinct patterns.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 2: formalize genome graphs and JaBbA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Junction-balanced genome graphs represent structurally altered genomes}
+\chapter{Junction-balanced genome graphs represent structurally altered genomes} \label{chap:2}
 In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can unify a diverse array of putative functional events including fusion genes and enhancer hijiacking. Last but not least, taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for oncologists to fully take advantage of cancer WGS data.
 
 \section{Genome graph as a general data structure to represent rearranged genome}
 We start by formally defining a reference genome, a genome graph, a junction.
 
 \subsection{Reference genome}
-Let the reference genome $\mathcal{C}$ comprise $c$ pairs of strings, labeled $C^i$ and $C^{-i}, i \in 1,\dots,c$.  Each string pair $\{C^i, C^{-i}\}, i \in 1,\dots, c$ is called a \textit{chromosome}, and each string in that pair is called a \textit{strand}.  We use $C^i$ and $C^{-i}$ to refer to "positive" and "negative" strands of chromosome $i$, each having length $L_i \in \mathbb{N}$. We use brackets to denote substrings on these strands. For example, $C^{i}[q,r]$ refers to the substring of $C^{i}$ beginning at position $q$ and ending at position $r$ (inclusive) where $q \le r \in 1,\dots,L_i$. We also use $C^{i}_q$ as a shorthand for $C^{i}[q,q]$. In the remainder of this dissertation, we call $C^{i}[q,r], i \in 1, \dots, c, q \le r \in 1, \dots, L_i$ a signed \textit{genomic interval}. Every signed genomic interval has a "reverse complement" $C^{-i}[q,r]$ and together they make a double stranded ("unsigned") interval $C^{\pm{i}[q,r]}$. As is the convention in defining reference genomes, on the positive strand $C^i$, the coordinate increases from 5' end to 3' end. In other words, $C^{i}_q$ is the 5' end of $C^{i}[q,r]$, and $C^{i}_r$ its 3' end.
+Let the reference genome $\mathcal{C}$ comprise $c$ pairs of strings, labeled $C^i$ and $C^{-i}, i \in 1,\dots,c$. Each string pair $\{C^i, C^{-i}\}, i \in 1,\dots, c$ is called a \textit{chromosome}, and each string in that pair is called a \textit{strand}. We use $C^i$ and $C^{-i}$ to refer to "positive" and "negative" strands of chromosome $i$, each having length $L_i \in \mathbb{N}$. We use brackets to denote substrings on these strands. For example, $C^{i}[q,r]$ refers to the substring of $C^{i}$ beginning at position $q$ and ending at position $r$ (inclusive) where $q \le r \in 1,\dots,L_i$. We also use $C^{i}_q$ as a shorthand for $C^{i}[q,q]$. In the remainder of this dissertation, we call $C^{i}[q,r], i \in 1, \dots, c, q \le r \in 1, \dots, L_i$ a signed \textit{genomic interval}. 
+
+Every signed genomic interval has a "reverse complement" $C^{-i}[q,r]$ and together they make a double stranded ("unsigned") interval $C^{\pm{i}[q,r]}$. As is the convention in defining reference genomes, on the positive strand $C^i$, the coordinate increases from 5' end to 3' end. In other words, $C^{i}_q$ is the 5' end of $C^{i}[q,r]$, and $C^{i}_r$ its 3' end. Two intervals $C^{i}[q_1, r_1], C^{j}[q_2, r_2]$ are said to overlap if $i = j$ and either $q_2 \le r_1$ or $q_1 \le r_2$.
 
 \subsection{Genome graph}
 % definition in as plain language as possible
 % need to define: reference genome, interval, signed interval, junction
-Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a multi-set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement"  (Goldberg1996), such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represent a double stranded DNA segment within the reference genome.
+Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a multi-set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement"  \cite{Goldberg1996-qm}, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represent a double stranded DNA segment within the reference genome. Since any vertex maps to a genomic interval, we denote its location in the reference genome with $C^{i}[q,r]$.
 
 To denote the location of edges, suppose we have an edge $e = (v_1, v_2), v_1$
 
@@ -183,26 +191,22 @@ Subsequently, there are two types of edges. \textit{REF} edges are the ones that
 %% is this a legit syntax for ordered set? "()"?
 To describe a rearranged and copy number altered reference genome, we partition $\mathcal{C}$ according to a collection of \textit{breakends} $\mathcal{B}$. We also define a set of \textit{junctions} $\mathcal{A}$ representing alternative adjacencies between a set of the  breakends in $\mathcal{B}$. Each $B^i \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequence of integer coordinates $B^i = (B^i_k), 1 \le B^i_k \le L_i$ on chromosome $i$, where $B^i_1$ = 1 and $B^i_{|B^i|} = L^i$.  Each junction $A \in \mathcal{A}$ is a tuple $(i_1,r_1,i_2,r_2),\ r_1 \in B^{|i_1|}, r_2 \in B^{|i_2|}$, $|i_1|, |i_2| \in  1, \ldots, c$ representing a (3'-5' phosphodiester) bond between the position $r_1 + \frac{-sgn(i_1)+1}{2}$ on chromosome / strand $C^{i_1}$ and position $r_2+\frac{sgn(i_2)+1}{2}$ on chromosome / strand $C^{i_2}$.  For every adjacency $A = (i_1,r_1,i_2,r_2) \in \mathcal{A}$ we require $\mathcal{A}$ to contain the reverse complement adjacency $\bar{A} = (-i_2,r_2, -i_1,r_1)$. The adjacencies in $\mathcal{A}$ are "alternative" relative to a set of "reference adjacencies" $\mathcal{R}$ implied by $B^i$, comprising tuples $(i, B^i_k, i, B^i_k)$ and $(-i, B^i_k, -i, B^i_k)$ for each breakend $B^i_k, k\in 1,\dots,|B^i|$ in each chromosome $i \in 1,\ldots,c$.
 
-
-
-
-
 \subsection{Junction-balanced genome graph}
 We define a mapping $\kappa:\{V_I \cup E\}\rightarrow \mathbb{N}$ of non-negative integer copy number (CN) to vertices and edges of $G$, where $\kappa(v),v \in V_I$ and  $\kappa(e),e \in E$ represent the CN of vertex $v$ and edge $e$, respectively.  The principle of \textit{junction balance} constrains the CN of every vertex to be equal to the sum of its incoming edges and the sum of its outgoing edges.  Formally, the junction balance constraint is stated as follows:
 
-\begin{equation} \label{eq:junction_balance_constraint}
+\begin{equation}
+    \label{eq:junction_balance_constraint}
 \kappa(v)= \sum_{e\in E^-(v)} \kappa(e) = \sum_{e\in E^+(v)} \kappa(e)
 \end{equation}
 
 In addition we require the CN $\kappa$ to obey \textit{skew-symmetry}, which means that every vertex must have the same copy number as its RC.
 
-\begin{equation}  \label{eq:skew_symmetry}
+\begin{equation}
+    \label{eq:skew_symmetry}
 \kappa(v) = \kappa(\bar{v}),\ \forall_{v \in V} \quad \kappa(e) = \kappa(\bar{e}),\ \forall_{e \in E} 
 \end{equation}
 
 We call the combination $(G,\kappa)$ for which $\kappa$ satisfies Eqs. \ref{eq:junction_balance_constraint}-\ref{eq:skew_symmetry} a \textit{junction-balanced genome graph} (JBGG).
-
-
 
 % 
 Following the above definitions, except for whole genome/chromosome/contig gain or losses or foreign sequence insertions, every structural change of a genome can be effectively seen as generating new adjacencies (ALT edges) between previously non-adjacent vertices.
@@ -252,6 +256,8 @@ Another emerging class of functional SV events is enhancer hijackings, where a d
 We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_formulation}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
 
 \subsection{JaBbA pipeline}
+Junction Balance Analysis (JaBbA, \url{https://github.com/mskilab/JaBbA}) is an R package freely available under the MIT license. The required inputs to JaBbA are binned (e.g. 200bp) and normalized read depth data $y$, purity $\alpha$, ploidy $\tau$, a set of junctions $\mathcal{A}$ (see mathematical formulation above), and a hyperparameter $\lambda$. The key output is a \texttt{gGraph} object representing a junction-balanced genome graph (i.e. solution to \textbf{Eq. \ref{eq:MIQP}}) which can be queried and analyzed using downstream algorithms, e.g. SV event classification algorithms in the \texttt{gGnome} package (\url{https://github.com/mskilab/gGnome}, see "Structural variant event classification" section below). The workflow of JaBbA is composed of four phases: read depth preprocessing, graph building, JaBbA model fitting, and postprocessing.
+
 \subsubsection*{Data preprocessing}
 
 \subsubsection*{Graph partitioning}
@@ -351,14 +357,7 @@ The remaining 20-30\% of cases, which we refer to as RTK/RAS/RAF pathway alterat
 We postulated that a more comprehensive analysis of candidate RPA(-) LUADs using whole-genome sequencing (WGS) in addition to WES and RNA-seq might illuminate more precisely the basic biology and also influence clinical management. We, therefore, performed WGS on LUAD samples from The Cancer Genome Atlas (TCGA) cohort that had appeared in previous analyses to lack an RTK/RAS/RAF pathway-activating alteration (Campbell et al., 2016). Since WGS is particularly effective in the identification of non-coding and structural genomic alterations, we hypothesized that analysis of those types of genome variation might reveal key features of RPA(-) LUAD biology.
 
 \appendix
-\chapter{Appendix A}
-
-\section{Definition of an interval on the reference genome}
-
-\begin{equation}
-    k_1=\frac{\omega }{c({1/\varepsilon_m + 1/\varepsilon_i})^{1/2}}=k_2=\frac{\omega
-    sin(\theta)\varepsilon_{air}^{1/2}}{c}
-\end{equation}
+\chapter{Appendix A: Chapter \ref{chap:2} Supplementary materials and methods}
 
 
 \bibliography{sampleThesis}
