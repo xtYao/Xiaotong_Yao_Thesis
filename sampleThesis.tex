@@ -221,9 +221,7 @@ Analogous to an assembly graph, on genome graph $G$, traveling through a walk $h
 
 First, given a tuple of genomic intervals $(v_1, v_2, \dots, v_k)$ whose order implies sequential covalent bonding, we can easily produce a genome graph and represent the tuple as a walk on that graph, by filling in edges between each consecutive pair of intervals based on their corresponding incident breakends, then add the same for the reverse complement walk. For example, the edge joining $(v_1, v_2)$ should be $(b_o(v_1), b_r(v_2))$. This observation implicated that any DNA sequence, as long as it can be constructed from pasting substrings of the reference genome, can be converted to a walk and a genome graph.
 
-Second, every interval has exactly one upstream neighbor (incident to its 5' breakend, except for the first interval), and one downstream neighbor (incident to its 3' breakend, except for the last interval), as (genomic) DNA is known to be linear. Thus, we can associate a walk with a non-negative integer $\phi(h) \in \mathbb{N}$ as the multiplicity of such molecule present in a genome.
-
-In a perfect scenario where we have infinitely long sequencing reads, we can read out any sequence directly and fully (telomere to telomere), for any rearranged karyotype. However, in practice, sequencing reads are fragmented and limited in length, and 
+Second, every interval has exactly one upstream neighbor (incident to its 5' breakend, except for the first interval), and one downstream neighbor (incident to its 3' breakend, except for the last interval), as (genomic) DNA is known to be linear. Thus, we can associate a walk with a non-negative integer $\phi(h) \in \mathbb{N}$ as the multiplicity of such molecule present in a genome. Consequently, the graph arise from these walks must posses be \textit{junction balanced}, a property we are going to define in the next subsection.
 
 \subsection{Junction-balanced genome graph}
 We define a mapping $\kappa:\{V_I \cup E\}\rightarrow \mathbb{N}$ of non-negative integer copy number (CN) to vertices and edges of $G$, where $\kappa(v),v \in V_I$ and  $\kappa(e),e \in E$ represent the CN of vertex $v$ and edge $e$, respectively.  The principle of \textit{junction balance} constrains the CN of every vertex to be equal to the sum of its incoming edges and the sum of its outgoing edges.  Formally, the junction balance constraint is stated as follows:
@@ -284,9 +282,9 @@ To bring genome graphs better intuition for practical use, we developed \textit{
 
 As a meaningful default, we plot integer copy numbers of the segments on the Y axis, that are inferred from cancer whole genome sequencing (WGS) with JaBbA (described in the next section), making it ideal for quick browsing copy number aberrations and immediately reveal the architecture of the complex events. Annotations on subgraphs are searchable and useful to mark interesting events (like chromothripsis). A sample level search engine accelerates the browsing on large cohorts. We can also plot possible karyotypes as walks within the graph assisting on the identification of functional neo-connectivities or clarification of complex event topologies.
 
-
 \section{Junction Balance Analysis infers copy numbers on genome graphs from short-read whole genome sequencing}
-Due to the discrepancy between wide-spread repetitive sequences, aneuploidy, and complex SVs, and the limited visibility of short reads
+
+In a perfect scenario where we have infinitely long sequencing reads, we can read out any sequence directly and fully (telomere to telomere), for any rearranged karyotype. However, in practice, sequencing reads from existing technologies are fragmented and limited in length, so the walks representing complete and true karyotypes are always latent. Despite long-read sequencing provides us a better chance at obtaining the rearranged allele, it is still "local" relative to some of the most long-range complex SV events like tyfonas \cite{Hadi2020-um}. Furthermore, due to the differences in cost, accuracy, throughput, and analytical robustness, the overwhelming majority of cancer WGS data is still based on massive parallel short-read sequencing, with which SV events are detected as copy number aberrations and junctions. Despite certain challenges, for instance with SVs in repetitive regions, short-read WGS has been found to approach the complete SV repertoire well \cite{Behr2021-gf}.
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 
