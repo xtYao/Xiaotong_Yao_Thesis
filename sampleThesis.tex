@@ -178,26 +178,52 @@ Projection of data onto reference genome coordinates, or genome browsers, are th
 In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can unify a diverse array of putative functional events including fusion genes and enhancer hijiacking. Last but not least, taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for oncologists to fully take advantage of cancer WGS data.
 
 \section{Genome graph as a general data structure to represent rearranged genome}
-We start by formally defining a reference genome, a genome graph, a junction.
-
 \subsection{Reference genome}
-Let the reference genome $\mathcal{C}$ comprise $c$ pairs of strings, labeled $C^i$ and $C^{-i}, i \in 1,\dots,c$. Each string pair $\{C^i, C^{-i}\}, i \in 1,\dots, c$ is called a \textit{chromosome}, and each string in that pair is called a \textit{strand}. We use $C^i$ and $C^{-i}$ to refer to "positive" and "negative" strands of chromosome $i$, each having length $L_i \in \mathbb{N}$. We use brackets to denote substrings on these strands. For example, $C^{i}[q,r]$ refers to the substring of $C^{i}$ beginning at position $q$ and ending at position $r$ (inclusive) where $q \le r \in 1,\dots,L_i$. We also use $C^{i}_q$ as a shorthand for $C^{i}[q,q]$. In the remainder of this dissertation, we call $C^{i}[q,r], i \in 1, \dots, c, q \le r \in 1, \dots, L_i$ a signed \textit{genomic interval}. 
+Let the reference genome $\mathcal{C}$ comprise $c$ pairs of strings, labeled $C^i$ and $C^{-i}, i \in 1,\dots,c$. Each string pair $C^{\pm{i}} = \{C^i, C^{-i}\}, i e\in 1,\dots, c$ is called a \textit{chromosome}, and each string in that pair is called a \textit{strand}. We use $C^i$ and $C^{-i}$ to refer to "positive" and "negative" strands of chromosome $i$, each having length $L_i \in \mathbb{N}$. We use brackets to denote substrings on these strands. For example, $C^{i}[q,r]$ refers to the substring of $C^{i}$ beginning at position $q$ and ending at position $r$ (inclusive) where $q \le r \in 1,\dots,L_i$. We also use $C^{i}_q$ as a shorthand for $C^{i}[q,q]$. In the remainder of this dissertation, we call $C^{i}[q,r], i \in 1, \dots, c, q \le r \in 1, \dots, L_i$ a signed \textit{genomic interval}. The width of interval $C^{-i}[q,r]$ is $r-q+1$.
 
-Every signed genomic interval has a "reverse complement" $C^{-i}[q,r]$ and together they make a double stranded ("unsigned") interval $C^{\pm{i}[q,r]}$. As is the convention in defining reference genomes, on the positive strand $C^i$, the coordinate increases from 5' end to 3' end. In other words, $C^{i}_q$ is the 5' end of $C^{i}[q,r]$, and $C^{i}_r$ its 3' end. Two intervals $C^{i}[q_1, r_1], C^{j}[q_2, r_2]$ are said to overlap if $i = j$ and either $q_2 \le r_1$ or $q_1 \le r_2$.
+Every signed genomic interval has a "reverse complement" $C^{-i}[q,r]$ and together they make a double stranded interval $C^{\pm{i}}[q,r]$, termed \textit{segment}. Two segments $C^{i_1}[q_1, r_1], C^{i_2}[q_2, r_2]$ are said to \textit{overlap} if $i_1 = i_2$ and either $q_2 \le r_1$ or $q_1 \le r_2$, and a set of intervals are said to be \textit{disjoint} if none of its members overlap. As a trivial example, one chromosome $C^{\pm{i}}$ is a segment of width $L_i$.
+
+%% how to define a segmentation
+% A segmentation $S$ of a segment $C^{\pm{i}}[q, r]$ is set of disjoint segments $\{C^{\pm{i}}[q,k_1], C^{\pm{i}}[k_1 + 1,k_2], ..., C^{\pm{i}}[k_n + 1,r]\}, k_1 \ge q, k_n <= r$
+As is the convention in defining reference genomes, on the positive strand $C^i, i>0$, the coordinate increases from 5' end (left) to 3' end (right). In other words, $C^{i}_q$ is the 5' end of $C^{i}[q,r]$, and $C^{i}_r$ its 3' end. Conversely, $C^{-i}_r$ is the 5' end of $C^{-i}[q,r]$, and $C^{-i}_q$ the 3' end. We term the 3' end the outgoing end $b_o$ and the 5'e end receiving end $b_r$. Based on skew symmetry, $b_o (v)= \bar{b_r(\bar{v})}$ and $b_r(v) = \bar{b_o(\bar{v})}$. A pair of reverse complement interval ends of the opposite sides, for example, $b = \{b_r(v), b_o(\bar{v})\}$ or $b = \{b_o(v), b_r(\bar{v})\}$ is termed a \textit{breakend}. When marking the location of a breakend $b = \{b_r(v), b_o(\bar{v})\}, v = C^{i}[q,r], i>0$, we simply use a width 1 signed interval $b = C^{i}_{q}$, here the positive sign of $i$ indicates the breakend belongs to the interval continuing onto the right of the coordinate $q$, while for breakend $b = \{b_o(v), b_r(\bar{v})\}$, $b = C^{-i}_r$.
+
+Taken the above definitions together, each segment $s = C^{\pm{i}}[q,r]$ has two breakends, left (smaller coordinate) $b_L(s) = \{b_r(v), b_o(\bar{v})\} = C^{i}_q$ and right (larger coordinate) $b_R(s) = \{b_o(v), b_r(\bar{v})\} = C^{-i}_{r}, v = C^{i}[q,r], i>0$.
 
 \subsection{Genome graph}
 % definition in as plain language as possible
 % need to define: reference genome, interval, signed interval, junction
-Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a multi-set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric (see formal definitions in Methods) with the mapping function $r$ "reverse complement"  \cite{Goldberg1996-qm}, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} = r(v) \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = r(e) = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represent a double stranded DNA segment within the reference genome. Since any vertex maps to a genomic interval, we denote its location in the reference genome with $C^{i}[q,r]$.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/ggraph_schematic.png}
+    \caption{Schematic of a genome graph}
+    \label{fig:ggraph_schematic}
+\end{figure}
 
-To denote the location of edges, suppose we have an edge $e = (v_1, v_2), v_1$
+Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a multi-set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric \cite{Goldberg1996-qm} with the mapping function "reverse complement" denoted with a bar over, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represents a double stranded DNA segment. Since any vertex maps to a genomic interval, we mark its location in the reference genome with $v = C^{i}[q,r]$.
 
-Subsequently, there are two types of edges. \textit{REF} edges are the ones that are connecting vertices adjacent in the reference genome, and \textit{ALT} are neo-adjacencies that are not present in the reference genome resulting from rearrangements (Fig2). A reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-stranded DNA segment (segment for short); a reverse complement pair of edges $\{e, \bar{e}\}$ compose a junction. Analogous to an assembly graph, to produce a substring in the genome, is equivalent to traveling through a walk $w = (v_1, e_1, v_2, e_2, \dots, e_k, v_k)$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, \dots, k-1$, at the same time its reverse complement walk $\bar{w} = (\bar{v_k}, \bar{e_k}, \bar{v_{k-1}}, \dots, \bar{e_1}, \bar{v_1})$.
+Because the phosphodiester bonds are always connecting the outgoing (3') end of a source vertex $v_1 = C^{i_1}[q_1,r_1]$ and the receiving (5') end of a sink vertex $v_2 = C^{i_2}[q_2,r_2]$, we can denote the genomic location of an edge $e = (v_1, v_2)$ with a tuple of the connected breakends $e = (b_o(v_1), b_r(v_2))$. 
 
+Following this definition, there are at least two types of edges. The first type, \textit{REF} edges are the ones that are connecting breakends adjacent in the reference genome hence always with location $e_r = (C^{i}_{q}, C^{i}_{q + 1})$, if $i>0$, or $(C^{i}_{q_1 + 1}, C^{i}_{q_1})$, if $i<0, q \in [1,L_i)$. In contrast, the second type \textit{ALT} edges are neo-adjacencies that are not present in the reference genome and resulting from rearrangements (\textbf{Figure \ref{fig:ggraph_schematic}}).
 
-\subsection{Breakends and junctions}
-%% is this a legit syntax for ordered set? "()"?
-To describe a rearranged and copy number altered reference genome, we partition $\mathcal{C}$ according to a collection of \textit{breakends} $\mathcal{B}$. We also define a set of \textit{junctions} $\mathcal{A}$ representing alternative adjacencies between a set of the  breakends in $\mathcal{B}$. Each $B^i \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequence of integer coordinates $B^i = (B^i_k), 1 \le B^i_k \le L_i$ on chromosome $i$, where $B^i_1$ = 1 and $B^i_{|B^i|} = L^i$.  Each junction $A \in \mathcal{A}$ is a tuple $(i_1,r_1,i_2,r_2),\ r_1 \in B^{|i_1|}, r_2 \in B^{|i_2|}$, $|i_1|, |i_2| \in  1, \ldots, c$ representing a (3'-5' phosphodiester) bond between the position $r_1 + \frac{-sgn(i_1)+1}{2}$ on chromosome / strand $C^{i_1}$ and position $r_2+\frac{sgn(i_2)+1}{2}$ on chromosome / strand $C^{i_2}$.  For every adjacency $A = (i_1,r_1,i_2,r_2) \in \mathcal{A}$ we require $\mathcal{A}$ to contain the reverse complement adjacency $\bar{A} = (-i_2,r_2, -i_1,r_1)$. The adjacencies in $\mathcal{A}$ are "alternative" relative to a set of "reference adjacencies" $\mathcal{R}$ implied by $B^i$, comprising tuples $(i, B^i_k, i, B^i_k)$ and $(-i, B^i_k, -i, B^i_k)$ for each breakend $B^i_k, k\in 1,\dots,|B^i|$ in each chromosome $i \in 1,\ldots,c$.
+Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-stranded DNA segment, a reverse complement pair of edges $\{e, \bar{e}\}$ compose a \textit{junction}. Trivially, $e$ and $\bar{e}$ will always be the same type of edge, so we also have two types of junctions, REF and ALT. Each junction $a = \{e, \bar{e}\}, v_1 = C^{i_1}[q_1,r_1], v_2 = C^{i_2}[q_2,r_2]$ can be represented with the two breakends it connects, namely $b_1 = \{b_o(v_1), b_r(\bar{v_1})\} = C^{i_1}_{q_1 [1-I(i_1)] + r_1 I(i_1)}$, and similarly $b_2 = C^{i_2}_{q_2 [1-I(i_2)] + r_2 I(i_2)}$, where indicator function $I:\mathbb{R}\rightarrow \{0, 1\}, I(x)=1, if x \ge 0, I(x) = 0, if x<0$.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/junction_orientation.png}
+    \caption{Four basic classes of junctions. Dark gray indicates the \textit{cis} side and light gray the \textit{trans} side of a breakend.}
+    \label{fig:junction_orientations}
+\end{figure}
+
+For a breakend in the middle of a chromosome, only one of its two sides is incident to the junction, we call this side the \textit{cis} side, and the other \textit{trans} side. Based on the relative locations and orientations of its two connected breakends, we can classify a junction into four basic classes (\textbf{Figure \ref{fig:junction_orientations}}): DUP-like (tandem duplication), DEL-like (deletion), INV-like (inversion), TRA-like (translocation), named after the most common and simplest SV events that can give rise to such junctions.
+
+\subsection{Walks on a genome graph map to rearranged karyotype}
+Analogous to an assembly graph, on genome graph $G$, traveling through a walk $h = (v_1, e_1, v_2, e_2, \dots, e_{k-1}, v_k)$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, \dots, k-1$, is equivalent to generating a substring of DNA sequence, simply by concatening the reference sequences of the vertices. If some of the edges along the walk belong to ALT edges $E_{A}$, then the walk represents a possible derivative sequence resulted from the SVs that gave rise to these edges. Since $G$ is skew-symmetric, every walk $h$ has a reverse complement walk $\bar{h} = (\bar{v_k}, \bar{e_{k-1}}, \dots, \bar{e_2}, \bar{v_2}, \bar{e_1}, \bar{v_1})$. Based on this definition, we have two important observations.
+
+First, given a tuple of genomic intervals $(v_1, v_2, \dots, v_k)$ whose order implies sequential covalent bonding, we can easily produce a genome graph and represent the tuple as a walk on that graph, by filling in edges between each consecutive pair of intervals based on their corresponding incident breakends, then add the same for the reverse complement walk. For example, the edge joining $(v_1, v_2)$ should be $(b_o(v_1), b_r(v_2))$. This observation implicated that any DNA sequence, as long as it can be constructed from pasting substrings of the reference genome, can be converted to a walk and a genome graph.
+
+Second, every interval has exactly one upstream neighbor (incident to its 5' breakend, except for the first interval), and one downstream neighbor (incident to its 3' breakend, except for the last interval), as (genomic) DNA is known to be linear. Thus, we can associate a walk with a non-negative integer $\phi(h) \in \mathbb{N}$ as the multiplicity of such molecule present in a genome.
+
+In a perfect scenario where we have infinitely long sequencing reads, we can read out any sequence directly and fully (telomere to telomere), for any rearranged karyotype. However, in practice, sequencing reads are fragmented and limited in length, and 
 
 \subsection{Junction-balanced genome graph}
 We define a mapping $\kappa:\{V_I \cup E\}\rightarrow \mathbb{N}$ of non-negative integer copy number (CN) to vertices and edges of $G$, where $\kappa(v),v \in V_I$ and  $\kappa(e),e \in E$ represent the CN of vertex $v$ and edge $e$, respectively.  The principle of \textit{junction balance} constrains the CN of every vertex to be equal to the sum of its incoming edges and the sum of its outgoing edges.  Formally, the junction balance constraint is stated as follows:
@@ -225,9 +251,14 @@ Extending the properties of $r$ to any function of vertices or edges, we call a 
 
 Intuitively, a walk along on a genome graph maps to a DNA sequence and a genome graph is a compilation of all possible linear sequences that could result from rearranging the reference genome assuming the junctions are completely known. This idea is similar to the assembly graph in \textit{de novo} assembly, except we are pre-defined within a linear reference genome and adding further rearrangements.
 
+%% \subsection{Breakends and junctions}
+%% is this a legit syntax for ordered set? "()"?
+%% To describe a rearranged and copy number altered reference genome, we partition $\mathcal{C}$ according to a collection of \textit{breakends} $\mathcal{B}$. We also define a set of \textit{junctions} $\mathcal{A}$ representing alternative adjacencies between a set of the  breakends in $\mathcal{B}$. Each $B^i \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequence of integer coordinates $B^i = (B^i_k), 1 \le B^i_k \le L_i$ on chromosome $i$, where $B^i_1$ = 1 and $B^i_{|B^i|} = L^i$.  Each junction $A \in \mathcal{A}$ is a tuple $(i_1,r_1,i_2,r_2),\ r_1 \in B^{|i_1|}, r_2 \in B^{|i_2|}$, $|i_1|, |i_2| \in  1, \ldots, c$ representing a (3'-5' phosphodiester) bond between the position $r_1 + \frac{-sgn(i_1)+1}{2}$ on chromosome / strand $C^{i_1}$ and position $r_2+\frac{sgn(i_2)+1}{2}$ on chromosome / strand $C^{i_2}$.  For every adjacency $A = (i_1,r_1,i_2,r_2) \in \mathcal{A}$ we require $\mathcal{A}$ to contain the reverse complement adjacency $\bar{A} = (-i_2,r_2, -i_1,r_1)$. The adjacencies in $\mathcal{A}$ are "alternative" relative to a set of "reference adjacencies" $\mathcal{R}$ implied by $B^i$, comprising tuples $(i, B^i_k, i, B^i_k)$ and $(-i, B^i_k, -i, B^i_k)$ for each breakend $B^i_k, k\in 1,\dots,|B^i|$ in each chromosome $i \in 1,\ldots,c$.
+
+
+
 \section{Implementation of genome graphs in gGnome package}
-% noteworthy implementation details
-We 
+To facilitate the analyses of genome graphs, we built an R package \textit{gGnome} which allows fast and useful creation, exploration, visualization, and computation around genome graphs. The 
 
 % construction
 In the most basic form, a genome graph can be initiated with a reference genome alone, where each node is a chromosome and no edges exist (\texttt{gG()}). On top of that, we can segment the whole genome based on a set of breakpoint coordinates, by automatically connecting two consecutive nodes with a (pair of reverse complement) REF edge (\texttt{gG(breaks = breakpoints)}). When a ALT junction emerges, it joins two breakends that are not adjacent in reference genome to form new (pair of reverse complement) ALT edges (\texttt{gG(juncs = junctions)}).
@@ -238,7 +269,6 @@ More often in practical scenarios, we start from a copy number-annotated genome 
 With a genome graph, we can make a series of queries based on vertex and edge metadata.
 
 \section{Neo-connectivities on a genome graph encode putative functional events}
-
 As explained in the previous sections, a walk (and its reverse complement walk) on a genome graph maps to a linear DNA sequence. If there exists a possible walk between two vertices it means the genomic elements within the two vertices may be connected on a contiguous DNA segment in the sample, if and only if all the ALT edges along the walk are phased in cis. A pair of ALT edges phased in cis means there are at least one copy of them found on the same DNA molecule; while none such copy is found they are deemed phased in trans. In reality, due to the large size of the genome and the limited read-length or effective range (e.g. for linked reads), complete phasing of all junctions is near impossible for most cases. However, the connectivities between genomic regions on the un-phased or partially phased genome graphs can serve as an approximation. 
 
 As we established in earlier sections, a complete genome graph should enclose all the walks corresponding to the studied genome, so if any copy of two genomic loci are on the same part of a DNA molecule, that segment should have a corresponding walk on the complete genome graph. Based on this observation, the new genomic distance after rearrangements between any copy of two loci is summing over the width of vertices plus the within-vertex distances to the incident ends along the walk for the starting and terminating vertices. Thus, even when it is not possible to exactly decompress the graph to the walks consistent with the actual karyotypes, we know that the real shortest genomic distance between any copy of two loci should not be shorter than the shortest path distance on the complete genome graph.
@@ -250,24 +280,24 @@ Some fusion genes have long been established as cancer drivers (citation) and ev
 \section{Interactive visualization of genome graphs in arbitrary genomic windows}
 To bring genome graphs better intuition for practical use, we developed \textit{gGnome.js} (https://github.com/mskilab/gGnome.js), a web application that draws genome rearrangement graphs onto its reference coordinates and allows for interactive browsing in any number of discontinuous windows accompanied by various types of genomic annotations. By allowing arbitrary windows and navigation by connectivities, the users can traverse the genome freely and simultaneously inspect various data at multiple relevant locations, including numeric (like read coverage) and qualitative (like gene annotations).
 
-As a meaningful default, we plot integer copy numbers of the segments on the Y axis, that are inferred from cancer whole genome sequencing (WGS) with JaBbA, making it ideal for quick browsing copy number aberrations and immediately reveal the architecture of the complex events. Annotations on subgraphs are searchable and useful to mark interesting events (like chromothripsis). A sample level search engine accelerates the browsing on large cohorts. We can also plot possible karyotypes as walks within the graph assisting on the identification of functional neo-connectivities or clarification of complex event topologies.
+% gGnome.js figure TODO
+
+As a meaningful default, we plot integer copy numbers of the segments on the Y axis, that are inferred from cancer whole genome sequencing (WGS) with JaBbA (described in the next section), making it ideal for quick browsing copy number aberrations and immediately reveal the architecture of the complex events. Annotations on subgraphs are searchable and useful to mark interesting events (like chromothripsis). A sample level search engine accelerates the browsing on large cohorts. We can also plot possible karyotypes as walks within the graph assisting on the identification of functional neo-connectivities or clarification of complex event topologies.
 
 
-
-
-\section{Junction Balance Analysis infers copy numbers on genome graphs from whole genome sequencing}
-
+\section{Junction Balance Analysis infers copy numbers on genome graphs from short-read whole genome sequencing}
+Due to the discrepancy between wide-spread repetitive sequences, aneuploidy, and complex SVs, and the limited visibility of short reads
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/jabba_formulation.png}
-    \caption{\textbf{Formulation of Junction Balance Analysis} xxxx...}
-    \label{fig:jabba_formulation}
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/jabba_io.png}
+    \caption{\textbf{Inputs and outputs of Junction Balance Analysis} Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordiantes and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.}
+    \label{fig:jabba_io}
 \end{figure*}
 
-We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_formulation}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
+We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
 
 \subsubsection*{Inferring Junction Balanced Genome Graphs}
 We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as \texttt{SvABA} or DELLY).  
@@ -321,13 +351,96 @@ The resulting MAP estimate $\hat{\kappa}$ defines the JBGG $(G,\hat{\kappa})$ wh
 \subsection{JaBbA pipeline}
 Junction Balance Analysis (JaBbA, \url{https://github.com/mskilab/JaBbA}) is an R package freely available under the MIT license. The required inputs to JaBbA are binned (e.g. 200bp) and normalized read depth data $y$, purity $\alpha$, ploidy $\tau$, a set of junctions $\mathcal{A}$ (see mathematical formulation above), and a hyperparameter $\lambda$. The key output is a \texttt{gGraph} object representing a junction-balanced genome graph (i.e. solution to \textbf{Eq. \ref{eq:MIQP}}) which can be queried and analyzed using downstream algorithms, e.g. SV event classification algorithms in the \texttt{gGnome} package (\url{https://github.com/mskilab/gGnome}, see "Structural variant event classification" section below). The workflow of JaBbA is composed of four phases: read depth preprocessing, graph building, JaBbA model fitting, and postprocessing.
 
-\subsubsection*{Data preprocessing}
+\subsubsection*{Read coverage preprocessing, primary segmentation, and purity-ploidy estimation}
+Raw input read depth data are generated for tumor and matched normal (i.e. constitutional) samples by tallying the count of midpoints of well aligned (MAPQ $>$ 0) proper read pairs in a vector $z \in \mathbb{Z}^n_+$ (e.g. $n \approx$ 15 million for 200 bp bins across hg19).  These are further GC-corrected and mappability normalized through an iterative LOESS fitting procedure similar to \cite{Ha:2012kr} and implemented in the fragCounter R package (https://github.com/mskilab/fragCounter). Briefly, a local estimated scatterplot smoothing (LOESS) function $f_{GC}$ is fitted (R \ttt{stats} package \ttt{loess} function) to a random (100,000) subsample of bins to predict read depth as a function of GC content. Each bin's read depth $z_j,~j \in \{1, ... n\}$ is then divided by its fitted value $f_{GC}(z_j)$ to yield the normalized value $z^{GC}_j$.  A similar LOESS-based procedure is then applied to correct each GC-corrected read depth $z^{GC}_j$ with respect to its 100mer mappability score to yield the GC and mappability corrected read depth $z^{GCM}_j$.  This procedure is applied separately for tumor and matched normal (if applicable).
+
+The ratio of the GC and mappability corrected read depth profiles for the tumor $z^T$ and normal $z^N$ is then used to derive the normalized read depth profile $y \in \mathbb{R}^n_+$ where $y_j = \frac{z_j^Tm_j^N}{z_j^N},~j \in \{1, ... n\}$ and $m^N_j$ is the chromosomal-wide median in the normal read depth data for the chromosome containing bin $j$.  Correction of the tumor / normal ratio by $m^N_j$ maintains a linear relationship between read depth and locus abundance in the original sample. Without this final step, bins from the X and Y chromosomes in a diploid male tumor will show the same read depth as the autosomes.  Samples without a matched normal (e.g. cell lines) are divided by a "universal" (i.e. average) normal averaged across 943 GC and mappability corrected TCGA normal read depth profiles and then chromosome balanced. 
+
+
+We note that the read depth normalizations, described above, are formally performed upstream of the JaBbA pipeline (e.g. via fragCounter, R / Bioconductor). The goal of these normalizations is to reduce biases, with the goal of rendering the binned read depth $y_j$ proportional (± noise) to the abundance of locus $j$ in the tumor sample (which may include admixed normal cells).  The final (purity / ploidy) transformation, included formally as part of the JaBbA pipeline, will renders the normalized read depth approximately equal (± noise) to its clonal integer CN in the tumor (given an accurate purity / ploidy estimate). Given a tumor sample with purity $\alpha \in [0, 1]$, ploidy $\tau \in \mathbb{R}_+$, and normalized read depth data $y$, the read depth $y_j$, tumor CN $\kappa(j)$, and constitutional CN $\kappa_N(j)$ will obey:
+
+\begin{equation} \label{eq:ppbins}
+\frac{y_j}{\sum_{\hat{j} = 1}^n y_{\hat{j}}} \approx \frac{\alpha \kappa(j) + (1-\alpha)\kappa_N(j)}{\sum_{\hat{j} = 1}^n \alpha \kappa(\hat{j}) + (1-\alpha)\kappa_N(\hat{j})}
+\end{equation}
+
+Given $\bar{y} = \frac{1}{n}\sum_{\hat{j} = 1}^{n} y_{\hat{j}}$, $\tau \approx \frac{1}{n}\sum_{\hat{j} = 1}^{n} \kappa(\hat{j})$, and a near diploid constitutional sample (i.e. in which $\frac{1}{n}\sum_{\hat{j} = 1}^{n} \kappa_N(\hat{j}) \approx 2$),
+
+\begin{equation} \label{eq:ppbins2}
+y_j \approx \frac{\alpha\kappa(j) + (1-\alpha)\kappa_N(j)}{\alpha \tau + 2(1-\alpha)} \bar{y} 
+\end{equation}
+
+Defining
+
+\begin{equation} \label{eq:purityploidycorrection}
+\begin{split}
+    \beta = \frac{\bar{y}\alpha}{\alpha\tau+2(1-\alpha)} \\
+    \gamma = \frac{2\bar{y}(1-\alpha)}{\alpha\tau+2(1-\alpha)}
+\end{split}
+\end{equation}
+
+yields the following equation:
+
+\begin{equation} \label{eq:ppbins3}
+\kappa(j) \approx x_j = \frac{2y_j - \kappa_N(j)\gamma}{2\beta}
+\end{equation}
+
+Given known constitutional copy number (in practice, $\kappa_N(j) = 2$ for all bins with the exception of X and Y chromosome in males, where $\kappa_N(j) = 1$), the right hand side of Eq. \ref{eq:ppbins3} is computed directly from the (GC and mappability corrected, tumor / normal ratio transformed) read depth data, purity, and ploidy and represents the binned read depth input $x$ to JaBbA. 
+
+\subsubsection*{Graph building}
+To build the genome graph $G$, the binned read depth $x$ is segmented (e.g. using CBS) to yield the breakends $\mathcal{B}$.  These breakends are combined via \textbf{Algorithm \ref{algo:buildgraph}} with the junctions $\mathcal{A}$ to yield $G$.  Briefly, this procedure 1) divides the reference genome into internal vertices $v_I \in V_I$ each of which will be assumed to have a coherent CN, and 2) establishes edges $e \in E=E_{R} \cup E_{A} \cup E_{L}$ that each represents an adjacency consistent with the reference genome (REF edge, $E_R$), created by an rearrangement junction (ALT edge, $E_A$), or an unmatched breakend (loose end, $E_L$). The ends of the vertices are the union of junction breakends $getBreakPoints(\mathcal{A})$ and a primary segmentation of the genome $\mathcal{B}_{seg}$ using the Circular Binary Segmentation algorithm \cite{olshen2004} (CBS), or from user input.  The mapping $J(v)$ (see above) is constructed to associate internal vertices $v \in V_I(G)$ with partitions of bin indices. 
+
+\begin{algorithm} \caption{BuildGraph} \label{algo:buildgraph}
+    \begin{algorithmic}[1]  
+        \Procedure{BuildGraph}{$\mathcal{A}$, $\mathcal{B}$} \Comment{Returns genome graph $G = (V, E, \psi, \phi)$} 
+        \State $G \gets emptyGraph;\quad$ $\phi, \psi \gets emptyDictionary$
+        \State $\mathcal{B} = \mathcal{B} \cup \ getBreakPoints(\mathcal{A})$ \Comment{Extract additional breakends from junctions in $\mathcal{A}$}
+        \For{$B^i_k,\ k\in 1,\ldots,|B^i|-1,\ c \in 1,\ldots,|\mathcal{C}|/2$}
+        \State $v, \bar{v} \gets newVertices(2, \psi, "I")$ \Comment{$newVertices$ updates $\psi$ to map $v$ and $\bar{v}$ to "I"}
+        \State $\phi(v) = (i, B^i_k, B^i_{k+1}-1)$ 
+        \State $\phi(\bar{v}) = (-i, B^i_k, B^i_{k+1}-1)$
+        \State $l_1, \bar{l_1}, l_2, \bar{l_2} \gets newVertices(4, \psi, "L")$ 
+        \State $e_1, \bar{e_1}, e_2, \bar{e_2} \gets newEdges(\{ (l_1, v), (\bar{v},\bar{l_1}), (v, l_2), (\bar{l_2},\bar{v}) \}, \psi, "L")$ 
+        \State \algorithmicif\ $k = 1$ \ \algorithmicthen\ \ $\psi(\{l_1, e_1, \bar{l_1}, \bar{e_1} \}) \gets "T"$  \Comment{Label telomeric loose ends with "T"}
+        \State \algorithmicif\ $k = |B^i|-1$ \ \algorithmicthen\ $\psi(\{l_2, e_2, \bar{l_2}, \bar{e_2} \}) \gets "T"$ 
+        \State $V(G) \gets V(G) \cup  \{ v, \bar{v}, l_1, \bar{l_1}, l_2, \bar{l_2} \})$
+        \State $E(G) \gets E(G) \cup  \{ e_1, \bar{e_1}, e_2, \bar{e_2} \})$
+        \EndFor
+        \State $\mathcal{R} = referenceAdjacencies(\mathcal{B})$  \Comment{Get implied reference adjacencies from breakends}
+        % \State $\mathcal{A} = \mathcal{A} \cup \ reverseComplement(\mathcal{A})$  \Comment{Make sure $\mathcal{A}$ contains both forward and RC adjacencies} 
+        \For{$A = (i_1,r_1,i_2,r_2) \in \mathcal{A} \cup \mathcal{R}$}
+        \If{$sgn(i_1)>0$}
+            \State $v_1 \gets getVertex(\{ \hat{v} \ | \ \phi(v) = (i_1, q, r_1+\frac{-sgn(i)+1}{2}), v \in V(G), q \in \mathbb{N}\}$)
+        \Else
+            \State $v_1 \gets getVertex(\{ \hat{v} \ | \ \phi(\hat{v}) = (i_1, r_1 + \frac{-sgn(i)+1}{2}, q), v \in V(G), q \in \mathbb{N}\})$
+        \EndIf
+        \If{$sgn(i_2)>0$}
+            \State $v_2 \gets getVertex(\{ \hat{v} \ | \ \phi(v) = (i_2, r_2 + \frac{sgn(i_2)+1}{2}, q), v \in V(G), q \in \mathbb{N}\})$
+        \Else
+            \State $v_2 \gets getVertex(\{ \hat{v} \ | \ \phi(\hat{v}) = (i_2, q, r_2 + \frac{sgn(i_2)+1}{2}), v \in V(G), q \in \mathbb{N} \})$
+        \EndIf
+        \State \algorithmicif\ $A \in \mathcal{R}$ \algorithmicthen\ $e = newEdges((v_1, v_2), \psi, "R")$ \ \algorithmicelse \ $e = newEdges((v_1, v_2), \psi, "A")$
+        \State $E(G) \gets E(G) \cup \{e\}$
+        \EndFor
+        \State \textbf{return} $(V(G), E(G), \psi, \phi)$ 
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+
+\subsubsection*{JaBbA model fitting}
+Given a genome graph $G$ and GC / mappability corrected, normalized, purity / ploidy transformed read depth data $x \in \mathbb{R}^n$, and bin set $J(v) \subseteq \{1, \ldots, n\},~v \in V_I(G)$ , we infer a junction balanced genome graph $(G, \kappa)$ using the procedure outlined above ("Inferring junction-balanced genome graphs" section) with the following modifications:  Instead of the arithmetic mean $\rho(v)$, we use the sample geometric mean $\rho(v) = exp(\frac{1}{|J(v)|}\sum_{j \in J(v)} ln(x_j))$, which is more robust to outliers.  To model heteroscedasticity in read depth, we compute a vertex specific variance function $\sigma^2(v)$. Specifically, we use LOESS to fit a smooth non-linear function $f$ that links copy number to variance by fitting the sample mean $\rho(v)$ and sample variance  $\hat{\sigma}^2(v) = \frac{1}{|J(v)|-1} \sum_{x \in J(v)} (x_j - \rho(v))^2$ across all $v \in V_I$.  This function is then used to determine the segment-specific variance term as $\sigma^2(v) = f(\rho(v))$.  These $\sigma^2(v)$ values are then used to populate the read depth residual sum of squares $\mathcal{V}(v, \kappa, x, J)$ portion of the objective function in \textbf{Eq. \ref{eq:nodeloglikelihood}}. Combining with the user-defined loose end penalty hyperparameter $\lambda$ (default 100, tuned for 200 bp binned tumor / normal pairs, see above), the MIQP problem (\textbf{Eq. \ref{eq:MIQP}}) is solved on the genome graph using an $\ell_0$ complexity penalty. The solver is \texttt{CPLEX} (v12.6.2, IBM).
+
+To increase sensitivity for missed junctions, the JaBbA pipeline employs several iterations of MIQP inference when two tiers of junctions (high and low confidence) are provided.  Briefly, we fit a model using only high-confidence (e.g. FILTER=PASS in the unfiltered \texttt{SvABA} output VCF) junctions as input.  In subsequent iterations, we fit a modified model that includes additional low-confidence junctions (e.g. those with low read support) that occur near (<1 kbp) a loose end in the previous iteration.  This procedure is run for a maximum of four iterations, or until no additional low confidence junctions near loose ends from the previous iteration have been found.   Such a procedure particularly improves junction sensitivity in the setting of low purity and / or read depth. 
 
 \subsubsection*{Graph partitioning}
 
-% \section{Automatic tuning of convergence criteria to improve the performance of harder problems}
-
 \subsubsection*{Post processing and allelic CN fitting}
+After the optimization with \texttt{CPLEX}, we further simplify the solution by merging neighboring vertices of the same total CN that are connected only through REF edges. If ALT and REF read counts at constitutional heterozygous SNP sites are provided as (optional) input to JaBbA, we also infer the tumor allelic CN $\kappa_{h}(v)$ and  $\kappa_{l}(v)$ corresponding to the "high" ($h$) and "low" ($l$) allele, where  $\kappa_{h}(v) + \kappa_{l}(v) = \kappa(v)$ and $\kappa_{l}(v) \le \kappa_{h}(v)$, for each internal vertex $v \in V_I$ that overlaps a heterozygous SNP.  (Only biallelic heterozygous SNPs with two constitutional states, i.e. ALT and REF are considered.)  
+
+Briefly, we model the "low" count at each heterozygous SNP ("low" can be REF or ALT, depending on which allele has fewer reads) overlapping $v$ as a Poisson distribution with mean $\beta\kappa_l(v) + \frac{1}{2}\kappa_{lN}(v)\gamma$.  Here, $\kappa_{lN}(v)$ is the constitutional allelic CN of the lower CN allele at each vertex $v$ (e.g. 0 for X and Y chromosome in males, 1 elsewhere in the genome), and $\beta$ and $\gamma$ are defined as for (non-allelic) read depth (\textbf{Eq. \ref{eq:purityploidycorrection}}) with the following adjustments: genome-wide average $\bar{y}$ is the mean allele-specific read count across all heterozygous SNPs, and $\tau$ is the mean non-allelic CN across heterozygous sites only. An analogous Poisson model is defined for the "high" allele (i.e. REF or ALT, depending which has more reads) at each heterozygous SNP associated with $v$.  A joint Poisson log likelihood for the allelic CN of a given vertex $v$, $\kappa_{h}(v)$ and $\kappa_{l}(v)$, is then computed by summing all log likelihoods across both high and low alleles of all heterozygous SNPs mapped to $v$. The maximum likelihood configuration for $\kappa_{h}(v)$ and $\kappa_{l}(v)$ is chosen and reported.  The process is repeated across all internal vertices $v \in V_I(G)$ with at least one heterozygous SNP.
+
+The final output is then saved into a gGraph object that can be manipulated, visualized, and analyzed with the \texttt{gGnome} R package (\url{https://github.com/mskilab/gGnome}) and \texttt{gGnome.js} browser (\url{https://github.com/mskilab/gGnome.js}).  
+
 
 \section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
 JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and explicit accounting of false negative junctions, also called loose ends (see \nameref{sec:methods}). In our benchmarking experiments, JaBbA inferred JCN with consistently higher fidelity than published genome graph-based methods (ReMixT \cite{McPherson2017-ry}, Weaver \cite{Li2016-qa}, PREGO \cite{Oesper2012-vw}) across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}D-E}). In addition, JaBbA qualitatively outperformed genome graph-based methods and even classic (i.e. non-graph based) CNA callers (BIC-seq \cite{Xi2011-oa} and CONSERTING \cite{Chen2015-sw}) in estimating interval CN and change point locations across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}F-I}). These results show that JaBbA is the first genome graph SV caller to accurately infer the topology of JCN while approaching (or exceeding) the fidelity of classic CNA callers. 
@@ -529,21 +642,32 @@ If the 57 RPA(-)G cases identified in this study indeed represent a distinct bio
 Taken together, our findings suggest that RPA(-) LUAD is likely to represent a heterogeneous entity and that WGS of much larger cohorts of RPA(-) and RPA(+) LUADs would be necessary to fully address the nature of their underlying biology.
 
 \chapter{Concluding remarks}
+% highlight the good work!
+In this dissertation, I defined a data structure genome graph motivated by the complex structural variations in cancer genomes. I show that it can unify many events and answer interesting problems in cancer genomics with tractable directed graph algorithms.
 
+I also provide a mixed-integer quadratic programming algorithm, JaBbA, to simutaneously infer the copy numbers of DNA segments and adjacencies. JaBbA not only integrates read depth and junctions, the two read-outs of the rearranged genome structure from sequencing, but also achieved robust, accurate performance in simulated and cell line data at various sample purity levels.
+
+Using JaBbA/gGnome framework, I show three distinct classes of complex SVs discovered in 2778 genoem graphs built from pan-cancer WGS cohort. Pyrgo... Rigma... Tyfonas... Notably, I show that tyfonas are highly effective at producing highly-expressed fusion genes, which has the potential to predict immunogenecity of the cancer cells.
+
+To investigate the SV outcomes of natural telomere crisis from replicative attrition, I built the phlylogeny of an chromosome evolving in crisis captured in multiple related cell lines based on both SNVs and SVs.
+
+I have demostrated the utility of comprehensive whole genome sequencing analysis in a group of lung adenocarcinoma where conventional RTK/RAS/RAF pathway alterations are not found by WES or RNA-seq.
+
+All in all, genome graphs along with the robust, intuitive software suite lay a solid foundation to the popularization of SV analysis with WGS for both research and clinical applications.
 
 \appendix
-\chapter{Appendix A: Chapter 2 Supplementary materials and methods}
+\chapter{Appendix A: Chapter 2 supplementary materials and methods}
 
-\chapter{Appendix B: Chapter 3 Supplementary materials and methods}
+\chapter{Appendix B: Chapter 3 supplementary materials and methods}
 
-\chapter{Appendix C: Chapter 4 Supplementary materials and methods}
+\chapter{Appendix C: Chapter 4 supplementary materials and methods}
 \subsection*{Cell lines}
 MRC5 human lung fibroblasts (CCL-171), Phoenix-ampho (CRL-3213), RPE-1 hTERT (CRL-4000), HCT-116 (CCL-247) and U2-OS (HTB-96) cells were obtained from ATCC for this study. 293-FT cells were obtained from ThermoFisher. MRC5 cells and derivatives thereof were grown in EMEM media (ATCC) supplemented with 15\% fetal bovine serum (FBS; Gibco) and 100 U/mL of penicillin and 100 \textmu g/mL streptomycin (PenStrep, Gibco) at 37ºC, 5\% CO2. hTERT RPE-1 cells were grown in DMEM:F12 media (Gibco) with 10\% FBS and PenStrep at 37ºC, 5\% CO2. HCT-116 colorectal carcinoma cells and U2OS cells were grown in DMEM with 10\% FBS and PenStrep at 37ºC, 5\% CO2.
 
 \subsection*{Immortalized cell line panel}
 Details of the post-crisis immortalized cell line panel are provided in Supplementary Table 1. HA-1M cells were a kind gift of Silvia Bacchetti29; 49, SW13/26/39 cells were a kind gift of Jerry Shay28, and Bet-3B/3K and BFT-3B/G/K cells were a kind gift of Roger Reddel27.
 
-\subsection*{}
+
 
 \chapter{Appendix D: Chapter 5 Supplementary materials and methods}
 \subsection*{Sample selection and whole-genome sequencing}
