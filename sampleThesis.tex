@@ -89,7 +89,14 @@
 \makecopyright
 
 \begin{abstract}
-Cancer genomes harbor structural variations (SV), producing various drivers and reflecting . Whole genome sequencing (WGS) characterizes SVs in the form of copy number aberrations (CNA) and junctions. Many simple and complex patterns of SVs have been discovered. Yet, one of the biggest hurdles to analyze SVs is the lack of flexible and general framework to account for the complexity of SVs. SVs inherently alter the coordinate system of the reference genome, thus the interpretation of any junction is dependent on other overlapping junctions. Plus, with short-read WGS, we can only rely on relatively local sequence readouts, making it challenging to reconstruct the long range linear structures of the DNA. To these ends, I present genome graph as a general framework to represent rearranged genomes, which treats genomic sequences as directed graphs, where vertices are single-stranded DNA segments and edges are 3'-5' phosphodiester bonds joining adjacent vertices. Within this framework, I then present a mixed-integer programming algorithm Junction Balance Analysis (JaBbA) to infer integer copy numbers (CN) for vertices and edges from the WGS of a tumor sample. I show that JaBbA not only achieves more accurate CN estimation, more complete genome graphs than other methods, its robust recapitulation of junction copy numbers (JCN) serves a pivotal role in discovering distinct patterns of complex rearrangements from large-scale pan-cancer WGS studies. Finally, to investigate the SV outcomes of natural telomere crisis, an inevitable obstacle most cancer must overcome and has been linked to complex SV patterns, I use the genome graph framework to reconstruct the SV events in lineages of human fibroblast cells surviving natural telomere crisis by induced telomerase expression. To sum up, genome graph with the Junction Balance Analysis algorithm enable a general, robust analysis framework that help elucidate the complexity of SVs in cancer genome.
+% 350 words
+% characterizes SVs in the form of copy number aberrations (CNA) and junctions.
+% SVs inherently alter the coordinate system of the reference genome, thus the interpretation of any junction is dependent on other overlapping junctions. Plus, with short-read WGS, we can only rely on relatively local sequence readouts, making it challenging to reconstruct the long range linear structures of the DNA.
+% which treats genomic sequences as directed graphs, where vertices are single-stranded DNA and edges are 3'-5' phosphodiester bonds joining adjacent vertices. 
+% I show that JaBbA not only achieves more accurate CN estimation, more complete genome graphs than other methods,
+
+Cancer genomes harbor structural variations (SV), producing various driver alterations and reflecting the signatures of mutagenesis. With the fast accumulating whole genome sequencing (WGS) data, many complex patterns of SVs have been discovered. Yet, one of the major obstacles to better SV analysis is the lack of flexible and general framework to account for the complexity of SVs. Here, I present genome graph as a general data structure to represent rearranged genomes, and give a mixed-integer quadratic programming algorithm, Junction Balance Analysis (JaBbA), to infer coherent and accurate integer copy numbers (CN) simultaneously for both DNA segments and junctions from the WGS of a tumor sample. With JaBbA, I discover distinct classes of complex rearrangements from 2778 pan-cancer genome graphs, including \textit{tyfonas}, a massive complex amplification mechanism different from previously known double minutes or breakage-fusion-bridge cycles. Next, I use the genome graph framework to reconstruct the evolving SV events in diverging lineages of human fibroblast cells surviving natural telomere crisis and show that telomere crisis can instigate a wide range of chromosomal aberrations, not limited to BFBs and chromothripsis. Furthermore, I integrate genome graph in the analysis of 85 whole genomes of lung adenocarcinoma lacking alterations in the RTK/RAS/RAF pathway and found simple and complex events abolishing the expression of various tumor suppresors or enhance that of oncogenes. To sum up, genome graph with the Junction Balance Analysis algorithm enable a general, robust analysis framework that help elucidate the complexity of SVs in cancer genomes.
+
 \end{abstract}
 
 \begin{biosketch}
@@ -228,7 +235,7 @@ Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-str
 For a breakend in the middle of a chromosome, only one of its two sides is incident to the junction, we call this side the \textit{cis} side, and the other \textit{trans} side. Based on the relative locations and orientations of its two connected breakends, we can classify a junction into four basic classes (\textbf{Figure \ref{fig:junction_orientations}}): DUP-like (tandem duplication), DEL-like (deletion), INV-like (inversion), TRA-like (translocation), named after the most common and simplest SV events that can give rise to such junctions.
 
 \subsection{Walks on a genome graph map to rearranged karyotype}
-Analogous to an assembly graph, on genome graph $G$, traveling through a walk $h = (v_1, e_1, v_2, e_2, \dots, e_{k-1}, v_k)$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, \dots, k-1$, is equivalent to generating a substring of DNA sequence, simply by concatening the reference sequences of the vertices. If some of the edges along the walk belong to ALT edges $E_{A}$, then the walk represents a possible derivative sequence resulted from the SVs that gave rise to these edges. Since $G$ is skew-symmetric, every walk $h$ has a reverse complement walk $\bar{h} = (\bar{v_k}, \bar{e_{k-1}}, \dots, \bar{e_2}, \bar{v_2}, \bar{e_1}, \bar{v_1})$. We also denote the number of times a walk $h$ travel through a node $v$ or an edge $e$ using $\delta : (V \cup E, H) \rightarrow \mathbb{N}$. Based on this definition, we have two important observations.
+Analogous to an assembly graph, on genome graph $G$, traveling through a walk $h = (v_1, e_1, v_2, e_2, \dots, e_{k-1}, v_k), k \in \mathbb{N^+}$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, \dots, k-1$, is equivalent to generating a substring of DNA sequence, simply by concatening the reference sequences of the vertices. If some of the edges along the walk belong to ALT edges $E_{A}$, then the walk represents a possible derivative sequence resulted from the SVs that gave rise to these edges. Since $G$ is skew-symmetric, every walk $h$ has a reverse complement walk $\bar{h} = (\bar{v_k}, \bar{e_{k-1}}, \dots, \bar{e_2}, \bar{v_2}, \bar{e_1}, \bar{v_1})$. We also denote the number of times a walk $h$ travel through a node $v$ or an edge $e$ using $\delta : (V \cup E, H) \rightarrow \mathbb{N}$. Based on this definition, we have two important observations.
 
 First, given a tuple of genomic intervals $(v_1, v_2, \dots, v_k)$ whose order implies sequential covalent bonding, we can easily produce a genome graph and represent the tuple as a walk on that graph, by filling in edges between each consecutive pair of intervals based on their corresponding incident breakends, then add the same for the reverse complement walk. For example, the edge joining $(v_1, v_2)$ should be $(b_o(v_1), b_r(v_2))$. This observation implicated that any DNA sequence, as long as it can be constructed from pasting substrings of the reference genome, can be converted to a walk and a genome graph.
 
@@ -237,18 +244,23 @@ Second, every interval has exactly one upstream neighbor (incident to its 5' bre
 \subsection{Junction-balanced genome graph} \label{sub:JBGG}
 We define a mapping $\kappa:\{V \cup E\}\rightarrow \mathbb{N}$ of non-negative integer copy number (CN) to vertices and edges of $G$, where $\kappa(v),v \in V$ and  $\kappa(e),e \in E$ represent the CN of vertex $v$ and edge $e$, respectively. For a graph $G = (V, E)$ that arise from the aforementioned procedure from a set of tuples of genomic intervals, the following junction balance constraint is always true:
 
-\begin{equation}
-    \label{eq:junction_balance_constraint}
-\kappa(v)= \sum_{e\in E^-(v)} \kappa(e) = \sum_{e\in E^+(v)} \kappa(e)
+\begin{equation} \label{eq:junction_balance_constraint}
+    \kappa(v)= \sum_{e\in E^-(v)} \kappa(e) = \sum_{e\in E^+(v)} \kappa(e)
 \end{equation}
 
-This is because to travel into $v$ once one must travel through one of the edges in $E_{-}(v)$, and vice versa for the outgoing edges. In plain language, the principle of \textit{junction balance} constrains the CN of every vertex to be equal to the sum of its incoming edges and the sum of its outgoing edges.
+This is because to travel into $v$ once one must travel through one of the edges in $E_{-}(v)$, and vice versa for the outgoing edges. In plain language, the principle of \textit{junction balance} constrains the CN of every vertex to be equal to the sum of its incoming edges and the sum of its outgoing edges. Formally, 
 
-In addition we require the CN $\kappa$ to obey \textit{skew-symmetry}, which means that every vertex or edge must have the same copy number as its reverse complement.
+\begin{equation} \label{eq:sum_of_walk}
+    \forall v \in V, \kappa(v) = \sum_{h \in H}\phi(h)\delta(h, v) \\
+    \forall e \in E, \kappa(e) = \sum_{h \in H}\phi(h)\delta(h, e)
+\end{equation}
 
-\begin{equation}
-    \label{eq:skew_symmetry}
-\kappa(v) = \kappa(\bar{v}),\ \forall_{v \in V} \quad \kappa(e) = \kappa(\bar{e}),\ \forall_{e \in E} 
+in which $\delta: \{H, V \cup E\} \rightarrow \mathbb{N}$ is the number of times $h$ travels through a vertex or an edge $\sum_{j \in 1,\dots,k}I(v = v_j)$, with the only exception that if $h = (v_1, e_1, v_2, e_2, \dots, e_{k-1}, v_k), v_1=v_k, k \in \mathbb{N^+}$ is circular $\delta(h,v_k) = 0$, so that $v_k$ is not double counted.
+
+In addition, since double-stranded DNA require both strands to have the same CN, we require the CN $\kappa$ to obey \textit{skew-symmetry}, which means that every vertex or edge must have the same copy number as its reverse complement.
+
+\begin{equation} \label{eq:skew_symmetry}
+    \kappa(v) = \kappa(\bar{v}),\ \forall_{v \in V} \quad \kappa(e) = \kappa(\bar{e}),\ \forall_{e \in E} 
 \end{equation}
 
 We call the combination $(G,\kappa)$ for which $\kappa$ satisfies Eqs. \ref{eq:junction_balance_constraint}-\ref{eq:skew_symmetry} a \textit{junction-balanced genome graph} (JBGG).
@@ -256,15 +268,17 @@ We call the combination $(G,\kappa)$ for which $\kappa$ satisfies Eqs. \ref{eq:j
 % TODO
 % Flow decomposition:
 % Why is a complete graph contain all the possible walks?
-
-
-
 \subsection{Decomposing a junction-balanced genome graph to walks}
+In a perfect scenario where we have infinitely long sequencing reads, we can read out any sequence directly and fully (telomere to telomere), for any rearranged karyotype. However, in practice, sequencing reads from existing technologies are fragmented and limited in length, so the walks representing complete and true karyotypes are always latent. Despite current long-read sequencing provides us a better chance at obtaining the rearranged allele, it is still "local" relative to the scale of some of the most long-range complex SV events like tyfonas \cite{Hadi2020-um} (see also Chapter \ref{chap:complex_events}). Furthermore, due to the differences in cost, accuracy, throughput, and analytical robustness, the overwhelming majority of cancer WGS data is still based on massive parallel short-read sequencing, with which SV events are detected as copy number aberrations and junctions. Despite certain challenges, for instance with SVs in repetitive regions, short-read WGS has been found to approach the complete SV repertoire well \cite{Behr2021-gf}.
+
+From junctions and  a genome graph can be built
+
+%  For lack of better alternative, most early cancer SV studies hitherto treat these two facets of the same rearranged sequence separately or informally combine them to describe certain patterns \cite{stephens2011,baca2013}. The PCAWG consortium made fundamental effort to build up a pool of CNA and junction patterns for different classes of SV events, but still .... 
 
 %===========================%
 \section{Junction Balance Analysis infers copy numbers on genome graphs from short-read whole genome sequencing}
-
-In a perfect scenario where we have infinitely long sequencing reads, we can read out any sequence directly and fully (telomere to telomere), for any rearranged karyotype. However, in practice, sequencing reads from existing technologies are fragmented and limited in length, so the walks representing complete and true karyotypes are always latent. Despite long-read sequencing provides us a better chance at obtaining the rearranged allele, it is still "local" relative to some of the most long-range complex SV events like tyfonas \cite{Hadi2020-um}. Furthermore, due to the differences in cost, accuracy, throughput, and analytical robustness, the overwhelming majority of cancer WGS data is still based on massive parallel short-read sequencing, with which SV events are detected as copy number aberrations and junctions. Despite certain challenges, for instance with SVs in repetitive regions, short-read WGS has been found to approach the complete SV repertoire well \cite{Behr2021-gf}.
+The inference of junction-balanced genome graphs is a computationally challenging combinatorial optimization problem that others have approached using probabilistic graphical models (PGM) and mixed-integer programming (MIP) \cite{Medvedev:2010bm, Greenman:2012eg, Oesper2012-vw, Li2016-qa, Dzamba2017-wo, McPherson2017-ry}. A serious impediment to applying these approaches to the study of complex SVs is their inability to produce CN profiles of comparable quality to non-graph based CNA callers (e.g. CONSERTING \cite{Chen2015-sw}, BIC-Seq \cite{Xi2011-oa}) while also inferring JCN across a wide range of tumor purities. 
+The inference of junction-balanced genome graphs is a computationally challenging combinatorial optimization problem that others have approached using probabilistic graphical models (PGM) and mixed-integer programming (MIP) \cite{Medvedev:2010bm, Greenman:2012eg, Oesper2012-vw, Li2016-qa, Dzamba2017-wo, McPherson2017-ry}. A serious impediment to applying these approaches to the study of complex SVs is their inability to produce CN profiles of comparable quality to non-graph based CNA callers (e.g. CONSERTING \cite{Chen2015-sw}, BIC-Seq \cite{Xi2011-oa}) while also inferring JCN across a wide range of tumor purities. 
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 
@@ -412,6 +426,7 @@ To increase sensitivity for missed junctions, the JaBbA pipeline employs several
 
 \subsubsection*{Graph partitioning}
 
+
 \subsubsection*{Post processing and allelic CN fitting}
 After the optimization with \texttt{CPLEX}, we further simplify the solution by merging neighboring vertices of the same total CN that are connected only through REF edges. If ALT and REF read counts at constitutional heterozygous SNP sites are provided as (optional) input to JaBbA, we also infer the tumor allelic CN $\kappa_{h}(v)$ and  $\kappa_{l}(v)$ corresponding to the "high" ($h$) and "low" ($l$) allele, where  $\kappa_{h}(v) + \kappa_{l}(v) = \kappa(v)$ and $\kappa_{l}(v) \le \kappa_{h}(v)$, for each internal vertex $v \in V_I$ that overlaps a heterozygous SNP.  (Only biallelic heterozygous SNPs with two constitutional states, i.e. ALT and REF are considered.)  
 
@@ -421,6 +436,35 @@ The final output is then saved into a gGraph object that can be manipulated, vis
 
 %===========================%
 \section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
+There have been several methods 
+
+\subsection*{Comparison to previous methods}
+JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and missing (i.e. false negative) junctions within a MIP framework (see \nameref{sec:methods} for details). First, while previous approaches (PREGO \cite{Oesper2012-vw}, CouGaR \cite{Medvedev:2010bm}, ReMixT \cite{McPherson2017-ry}, and Weaver \cite{Li2016-qa}) directly model read counts as a Poisson (or gamma-Poisson) random variable, JaBbA gleans non-linear mean-variance relationships empirically from high-resolution fixed bin (200 bp) read depth data.  This allows JaBbA to utilize transformed and normalized read depth data (e.g. via GC and mappability correction, tumor / normal ratio, purity and ploidy transformation).  Such data violates Poisson assumptions (e.g. integer variable, linear or constant relationship between mean and variance) but more faithfully reflects CN in stromally admixed and aneuploid tumor genomes.
+
+Second, JaBbA is robust to missing junctions by allowing (but penalizing) the use of \textit{loose ends} in its reconstructions.  Loose ends arise when a CN change is unaccompanied by a nearby junction. Such an event is a common occurrence in WGS data (e.g. due to low coverage, algorithmic filters, rearrangements in repetitive regions, etc.). Methods that do not explicitly model loose ends (e.g. PREGO, Weaver) suffer from either under- (PREGO) or over-segmentation (Weaver). Finally, by posing its inference as a MIP, JaBbA avoids analytic limitations inherent to PGM inference (ReMixT, Weaver), including the inability to identify global (expectation maximization, ReMixT) or local (loopy belief propagation, Weaver) optima or model very high-level CN states (ReMixT).  In contrast, JaBbA's MIP-based framework allows for the discovery of globally optimal model fits while allowing for an unrestricted range of CN states.
+
+\subsection*{Benchmarking JaBbA}
+In the simplest terms, reconstructing genome graphs consists of two tasks: estimating junction copy numbers and DNA segment copy numbers. A junction is said to be incorporated in the genome graph if it is assigned non-zero copy number. Thus, a genome graph reconstruction method's performance can be evaluated from these two main aspects, 1) incorporating correct junctions and estimating the correct JCNs, and 2) faithfully segmenting the genome and estimating their CNs. We compared JaBbA's performance in both aspects against three other genome graph reconstruction methods (PREGO \cite{Oesper2012-vw}, ReMixT \cite{McPherson2017-ry}, Weaver \cite{Li2016-qa}), \textbf{Fig. \ref{fig:S1}D-H}), and specifically in segmental CN estimation with two extra somatic CNA callers that do not infer genome graphs (BIC-seq \cite{Xi2011-oa}, CONSERTING \cite{Chen2015-sw}, \textbf{Fig. \ref{fig:S1}G-H}). Another genome graph reconstruction method, CouGaR, is limited to amplified regions, so we only applied it to one replicate of the HCC1954 to demonstrate its difference from the other methods at a putative BFBC locus (\textbf{Fig. \ref{fig:S1}I}).
+%% \texttt{FACETS}, \texttt{TITAN}, \texttt{FREEC}
+
+The input junctions to all genome graph reconstruction methods were their respective default recommendations, namely SvABA unfiltered candidates for JaBbA; internal junction callers for Weaver, CouGaR; and the union of 3 junction calls (SvABA filtered \cite{wala2018}, Delly \cite{Rausch2012-ly}, Novobreak \cite{Chong2017-gl}) for PREGO, ReMixT, and CONSERTING as they make no default recommendations.  As a note, we saw very similar performance with JaBbA using standard settings (SvABA unfiltered junctions) and the union junction set (data not shown). 
+%% To differentiate these two extra settings, in \textbf{Fig.\ref{fig:S1}D-I}, the version of JaBbA and \texttt{Weaver} with union junction set input were labeled as \texttt{JaBbA.un} and \texttt{Weaver.un}.
+%% harmonized junction inputs consisting of the union of \texttt{SvABA}, \texttt{Delly}, and \texttt{Novobreak} ("union junction set") as input junctions. Additionally, JaBbA and \texttt{Weaver} also ran with
+
+%% For FACETS and TITAN inputs we computed heterozygous SNP counts at 4,165,754 common SNP sites (GATK bundle hapmap 3.3.b37.vcf.gz, \url{https://software.broadinstitute.org/gatk/download/bundle}) using the \texttt{R / Bioconductor} package \texttt{Rsamtools}. Notably, for FACETS we used all the sites as the input instead of the usual heterozygous-only set, after consulting with the authors.
+
+\subsubsection*{Junction incorporation and JCN estimation}
+To evaluate junction incorporation and JCN estimation, the incorporated junctions were approximately matched to gold standard junctions, e.g. both breakends were within 1 kbp from the corresponding gold standard junctions with the same orientations. True positives were the number of matches, false positives were incorporated junctions without a match, and false negatives were gold standard junctions without a match. An F1 score of the incorporated junctions, the harmonic mean of precision and recall, was then computed for each benchmarking sample (\textbf{Fig. \ref{fig:S1}E}). Gold standard junctions for HCC1954 were defined as the consensus set inferred from the original high depth data (junctions identified by at least two callers out of SvABA, Delly, Novobreak).
+
+Inferred JCNs of the graph reconstruction were compared to the matching gold standard junctions, if any, from the simulated dataset. The proportion of correctly fitted JCNs out of all incorporated junctions times recall of incorporation represented the accuracy or completeness of JCN estimation (\textbf{Fig. \ref{fig:S1}D}).
+
+\subsubsection*{Segmental CN estimation}
+When evaluating CNA inference performance, two metrics were considered. One was the correct placement of CN change points. Analogous to matching junction breakends, we considered an inferred CN change-point to match a gold standard if their distance was within 1 kbp and they have the same direction of CN change, e.g. increasing or decreasing CN from the side with smaller coordinates to the larger. To prevent spurious matching between inferred and gold standard CN change points, occurring in cases with excessive hypersegmentation, gold standard CN change points were only matched to the nearest identically oriented inferred CN change point.  Based on the matching, F1 scores were computed and shown in \textbf{Fig. \ref{fig:S1}F}. For HCC1954, the gold standard CN change-points were defined as the consensus junction breakends.
+
+% Too many (hypersegmentation), too few (undersegmentation), too distant from the gold standard (large error margin) were all adverse indications. To prevent extreme cases of hypersegmentation being over-optimistic, each one of the gold standard CN change-points was only matched to the nearest correctly oriented inferred change point.
+
+The other set of metrics reflects the concordance between the inferred CN profile with the gold standard. For each segment in the gold standard, the overlapping inferred segments were identified. The inferred CN for that gold standard segment was then defined as the overlap width-weighted average of inferred CN. Subsequently, the root mean squared error (RMSE) $\sqrt{\frac{\sum{(\hat{x} - x_{goldstandard})^2}}{n}}$ was computed across all gold standard segments for each sample (\textbf{Fig. \ref{fig:S1}G}). The gold standard for HCC1954 CN profile was derived from published microarray-based segmentation downloaded from the CCLE data portal. High-depth WGS coverage data was mapped onto these segments and transformed into copy number space using the known ploidy of 4.5 and purity of 0.99. To compactly show the relationship between inferred CN and gold standard from all runs, we drew scatter plots across all gold standard segments in all successful runs for each method, and the Pearson $\rho$ of each method was calculated from all data points pooled together (\textbf{Fig. \ref{fig:S1}H}).
+
 
 % JaBbA main, need to adapt
 JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and explicit accounting of false negative junctions, also called loose ends (see \nameref{sec:methods}). In our benchmarking experiments, JaBbA inferred JCN with consistently higher fidelity than published genome graph-based methods (ReMixT \cite{McPherson2017-ry}, Weaver \cite{Li2016-qa}, PREGO \cite{Oesper2012-vw}) across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}D-E}). In addition, JaBbA qualitatively outperformed genome graph-based methods and even classic (i.e. non-graph based) CNA callers (BIC-seq \cite{Xi2011-oa} and CONSERTING \cite{Chen2015-sw}) in estimating interval CN and change point locations across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}F-I}). These results show that JaBbA is the first genome graph SV caller to accurately infer the topology of JCN while approaching (or exceeding) the fidelity of classic CNA callers. 
@@ -477,7 +521,7 @@ As a meaningful default, we plot integer copy numbers of the segments on the Y a
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Distinct Classes of Complex Structural Variation Uncovered across Thousands of Cancer Genome Graphs}
+\chapter{Distinct Classes of Complex Structural Variation Uncovered across Thousands of Cancer Genome Graphs} \label{chap:complex_events}
 In this chapter I will describe the discovery of three distinct types of complex SV events from 2778 genome graphs built with JaBbA from a pan-cancer cohort of over 30 types of cancers. Furthermore, I will show that the patients in this cohort can be stratified based on 13 simple to complex rearrangement patterns to clusters of differential overall survival, tumor type enrichment, and association with specific germline or somatic alterations.
 
 \section{Analysis of pan-cancer genome graphs}
@@ -540,7 +584,7 @@ Our study provides a template for integrating short-read WGS with long-range gen
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 4: SV evolution after telomere crisis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Structural variant evolution after telomere crisis} \label{chap:4}
+\chapter{Structural variant evolution after telomere crisis} \label{chap:tel_crisis}
 In this chapter I set out to capture the SV events in human cell lines directly resulting from natural telomere crisis. Sally Dewhurst designed and created the \textit{in vitro} telomere crisis model, executed all the experiments, and analyzed the data except for the WGS parts. Huasong Tian prepared WGS libraries.
 
 % \section{Introduction}
