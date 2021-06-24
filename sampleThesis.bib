@@ -1,3 +1,152 @@
+@ARTICLE{Deshpande2019-gs,
+  title    = "Exploring the landscape of focal amplifications in cancer using
+              {AmpliconArchitect}",
+  author   = "Deshpande, Viraj and Luebeck, Jens and Nguyen, Nam-Phuong D and
+              Bakhtiari, Mehrdad and Turner, Kristen M and Schwab, Richard and
+              Carter, Hannah and Mischel, Paul S and Bafna, Vineet",
+  abstract = "Focal oncogene amplification and rearrangements drive tumor
+              growth and evolution in multiple cancer types. We present
+              AmpliconArchitect (AA), a tool to reconstruct the fine structure
+              of focally amplified regions using whole genome sequencing (WGS)
+              and validate it extensively on multiple simulated and real
+              datasets, across a wide range of coverage and copy numbers.
+              Analysis of AA-reconstructed amplicons in a pan-cancer dataset
+              reveals many novel properties of copy number amplifications in
+              cancer. These findings support a model in which focal
+              amplifications arise due to the formation and replication of
+              extrachromosomal DNA. Applying AA to 68 viral-mediated cancer
+              samples, we identify a large fraction of amplicons with specific
+              structural signatures suggestive of hybrid, human-viral
+              extrachromosomal DNA. AA reconstruction, integrated with
+              metaphase fluorescence in situ hybridization (FISH) and PacBio
+              sequencing on the cell-line UPCI:SCC090 confirm the
+              extrachromosomal origin and fine structure of a Forkhead box E1
+              (FOXE1)-containing hybrid amplicon.",
+  journal  = "Nat. Commun.",
+  volume   =  10,
+  number   =  1,
+  pages    = "392",
+  month    =  jan,
+  year     =  2019,
+  language = "en"
+}
+
+@ARTICLE{Lee2021-rl,
+  title    = "Integrative reconstruction of cancer genome karyotypes using
+              {InfoGenomeR}",
+  author   = "Lee, Yeonghun and Lee, Hyunju",
+  abstract = "Annotation of structural variations (SVs) and base-level
+              karyotyping in cancer cells remains challenging. Here, we present
+              Integrative Framework for Genome Reconstruction (InfoGenomeR)-a
+              graph-based framework that can reconstruct individual SVs into
+              karyotypes based on whole-genome sequencing data, by integrating
+              SVs, total copy number alterations, allele-specific copy numbers,
+              and haplotype information. Using whole-genome sequencing data
+              sets of patients with breast cancer, glioblastoma multiforme, and
+              ovarian cancer, we demonstrate the analytical potential of
+              InfoGenomeR. We identify recurrent derivative chromosomes derived
+              from chromosomes 11 and 17 in breast cancer samples, with
+              homogeneously staining regions for CCND1 and ERBB2, and double
+              minutes and breakage-fusion-bridge cycles in glioblastoma
+              multiforme and ovarian cancer samples, respectively. Moreover, we
+              show that InfoGenomeR can discriminate private and shared SVs
+              between primary and metastatic cancer sites that could contribute
+              to tumour evolution. These findings indicate that InfoGenomeR can
+              guide targeted therapies by unravelling cancer-specific SVs on a
+              genome-wide scale.",
+  journal  = "Nat. Commun.",
+  volume   =  12,
+  number   =  1,
+  pages    = "2467",
+  month    =  apr,
+  year     =  2021,
+  language = "en"
+}
+
+@ARTICLE{Aganezov2019-yh,
+  title    = "Recovering rearranged cancer chromosomes from karyotype graphs",
+  author   = "Aganezov, Sergey and Zban, Ilya and Aksenov, Vitaly and Alexeev,
+              Nikita and Schatz, Michael C",
+  abstract = "BACKGROUND: Many cancer genomes are extensively rearranged with
+              highly aberrant chromosomal karyotypes. Structural and copy
+              number variations in cancer genomes can be determined via
+              abnormal mapping of sequenced reads to the reference genome.
+              Recently it became possible to reconcile both of these types of
+              large-scale variations into a karyotype graph representation of
+              the rearranged cancer genomes. Such a representation, however,
+              does not directly describe the linear and/or circular structure
+              of the underlying rearranged cancer chromosomes, thus limiting
+              possible analysis of cancer genomes somatic evolutionary process
+              as well as functional genomic changes brought by the large-scale
+              genome rearrangements. RESULTS: Here we address the
+              aforementioned limitation by introducing a novel methodological
+              framework for recovering rearranged cancer chromosomes from
+              karyotype graphs. For a cancer karyotype graph we formulate an
+              Eulerian Decomposition Problem (EDP) of finding a collection of
+              linear and/or circular rearranged cancer chromosomes that are
+              determined by the graph. We derive and prove computational
+              complexities for several variations of the EDP. We then
+              demonstrate that Eulerian decomposition of the cancer karyotype
+              graphs is not always unique and present the Consistent Contig
+              Covering Problem (CCCP) of recovering unambiguous cancer contigs
+              from the cancer karyotype graph, and describe a novel algorithm
+              CCR capable of solving CCCP in polynomial time. We apply CCR on a
+              prostate cancer dataset and demonstrate that it is capable of
+              consistently recovering large cancer contigs even when underlying
+              cancer genomes are highly rearranged. CONCLUSIONS: CCR can
+              recover rearranged cancer contigs from karyotype graphs thereby
+              addressing existing limitation in inferring chromosomal
+              structures of rearranged cancer genomes and advancing our
+              understanding of both patient/cancer-specific as well as the
+              overall genetic instability in cancer.",
+  journal  = "BMC Bioinformatics",
+  volume   =  20,
+  number   = "Suppl 20",
+  pages    = "641",
+  month    =  dec,
+  year     =  2019,
+  keywords = "Cancer genomics; Computational biology; Contigs; Genome
+              rearrangements; Graph decomposition; Structural variations",
+  language = "en"
+}
+
+@ARTICLE{Aganezov2020-cu,
+  title    = "Reconstruction of clone- and haplotype-specific cancer genome
+              karyotypes from bulk tumor samples",
+  author   = "Aganezov, Sergey and Raphael, Benjamin J",
+  abstract = "Many cancer genomes are extensively rearranged with aberrant
+              chromosomal karyotypes. Deriving these karyotypes from
+              high-throughput DNA sequencing of bulk tumor samples is
+              complicated because most tumors are a heterogeneous mixture of
+              normal cells and subpopulations of cancer cells, or clones, that
+              harbor distinct somatic mutations. We introduce a new algorithm,
+              Reconstructing Cancer Karyotypes (RCK), to reconstruct
+              haplotype-specific karyotypes of one or more rearranged cancer
+              genomes from DNA sequencing data from a bulk tumor sample. RCK
+              leverages evolutionary constraints on the somatic mutational
+              process in cancer to reduce ambiguity in the deconvolution of
+              admixed sequencing data into multiple haplotype-specific cancer
+              karyotypes. RCK models mixtures containing an arbitrary number of
+              derived genomes and allows the incorporation of information both
+              from short-read and long-read DNA sequencing technologies. We
+              compare RCK to existing approaches on 17 primary and metastatic
+              prostate cancer samples. We find that RCK infers cancer
+              karyotypes that better explain the DNA sequencing data and
+              conform to a reasonable evolutionary model. RCK's reconstructions
+              of clone- and haplotype-specific karyotypes will aid further
+              studies of the role of intra-tumor heterogeneity in cancer
+              development and response to treatment. RCK is freely available as
+              open source software.",
+  journal  = "Genome Res.",
+  volume   =  30,
+  number   =  9,
+  pages    = "1274-1290",
+  month    =  sep,
+  year     =  2020,
+  language = "en"
+}
+
+
 @article{Maarleveld2013,
 author = {Maarleveld, Timo R. and Khandelwal, Ruchir A. and Olivier, Brett G. and Teusink, Bas and Bruggeman, Frank J.},
 title = {Basic concepts and principles of stoichiometric modeling of metabolic networks},
