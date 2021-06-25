@@ -304,12 +304,12 @@ In the following three subsections, we will formally define this algorithm \text
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/jabba_io.png}
     \caption{\textbf{Inputs and outputs of Junction Balance Analysis} Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordiantes and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.}
     \label{fig:jabba_io}
-\end{figure*}
+\end{figure}
 
 We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
 
@@ -446,7 +446,7 @@ Given a genome graph $G$ and GC / mappability corrected, normalized, purity / pl
 
 To increase sensitivity for missed junctions, the JaBbA pipeline employs several iterations of MIQP inference when two tiers of junctions (high and low confidence) are provided.  Briefly, we fit a model using only high-confidence (e.g. FILTER=PASS in the unfiltered \texttt{SvABA} output VCF) junctions as input.  In subsequent iterations, we fit a modified model that includes additional low-confidence junctions (e.g. those with low read support) that occur near (<1 kbp) a loose end in the previous iteration.  This procedure is run for a maximum of four iterations, or until no additional low confidence junctions near loose ends from the previous iteration have been found.   Such a procedure particularly improves junction sensitivity in the setting of low purity and / or read depth.
 
-\subsubsection*{Graph partitioning}
+% \subsubsection*{Graph partitioning}
 
 
 \subsubsection*{Post processing and allelic CN fitting}
@@ -461,7 +461,7 @@ The final output is then saved into a gGraph object that can be manipulated, vis
 Having described JaBbA algorithm and pipeline, we next set out to comprehensively evaluate its performance against other tools of similar
 
 % a table summarizing all the graph inference methods
-In Table \ref{tab:jbgg_inference}, we compare the existing methods to infer JBGG from WGS data.
+% In Table \ref{tab:jbgg_inference}, we compare the existing methods to infer JBGG from WGS data.
 
 % \begin{table}[] \label{tab:jbgg_inference}
 %     \begin{tabular}{@{}lllll@{}}
@@ -511,6 +511,7 @@ In Table \ref{tab:jbgg_inference}, we compare the existing methods to infer JBGG
 
 
 \subsection{Comparison to previous methods}
+% rewrite this!!!
 JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and missing (i.e. false negative) junctions within a MIP framework. First, while previous approaches (PREGO \cite{Oesper2012-vw}, CouGaR \cite{Medvedev:2010bm}, ReMixT \cite{McPherson2017-ry}, and Weaver \cite{Li2016-qa}) directly model read counts as a Poisson (or gamma-Poisson) random variable, JaBbA gleans non-linear mean-variance relationships empirically from high-resolution fixed bin (200 bp) read depth data.  This allows JaBbA to utilize transformed and normalized read depth data (e.g. via GC and mappability correction, tumor / normal ratio, purity and ploidy transformation).  Such data violates Poisson assumptions (e.g. integer variable, linear or constant relationship between mean and variance) but more faithfully reflects CN in stromally admixed and aneuploid tumor genomes.
 
 Second, JaBbA is robust to missing junctions by allowing (but penalizing) the use of \textit{loose ends} in its reconstructions.  Loose ends arise when a CN change is unaccompanied by a nearby junction. Such an event is a common occurrence in WGS data (e.g. due to low coverage, algorithmic filters, rearrangements in repetitive regions, etc.). Methods that do not explicitly model loose ends (e.g. PREGO, Weaver) suffer from either under- (PREGO) or over-segmentation (Weaver). Finally, by posing its inference as a MIP, JaBbA avoids analytic limitations inherent to PGM inference (ReMixT, Weaver), including the inability to identify global (expectation maximization, ReMixT) or local (loopy belief propagation, Weaver) optima or model very high-level CN states (ReMixT).  In contrast, JaBbA's MIP-based framework allows for the discovery of globally optimal model fits while allowing for an unrestricted range of CN states.
@@ -519,11 +520,49 @@ Second, JaBbA is robust to missing junctions by allowing (but penalizing) the us
 In the simplest terms, reconstructing genome graphs consists of two tasks: estimating junction copy numbers and DNA segment copy numbers. A junction is said to be incorporated in the genome graph if it is assigned non-zero copy number. Thus, a genome graph reconstruction method's performance can be evaluated from these two main aspects, 1) incorporating correct junctions and estimating the correct JCNs, and 2) faithfully segmenting the genome and estimating their CNs. We compared JaBbA's performance in both aspects against three other genome graph reconstruction methods (PREGO \cite{Oesper2012-vw}, ReMixT \cite{McPherson2017-ry}, Weaver \cite{Li2016-qa}), \textbf{Fig. \ref{fig:S1}D-H}), and specifically in segmental CN estimation with two extra somatic CNA callers that do not infer genome graphs (BIC-seq \cite{Xi2011-oa}, CONSERTING \cite{Chen2015-sw}, \textbf{Fig. \ref{fig:S1}G-H}). Another genome graph reconstruction method, CouGaR, is limited to amplified regions, so we only applied it to one replicate of the HCC1954 to demonstrate its difference from the other methods at a putative BFBC locus (\textbf{Fig. \ref{fig:S1}I}).
 %% \texttt{FACETS}, \texttt{TITAN}, \texttt{FREEC}
 
-The input junctions to all genome graph reconstruction methods were their respective default recommendations, namely SvABA unfiltered candidates for JaBbA; internal junction callers for Weaver, CouGaR; and the union of 3 junction calls (SvABA filtered \cite{wala2018}, Delly \cite{Rausch2012-ly}, Novobreak \cite{Chong2017-gl}) for PREGO, ReMixT, and CONSERTING as they make no default recommendations.  As a note, we saw very similar performance with JaBbA using standard settings (SvABA unfiltered junctions) and the union junction set (data not shown).
-%% To differentiate these two extra settings, in \textbf{Fig.\ref{fig:S1}D-I}, the version of JaBbA and \texttt{Weaver} with union junction set input were labeled as \texttt{JaBbA.un} and \texttt{Weaver.un}.
-%% harmonized junction inputs consisting of the union of \texttt{SvABA}, \texttt{Delly}, and \texttt{Novobreak} ("union junction set") as input junctions. Additionally, JaBbA and \texttt{Weaver} also ran with
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn_accuracy_sim.png}
+    \caption{\textbf{Junction copy number accuracy.}}
+    \label{fig:jcn_accuracy_sim}
+\end{figure}
 
-%% For FACETS and TITAN inputs we computed heterozygous SNP counts at 4,165,754 common SNP sites (GATK bundle hapmap 3.3.b37.vcf.gz, \url{https://software.broadinstitute.org/gatk/download/bundle}) using the \texttt{R / Bioconductor} package \texttt{Rsamtools}. Notably, for FACETS we used all the sites as the input instead of the usual heterozygous-only set, after consulting with the authors.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/junc_inc_f1.png}
+    \caption{\textbf{F1 score of junction incorporation.}}
+    \label{fig:junc_inc_f1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_bp_f1.png}
+    \caption{\textbf{F1 score of copy number change point placement.}}
+    \label{fig:cn_bp_f1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_mse.png}
+    \caption{\textbf{Mean square error of CN estimation.}}
+    \label{fig:cn_mse}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_scatter.png}
+    \caption{\textbf{Estimted versus gold standard CN.}}
+    \label{fig:cn_scatter}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/example_bfb.png}
+    \caption{\textbf{Reconstructed genome graph around HER2 amplification in HCC1954 cell line.}}
+    \label{fig:example_bfb}
+\end{figure}
+
+The input junctions to all genome graph reconstruction methods were their respective default recommendations, namely SvABA unfiltered candidates for JaBbA; internal junction callers for Weaver, CouGaR; and the union of 3 junction calls (SvABA filtered \cite{wala2018}, Delly \cite{Rausch2012-ly}, Novobreak \cite{Chong2017-gl}) for PREGO, ReMixT, and CONSERTING as they make no default recommendations.  As a note, we saw very similar performance with JaBbA using standard settings (SvABA unfiltered junctions) and the union junction set (data not shown).
 
 \subsubsection*{Junction incorporation and JCN estimation}
 To evaluate junction incorporation and JCN estimation, the incorporated junctions were approximately matched to gold standard junctions, e.g. both breakends were within 1 kbp from the corresponding gold standard junctions with the same orientations. True positives were the number of matches, false positives were incorporated junctions without a match, and false negatives were gold standard junctions without a match. An F1 score of the incorporated junctions, the harmonic mean of precision and recall, was then computed for each benchmarking sample (\textbf{Fig. \ref{fig:S1}E}). Gold standard junctions for HCC1954 were defined as the consensus set inferred from the original high depth data (junctions identified by at least two callers out of SvABA, Delly, Novobreak).
@@ -598,6 +637,14 @@ In this chapter I will describe the discovery of three distinct types of complex
 
 \section{Analysis of pan-cancer genome graphs}
 To investigate the topology of JCN across cancers, we assembled a dataset comprising 2,813 short-read WGS tumor or cell line samples spanning 31 primary tumor types (Table \ref{tab:S1}), including WGS for 539 previously unpublished cases  (\textbf{Table \ref{tab:S2}}). In total, our analysis included 1,648 WGS samples not included in the Pan-Cancer Analysis of Whole Genomes (PCAWG) effort \cite{pcawg_marker2020-yi}.  Application of harmonized pipelines followed by JaBbA (\textbf{Fig. \ref{fig:Fig1}B}) yielded 2,778 high quality genome graphs (\textbf{Fig. \ref{fig:Fig1}E}, see \nameref{sec:methods} for sample characteristics and exclusion criteria).
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/pancancer.png}
+    \caption{\textbf{Pan-cancer WGS tumor types.}}
+    \label{fig:pancancer}
+\end{figure*}
+
 
 % TODO: fix the table insertion
 % \begin{table}[!ht]
