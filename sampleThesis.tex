@@ -863,11 +863,16 @@ All in all, genome graphs along with the robust, intuitive software suite lay a 
 %% Appendix A
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter*{Appendix A: Chapter 2 supplementary materials and methods} \label{app:a}
+\subsection*{Genome simulations}
+Simulated sequencing of rearranged tumor samples for benchmarking were first constructed as haplotype-specific genomic sequences in \ttt{.fasta} format, then read sampling, alignment, and finally mixed with normal reads to a series of purity levels. In the first step we generated a set of \textit{de novo}, forward simulated, rearranged cancer genomic sequences from an initial set of input junctions (\texttt{SimBLE}, \url{https://github.com/mskilab/sim.ble}). SimBLE iterates through simulated cell cycles to gradually incorporate the input junctions into the derived genome from previous steps until exhausting the input junction set, while keeping track of the actual rearranged haplotypes. As a result, it generates a coherent sequence of the rearranged genome guided by the haplotypes encoded in the reference genomic ranges. We then simulated sequencing reads from this FASTA file with ART read simulator \cite{Huang2012-zn} to an average depth of 40X and aligned them to the reference genome hg19 to obtain the simulated BAMs. Trivially, the reference genome itself is also subjected to the same \textit{in silico} sequencing to provide as normal controls. We did 40 distinct simulations with different random subsets of somatic junctions (from 5 to 333 total) identified in the HCC1143 breast cancer cell line. 
+
+In addition to these \textit{de novo} simulated BAMs, we also obtained WGS for HCC1954 breast cancer cell line and HCC1954BL the corresponding normal fibroblast cell line.  To simulate stromal admixture, we combined tumor and normal simulated (or HCC1954) BAM files, then downsampled, and mixed tumor and normal reads across ten tumor DNA proportions from 0.1 to 1.0. We created four technical replicates for each of these ten purity levels, which yielded 40 pairs of tumor and normal BAM files for the 40 distinct simulated genomes and HCC1954, respectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Appendix B
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter*{Appendix B: Chapter 3 supplementary materials and methods}
+
 \subsection*{Structural variant event classification}
 To identify simple and complex structural variant events in the genome graph output of JaBbA, we implemented a set of classifiers.  These are implemented in the $\ttt{events}$ function in the \texttt{gGnome} package (freely available from: \url{https://github.com/mskilab/gGnome}), which calls the classifier functions below. Procedures followed to discover each event type are described below.
 
@@ -875,7 +880,6 @@ To identify simple and complex structural variant events in the genome graph out
 Rigma candidates were nominated as clusters of at least 2 overlapping DEL-like junctions with JCN less than ploidy and sizes between 10 kbp and 10 Mbp. \texttt{fishHook} was used as a Poisson model on a per sample basis to statistically nominate regions of the genome enriched with DEL-like junctions using sliding windows of 1 Mbp (500 kbp stride) while correcting for the occurrence of other junction types. From the model, regions with a significant enrichment of $FDR < 0.5$ were chosen. Any significant regions that were adjacent were collapsed into contiguous regions. Candidate deletion clusters that fall within these statistically enriched collapsed regions were then marked as rigma events. The remaining isolated low-JCN deletions were called simple deletions.  This caller is implemented as the \ttt{del} function of \ttt{gGnome}.
 
 \subsubsection*{Pyrgo and simple duplications}
-
 The procedure to identify pyrgo and simple duplications was analogous to the rigma identification above, but with the use of DUP-like junctions instead of DEL-like junctions. The same filters were applied as above. For candidate duplication clusters that pass these filters, fishHook was again used to statistically nominate genomic regions enriched for duplications while correcting for the occurrence of non-duplication junctions. Candidate duplication clusters that fall within the statistically enriched windows were then marked as a pyrgo. Collapsing was performed as for rigma. Remaining isolated low-JCN duplications were called simple duplications. This caller is implemented as the \ttt{dup} function of \ttt{gGnome}.
 
 \subsubsection*{Double minute, BFBC, and Tyfonas}
@@ -889,6 +893,8 @@ To assess the most optimal number of amplicon clusters, $k$ clusters from 2 to 1
 Using the elbow method, $k=4$ was identified as the parameter setting with the maximal cluster stability.  Furthermore, within each original cluster for a given $k$, a mean Jaccard score was computed to assess the level of evidence for a cluster. Clusters with mean score > 0.75 were considered stable, meaning there was sufficient evidence in the data to support the cluster as a true pattern, while those with mean score < 0.6 were likely artefactual.
 
 Clustering was performed by building an unsupervised classifier that combines hierarchical clustering with a decision tree.  Specifically, a decision tree was trained using recursive partitioning (function \texttt{rpart} in the \texttt{eponymous} R package) from the hierarchical clustering result based on the above features. The decision tree arrived at a fold back JCN $\ge$ 0.5 to distinguish tyfonas/BFBC amplicons from the double minute/Other amplicon categories. Out of the amplicons with fold-back JCN $\geq$ 0.5, amplicons with total number of junctions with high JCN (\# $\geq$ 26) were called tyfonas and the rest were called BFBCs. Within amplicons containing fold-back JCN < 0.5, those amplicons with $\geq$ 31 high copy junctions distinguished otherwise unspecified amplicons ("Other") from regular double minutes, respectively. This algorithm was then used to nominate the tyfonas, double minutes, BFBCs, and the unspecified amplicons ("Other") among high level amplicons. These decision tree-based calls were then used for the subsequent analyses on these amplification events (see below). Although 4 was the optimal number of clusters, only three of the clusters (tyfonas-, double minute- and BFBC-labeled amplicon clusters) showed a mean Jaccard score of > 0.75, with a fourth cluster scoring 0.67. Due to the inconclusiveness of this fourth cluster within the amplicon data, this pattern was excluded from further analyses. This caller is implemented as the \ttt{amp} function of \ttt{gGnome}.
+
+
 
 \subsubsection*{Chromothripsis}
 
@@ -938,6 +944,15 @@ For constitutional SNV/indel calls \texttt{Strelka2} \cite{kim2018} was run as a
 
 \subsubsection*{Mutation interpretation}
 Alteration status of genes was obtained across the cohort. Homozygous deletions, heterozygous deletions, and amplifications were detected from absolute copy number calls available from the JaBbA graphs. Filtered SNV/indel annotations falling within protein coding regions, were considered only if they constituted somatic missense or truncating events, germline pathogenic variants, or germline truncating variants. To obtain loss-of-heterozygosity calls allele-specific copy number was called in cases with both tumor and normal samples. With genome-wide germline heterozygosity coverage for these samples, allele specific copy number was measured using JaBbA using the \ttt{jabba.alleles()} function within the \texttt{JaBbA R} package. For CCLE, our calls only included the publicly available mutational drivers.
+
+\subsection*{Driver amplification analysis}
+
+For the scope of amplification drivers, we selected Cancer Gene Census genes that intersect with the pan-cancer GISTIC amplification peaks in \cite{Zack:2013f1f}. Any overlap between the genomic footprint of a double minute, BFBC, or tyfonas event with an amplified driver gene (thresholded as having a segmental CN > twice ploidy) was counted to calculate the frequency of each event upon one of these genes.
+
+\subsection*{Protein-coding gene fusions across complex SV types}
+
+We obtained expressed protein-coding gene fusion calls from a published TCGA RNA-seq analysis \cite{Dehghannasiri2019-hk}.  Coordinate overlaps between expressed ($>10$ supporting RNA-seq reads) protein-coding gene fusion calls and SV event footprints from JaBbA graphs were tallied across 870 intersecting tumors. The number and genomic density of unique, expressed fusion products attributed to each event type were plotted in \textbf{Fig. \ref{fig:Figure4}H}.  Enrichment between tyfonas and other SV event categories (double minutes, BFBC, chromothripsis, other) was assessed using Wilcoxon rank-sum test.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Appendix C
