@@ -298,9 +298,12 @@ When combined with read coverage data, we can further infer JBGG by filling in a
 
 %===========================%
 \section{Junction Balance Analysis infers copy numbers on genome graphs from short-read whole genome sequencing}
-The inference of JBGGs is a computationally challenging combinatorial optimization problem that others have approached using probabilistic graphical models (PGM) and mixed-integer programming (MIP) \cite{Medvedev:2010bm, Greenman:2012eg, Oesper2012-vw, Li2016-qa, Dzamba2017-wo, McPherson2017-ry}. A serious impediment to applying these approaches to the study of complex SVs is their inability to produce CN profiles of comparable quality to non-graph based CNA callers (e.g. CONSERTING \cite{Chen2015-sw}, BIC-Seq \cite{Xi2011-oa}) while also fitting JCN, across a wide range of tumor purities.
 
-In the following three subsections, we will formally define this algorithm \textit{junction balance analysis} to infer JBGG from input WGS data, describe the associated pipeline, comprehensively compare its features and performance to other methods of similar purpose.
+We developed an algorithm, JaBbA, to accurately infer junction-balanced genome graphs from WGS data. In the following three subsections, we will 1) formally define this algorithm \textit{junction balance analysis}, 2) describe the pipeline implementing the algorithm, and 3) comprehensively compare its features and performance to other methods of similar purpose.
+
+Overall, the algorithm can be split into 3 parts, 1) building a primitive genome graph from the primary segmentation of coverage, 2) fitting integer CN for vertices and edges by solving the MIQP problem, and 3) simplify the output graph and report in the form of gGraph of gGnome package (see section \ref{sec:implement_ggnome}).
+
+%Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 
@@ -311,10 +314,8 @@ In the following three subsections, we will formally define this algorithm \text
     \label{fig:jabba_io}
 \end{figure}
 
-We developed an algorithm, JaBbA, to infer junction-balanced genome graphs with high fidelity. Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
-
-\subsubsection*{Inferring Junction Balanced Genome Graphs}
-We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as \texttt{SvABA} or DELLY).
+% \subsubsection*{Inferring Junction Balanced Genome Graphs}
+We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as SvABA or DELLY).
 
 Each vertex $v \in V_I(G)$ is associated with a partition of bins $J(v) \subseteq \{1, \ldots, n\}$ (based on genomic coordinate overlap) and a mean bin value $\rho(v) = \frac{1}{|J(v)|}\sum_{j \in J(v)} x_j$.  We model each bin subset $x_{J(v)}$ as an i.i.d. sample from a Gaussian distribution with standard deviation $\sigma(v)$ and mean $\kappa(v)$.  The log likelihood is
 
@@ -456,8 +457,7 @@ Briefly, we model the "low" count at each heterozygous SNP ("low" can be REF or 
 
 The final output is then saved into a gGraph object that can be manipulated, visualized, and analyzed with the \texttt{gGnome} R package (\url{https://github.com/mskilab/gGnome}) and \texttt{gGnome.js} browser (\url{https://github.com/mskilab/gGnome.js}).
 
-%===========================%
-\section{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
+\subsection{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
 Having described JaBbA algorithm and pipeline, we next set out to comprehensively evaluate its performance against other tools of similar
 
 % a table summarizing all the graph inference methods
@@ -509,14 +509,13 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
 \end{table}
 \newpage
 
-
-\subsection{Comparison to previous methods}
+\subsubsection*{Comparison to previous methods}
 % rewrite this!!!
 JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and missing (i.e. false negative) junctions within a MIP framework. First, while previous approaches (PREGO \cite{Oesper2012-vw}, CouGaR \cite{Medvedev:2010bm}, ReMixT \cite{McPherson2017-ry}, and Weaver \cite{Li2016-qa}) directly model read counts as a Poisson (or gamma-Poisson) random variable, JaBbA gleans non-linear mean-variance relationships empirically from high-resolution fixed bin (200 bp) read depth data.  This allows JaBbA to utilize transformed and normalized read depth data (e.g. via GC and mappability correction, tumor / normal ratio, purity and ploidy transformation).  Such data violates Poisson assumptions (e.g. integer variable, linear or constant relationship between mean and variance) but more faithfully reflects CN in stromally admixed and aneuploid tumor genomes.
 
 Second, JaBbA is robust to missing junctions by allowing (but penalizing) the use of \textit{loose ends} in its reconstructions.  Loose ends arise when a CN change is unaccompanied by a nearby junction. Such an event is a common occurrence in WGS data (e.g. due to low coverage, algorithmic filters, rearrangements in repetitive regions, etc.). Methods that do not explicitly model loose ends (e.g. PREGO, Weaver) suffer from either under- (PREGO) or over-segmentation (Weaver). Finally, by posing its inference as a MIP, JaBbA avoids analytic limitations inherent to PGM inference (ReMixT, Weaver), including the inability to identify global (expectation maximization, ReMixT) or local (loopy belief propagation, Weaver) optima or model very high-level CN states (ReMixT).  In contrast, JaBbA's MIP-based framework allows for the discovery of globally optimal model fits while allowing for an unrestricted range of CN states.
 
-\subsection{Benchmarking JaBbA}
+\subsubsection*{Benchmarking JaBbA}
 In the simplest terms, reconstructing genome graphs consists of two tasks: estimating junction copy numbers and DNA segment copy numbers. A junction is said to be incorporated in the genome graph if it is assigned non-zero copy number. Thus, a genome graph reconstruction method's performance can be evaluated from these two main aspects, 1) incorporating correct junctions and estimating the correct JCNs, and 2) faithfully segmenting the genome and estimating their CNs. We compared JaBbA's performance in both aspects against three other genome graph reconstruction methods (PREGO \cite{Oesper2012-vw}, ReMixT \cite{McPherson2017-ry}, Weaver \cite{Li2016-qa}), \textbf{Fig. \ref{fig:S1}D-H}), and specifically in segmental CN estimation with two extra somatic CNA callers that do not infer genome graphs (BIC-seq \cite{Xi2011-oa}, CONSERTING \cite{Chen2015-sw}, \textbf{Fig. \ref{fig:S1}G-H}). Another genome graph reconstruction method, CouGaR, is limited to amplified regions, so we only applied it to one replicate of the HCC1954 to demonstrate its difference from the other methods at a putative BFBC locus (\textbf{Fig. \ref{fig:S1}I}).
 %% \texttt{FACETS}, \texttt{TITAN}, \texttt{FREEC}
 
@@ -586,7 +585,7 @@ JaBbA differs primarily from previous genome graph methods in its robust modelin
 %We also validated JaBbA's estimates of JCN from short-read WGS with 10X Chromium linked-read WGS, which provides a more direct readout of JCN with its high number of long junction-spanning fragments. In the breast cancer cell line HCC1954, JaBbA-derived JCN estimates closely correlated with the coverage of junction-spanning linked-read barcodes ($R^2 = 0.91$, \textbf{Fig. \ref{fig:Fig1}C}). This included examples of low JCN (e.g. JCN = 1) junctions connecting both low and high CN intervals, as well as high JCN (JCN = 10)  junctions (\textbf{Fig. \ref{fig:Fig1}D}). These results show that JCN is a property that can be robustly inferred from short-read WGS and is independent from (interval) CN. 
 
 %===========================%
-\section{Implementation of genome graphs in gGnome package}
+\section{Implementation of genome graphs in gGnome package} \label{sec:implement_ggnome}
 To facilitate the analyses of genome graphs, we built an R package \textit{gGnome} which allows fast and useful creation, exploration, visualization, and computation around genome graphs. The basic design principle is to keep the integrity of genome graphs, in particular the skew-symmetric property, on the backend with private fields and methods in R6 classes and expose the most intuitive inputs and outputs to the users.
 
 % package structure
@@ -1007,3 +1006,5 @@ All statistical tests are carried out using R (v3.6.1) and Bioconductor (v3.10) 
 % Extending the properties of $r$ to any function of vertices or edges, we call a function $f(v), v \in V(G)$ or $f(e), e \in E(G)$ as skew-symmetric if $f(v) = f(\bar{v})$, $f(e)=f(\bar{e})$. One such function is copy number $\kappa : G \rightarrow \mathbb{N}$, as for double stranded DNA the copy number of one strand should always be equal to its reverse complement.
 
 %% For testing mutational status, only those DNA damage genes which intersected  between Cancer Gene Census (CGC) \cite{Sondka2018-ad} genes and genes in DNA damage repair pathways as annotated in \cite{pearl2015} were used. Final lists of genes that were nominated significant and mutational status within those genes per sample are found in \textbf{Table \ref{tab:S2}}.
+
+%The inference of JBGGs is a computationally challenging combinatorial optimization problem that others have approached using probabilistic graphical models (PGM) \cite{Li2016-qa,McPherson2017-ry} and mixed-integer programming (MIP) \cite{Medvedev:2010bm, Greenman:2012eg, Oesper2012-vw, Dzamba2017-wo, Aganezov2020-cu,Lee2021-rl}. A serious impediment to applying these approaches to the study of complex SVs is their inability to produce CN profiles of comparable quality to non-graph based CNA callers (e.g. CONSERTING \cite{Chen2015-sw}, BIC-Seq \cite{Xi2011-oa}) while also fitting JCN, across a wide range of tumor purities.
