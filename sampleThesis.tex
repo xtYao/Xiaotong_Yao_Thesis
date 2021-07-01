@@ -467,7 +467,7 @@ Briefly, we model the "low" count at each heterozygous SNP ("low" can be REF or 
 The final output is then saved into a gGraph object that can be manipulated, visualized, and analyzed with the \texttt{gGnome} R package (\url{https://github.com/mskilab/gGnome}) and \texttt{gGnome.js} browser (\url{https://github.com/mskilab/gGnome.js}).
 
 \subsection{JaBbA robustly produce accurate copy numbers for DNA segments and junctions}
-Having described JaBbA algorithm and pipeline, we next set out to comprehensively evaluate its performance against other tools of similar
+Having described JaBbA algorithm and pipeline, we next set out to comprehensively evaluate its performance against other tools of similar purposes.
 
 % a table summarizing all the graph inference methods
 % In Table \ref{tab:jbgg_inference}, we compare the existing methods to infer JBGG from WGS data.
@@ -514,11 +514,14 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
             \bottomrule
         \end{tabular}            
     }
-    \caption{Comparison of JBGG reconstruction methods.}
+    \caption{Comparison of JBGG reconstruction methods. Except for AmpliconArchitect and CouGaR, which only reconstruct complex amplicons, most methods build genome-wide JBGGs. MIQP, mixed-integer quadratic programming; ILP, integer linear programming; LBP, loopy belief propagation; MILP, mixed-integer linear programming.}
 \end{table}
 \newpage
 
 \subsubsection*{Comparison to previous methods}
+% TODO!
+To my best knowledge, there have been 8 published methods to reconstruct JBGGs from WGS data.
+
 % rewrite this!!!
 JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and missing (i.e. false negative) junctions within a MIP framework. First, while previous approaches (PREGO \cite{Oesper2012-vw}, CouGaR \cite{Medvedev:2010bm}, ReMixT \cite{McPherson2017-ry}, and Weaver \cite{Li2016-qa}) directly model read counts as a Poisson (or gamma-Poisson) random variable, JaBbA gleans non-linear mean-variance relationships empirically from high-resolution fixed bin (200 bp) read depth data.  This allows JaBbA to utilize transformed and normalized read depth data (e.g. via GC and mappability correction, tumor / normal ratio, purity and ploidy transformation).  Such data violates Poisson assumptions (e.g. integer variable, linear or constant relationship between mean and variance) but more faithfully reflects CN in stromally admixed and aneuploid tumor genomes.
 
@@ -585,17 +588,12 @@ When evaluating CNA inference performance, two metrics were considered. One was 
 The other set of metrics reflects the concordance between the inferred CN profile with the gold standard. For each segment in the gold standard, the overlapping inferred segments were identified. The inferred CN for that gold standard segment was then defined as the overlap width-weighted average of inferred CN. Subsequently, the root mean squared error (RMSE) $\sqrt{\frac{\sum{(\hat{x} - x_{goldstandard})^2}}{n}}$ was computed across all gold standard segments for each sample (\textbf{Fig. \ref{fig:S1}G}). The gold standard for HCC1954 CN profile was derived from published microarray-based segmentation downloaded from the CCLE data portal. High-depth WGS coverage data was mapped onto these segments and transformed into copy number space using the known ploidy of 4.5 and purity of 0.99. To compactly show the relationship between inferred CN and gold standard from all runs, we drew scatter plots across all gold standard segments in all successful runs for each method, and the Pearson $\rho$ of each method was calculated from all data points pooled together (\textbf{Fig. \ref{fig:S1}H}).
 
 
-% JaBbA main, need to adapt
 JaBbA differs primarily from previous genome graph methods in its robust modeling of WGS read depth noise and explicit accounting of false negative junctions, also called loose ends (see \nameref{sec:methods}). In our benchmarking experiments, JaBbA inferred JCN with consistently higher fidelity than published genome graph-based methods (ReMixT \cite{McPherson2017-ry}, Weaver \cite{Li2016-qa}, PREGO \cite{Oesper2012-vw}) across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}D-E}). In addition, JaBbA qualitatively outperformed genome graph-based methods and even classic (i.e. non-graph based) CNA callers (BIC-seq \cite{Xi2011-oa} and CONSERTING \cite{Chen2015-sw}) in estimating interval CN and change point locations across a wide range of tumor purities (\textbf{Fig. \ref{fig:S1}F-I}). These results show that JaBbA is the first genome graph SV caller to accurately infer the topology of JCN while approaching (or exceeding) the fidelity of classic CNA callers.
 
-% JaBbA method, need to adpat
-
-
-%We also validated JaBbA's estimates of JCN from short-read WGS with 10X Chromium linked-read WGS, which provides a more direct readout of JCN with its high number of long junction-spanning fragments. In the breast cancer cell line HCC1954, JaBbA-derived JCN estimates closely correlated with the coverage of junction-spanning linked-read barcodes ($R^2 = 0.91$, \textbf{Fig. \ref{fig:Fig1}C}). This included examples of low JCN (e.g. JCN = 1) junctions connecting both low and high CN intervals, as well as high JCN (JCN = 10)  junctions (\textbf{Fig. \ref{fig:Fig1}D}). These results show that JCN is a property that can be robustly inferred from short-read WGS and is independent from (interval) CN. 
 
 %===========================%
 \section{Implementation of genome graphs in gGnome package} \label{sec:implement_ggnome}
-To facilitate the analyses of genome graphs, we built an R package \textit{gGnome} which allows fast and useful creation, exploration, visualization, and computation around genome graphs. The basic design principle is to keep the integrity of genome graphs, in particular the skew-symmetric property, on the backend with private fields and methods in R6 classes and expose the most intuitive inputs and outputs to the users.
+To facilitate the analyses of genome graphs, we built an R package \textit{gGnome} which allows fast and useful creation, exploration, visualization, and computation around genome graphs. The basic design principle is to keep the integrity of genome graphs, in particular the skew-symmetric property, on the backend with private fields and methods in R6 classes, while expose the most intuitive inputs and outputs like junctions and segments to the users.
 
 % package structure
 We constructed two main classes, \textit{gGraph} and \textit{gWalk}, corresponding to genome graph and walks.
@@ -623,7 +621,12 @@ Some fusion genes have long been established as cancer drivers (citation) and ev
 %===========================%
 \section{Interactive visualization of genome graphs in arbitrary genomic windows}
 % from JaBbA 
-To visualize the genome graphs we developed \texttt{gGnome.js} (source code at \url{https://github.com/mskilab/gGnome.js}), a Javascript-based genome browser that renders junction-balanced genome graphs and allows for interactive multi-scale browsing across discontiguous genomic intervals accompanied by various genomic annotations. The flexibility of arbitrary window browsing provided crucial confirmation of complex rearrangement events. The annotations of events were indexed within the browser and can be searched and presented. The \texttt{gGnome} interface enables visualizing any genome graph, either with CN as inferred by other graph callers, or even without CN in the case of plain genome graphs. An integrated tag filter helps narrow down desired samples by metadata including but not limited to primary cancer types, data source projects, mutation status of genes.
+To visualize the genome graphs we developed \texttt{gGnome.js} (source code at \url{https://github.com/mskilab/gGnome.js}), a Javascript-based genome browser that renders genome graphs and allows for interactive browsing across discontiguous genomic intervals accompanied by various genomic annotations. Here, we describe several important and unique features of gGnome.js.
+
+% 
+First and foremost, the flexibility of arbitrary window browsing is crucial for complex rearrangement events, which can vary in scale and involve many distal loci. Annotations of events (or any set of vertices/edges) were read by the browser and can be searched. 
+
+The \texttt{gGnome} interface enables visualizing any genome graph, either with CN as inferred by other graph callers, or even without CN in the case of plain genome graphs. An integrated tag filter helps narrow down desired samples by metadata including but not limited to primary cancer types, data source projects, mutation status of genes.
 
 Annotations corresponding to segment-level and also junction-level information were included in the browser. Metadata for segments includes, but is not limited to, total copy number, allele-specific copy number (for samples and intervals in which heterozygous SNP information is available, i.e. cases with both tumor and normal pairs), and correspondence to event type if the segment was identified as part of an event. Edge metadata includes information output by the SV caller used in this study, SvABA, including number of reads supporting the SV and junction topology.
 
@@ -631,7 +634,6 @@ Annotations corresponding to segment-level and also junction-level information w
 To bring genome graphs better intuition for practical use, we developed \textit{gGnome.js} (https://github.com/mskilab/gGnome.js), a web application that draws genome rearrangement graphs onto its reference coordinates and allows for interactive browsing in any number of discontinuous windows accompanied by various types of genomic annotations. By allowing arbitrary windows and navigation by connectivities, the users can traverse the genome freely and simultaneously inspect various data at multiple relevant locations, including numeric (like read coverage) and qualitative (like gene annotations).
 
 % gGnome.js figure
-
 As a meaningful default, we plot integer copy numbers of the segments on the Y axis, that are inferred from cancer whole genome sequencing (WGS) with JaBbA (described in the next section), making it ideal for quick browsing copy number aberrations and immediately reveal the architecture of the complex events. Annotations on subgraphs are searchable and useful to mark interesting events (like chromothripsis). A sample level search engine accelerates the browsing on large cohorts. We can also plot possible karyotypes as walks within the graph assisting on the identification of functional neo-connectivities or clarification of complex event topologies.
 
 %===========================%
@@ -653,6 +655,19 @@ To investigate the topology of JCN across cancers, we assembled a dataset compri
     \label{fig:pancancer}
 \end{figure*}
 
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn_hist.png}
+    \caption{\textbf{Pan-cancer junction copy number (JCN) distribution.}}
+    \label{fig:jcn_hist}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn.png}
+    \caption{\textbf{Illustration of JCN.}}
+    \label{fig:jcn}
+\end{figure*}
 
 % TODO: fix the table insertion
 % \begin{table}[!ht]
@@ -738,6 +753,52 @@ To assess the genome structure of proliferating post-crisis cells, single cell c
 Analysis of genome-wide read depth across 118 clones from both day 120 (Y clones) and day 150 (Z clones) demonstrated predominantly diploid genomes with a striking enrichment of clones with DNA loss on most of chromosome 12p (63\%, 74/118, Figure 4B). Within the other 44 samples, we observed a subset of clones (5\%, 6/118) with gains of chromosome 21q. As expected, control CT clones showed no evidence of SVs or copy number variants (Supplementary Figure 4F). Hierarchical clustering of all clones by their coverage on chromosomes 12p and 21q revealed six distinct clusters (Figure 4C). A minority of clones were diploid on chromosomes 12 and 21 and elsewhere in the genome and are therefore designated as ‘unrearranged’ (32\% of clones, 38/118). Of note, the unrearranged group was enriched in day 120 (Y) samples compared to day 150 (Z) samples (p = 1.79x10-9, odds ratio 14.7, Fisher’s exact test; Figure 4C), suggesting that these clones may have largely avoided crisis prior to telomerase induction. The cluster of clones with 21q gain were diploid on 12p.
 
 The remaining 74 clones (63\%) all showed a heterogenous pattern of copy number alterations targeting 12p (Figure 4C). One out of the 118 clones (0.8\%) displayed the singular pattern of distinct interspersed losses that resembled chromothripsis. Complete loss of one copy of 12p ('arm loss') was found in a cluster of 6 clones (6/118, 5\%). A second cluster of 67 clones all shared a breakpoint near the distal end of 12p and a large deletion starting ~9 Mbp from the centromere. These clones were differentiated into two clusters by the presence or absence of an amplification around 8-9 Mbp from the 12p telomere. In the 47 clones that contained this amplification, aggregated consensus read depth profiles revealed stepwise gains at the distal end of 12p, a pattern reminiscent of BFB cycles (Supplementary Figure 5A). This cluster was therefore labelled ‘BFB-like’, a designation which is further supported by data presented below. The 20 clones (17\%) that lack the amplicon around 8-9 Mbp harbored varying boundaries of the shared larger deletion; based on the analysis described below we designate these as ‘early BFB-like’. In summary, these low-pass WGS copy number profiles indicated a limited set of distinct lineages surviving telomere crisis, with at least two lineages independently converging on 12p.
+
+% insert the formulation of multisample graph fitting -- walk decomposition
+\section{Joint inference of junction balance in MRC5} \label{sec:joint_jabba_mrc5}
+To chart structural variant evolution across sub-clades of MRC5 clones, a procedure was developed to jointly infer junction balanced genome graphs in a lineage (e.g. BFB lineage in Figure 5C). This co-calling algorithm augmented the existing JaBbA model, described in detail in3, enabling application to a compendium of genome graphs by minimizing the total number of unique loose ends assigned a nonzero copy number across the graph compendium.  
+
+Formally, we define a collection ${G^i = (V^i, E^i)}, i \in 1,\dots,n$ of identical genome graphs across $n$ clones, each a replica of a “prototype” genome graph $G^0 = (V^0, E^0)$. The mapping $p:V \cup E \rightarrow V^0 \cup E^0$ maps each vertex $v \in V^i$ and edge $e \in E^i,i \in 1,\dots,n$ to its corresponding vertex $p(v)\in V^0$ and edge $p(e) \in E^0$ in the prototype graph. We then jointly infer unique copy number assignments $\kappa^i$ to the vertices and edges of each genome graph $G^i$ by solving the mixed integer program:
+
+\begin{equation} \label{eq:multi_sample_jabba}
+    \begin{align*}
+        \underset{\kappa^i:V_I(G^i) \cup E(G^i) \rightarrow \mathbb{N}, i \in 1,\dots,n}{\text{minimize}} &
+        \lambda \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) + \sum_{i \in 1,\dots,n}\mathcal{V}(G^i, \kappa^i, x^i, J^i) \\
+        \text{subject to:} & \kappa^i(v) = \kappa^i(\bar{v}), \forall_{v \in V_I^i} \\
+        & \kappa^i(e) = \kappa^i(\bar{e}), \forall_{e \in E^i} \\
+        & \kappa^i(v) = \sum_{e \in E^+(v,G^i)}\kappa^i(e) = \sum_{e \in E^-(v, G^i)}\kappa^i(e) \\
+        & \kappa^i(e) \le u^i(e)
+    \end{align*}
+\end{equation}
+
+where $x^i$ and $J^i$ represent the binned read depth data and bin-node mappings for clone $i$ and  $\mathcal{V}(G^i,κ^i,x^i,J^i)$ is the read depth residual for genome graph i, analogous to \ref{eq:MIQP}.  A new term in this joint formulation is $u^i:E(G^i) \rightarrow \{0,\inf\}$, which is a constraint on the upper bound of each edge CN $\kappa(e) \in E(G^i)$, e.g. zero if there have been no read support for the junction in clone $i$. 
+
+The coupling of multiple graphs happen through a joint complexity penalty $\mathcal{R}$, which only penalize a loose end once for all the clones. Formally,
+
+\begin{equation} \label{eq:joint_loose_penalty}
+    \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) = \sum_{v \in V(G^0)}[\![ \sum_{\hat{v}|\hat{v} \in G^i, p(\hat{v})=v, i \in 1,\dots,n} \kappa^i(\hat{v}) ]\!]
+\end{equation}
+
+As in \ref{eq:MIQP}, the hyperparameter $\lambda$ in Equation \ref{eq:multi_sample_jabba} controls the relative contribution of the read-depth residual and complexity penalty to the objective function. 
+
+It is important to note that while each of the graphs $G^i$ have an identical structure, the constraints imposed by the upper bounds $u^i$ and bin profiles $x^i$ confine each graph to its junctions and read depth data, and hence lead to a unique fit $κ^i$ on the basis of this data.
+
+The $L_0$ penalty (defined using the Iversion bracket $[\![]\!]$ operator) in Equation \ref{eq:joint_loose_penalty} couples the solutions $κ^i$ by adding an exponential prior on the number of unique loose ends across the entire graph compendium, where uniqueness is defined by the mapping $p$ to the prototype graph $G^0$.
+
+This joint mixed-integer programming model in Equation \ref{eq:multi_sample_jabba} is implemented in the “balance” function of gGnome. The model was applied to a collection of genome graphs representing the structure of chromosome 12 across 13 clones. The prototype graph for this genome graph collection was built from the disjoint union of intervals of the 13 preliminary graphs (via the GenomicRanges “disjoin” function) and the union of junction calls fit across those graphs (via gGnome “merge.Junction” function). Each graph was associated using the read depth data and bin-to-node mappings as per \cite{Hadi2020-um}. The mapping $u^i$ for each reference edge was set to $\inf$ while variant edges were assigned $\inf$ if bwa mem realignments of read pairs in each clone .bam file to the corresponding junction contig via rSeqLib (https://github.com/mskilab/rSeqLib, CITE!!!), otherwise they were assigned 0.  
+
+Equation \ref{eq:multi_sample_jabba} was then solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package after setting the hyperparameter $\lambda$ to 100.  This value was chosen after a parameter sweep observing for the visual concordance of genome graphs, loose ends, and read depth profiles in the region.
+
+\section{Joint reconstruction of allelic evolution in MRC5}
+Evolving 12p alleles were jointly reconstructed across 13 MRC5 clones through the decomposition of junction balanced genome graphs $(G^i,κ^i)$ (see \nameref{sec:joint_jabba_mrc5} section above). The procedure for joint allelic phasing described in \cite{Hadi2020-um} and \nameref{eq:walk_decomposition} was extended to identify the most parsimonious (least unique walks needed) collection of paths and/or cycles $H$ and associated walk multiplicity $\kappa(H)$ that summed to the vertex and edge copy numbers in the compendium $(G^i,κ^i)$.
+
+Formally, the subgraph of vertices and edges with a nonzero copy number in each $(G^i,κ^i)$ were exhaustively traversed to derive all minimal paths and cycles $H^i$, where for each walk h∈H^i maps to subsets V(h)⊆V(G^i ) and E(h)⊆E(G^i ) of vertices and edges in the graph G^i.  The nodes and vertices of these walks were then projected to via the mapping p to define a unique set of walks H^0 in the prototype graph G^0. We extend our notation p (see previous section) so that for a walk h∈H^i   the mapping p(h)∈H^0 denotes the walk formed by projecting the vertices and edges of h via p to H^0.  With these definitions, the single graph haplotype inference defined in 3 was extended to a joint inference by solving the following mixed integer linear program to assign a copy number ϕ^i (h)∈N to each walk h∈H^i.
+(minimize_(ϕ^i:H^i→N,   i∈1,…,n) ∑_(h ∈〖 H〗^0)▒〖⟦∑_(h ̂∈h^i  | p(h ̂ )=h,   i ∈1,…n)▒〖 ϕ^i (h ̂ )  〗⟧  〗 )
+subject to:
+κ^i (v)=∑_(h∈H^i)▒〖ϕ^i (h)δ(v,h),∀_(v∈V_I (G^i ),   i ∈ i,…n)  〗
+κ^i (e)=∑_(h∈H^i)▒〖ϕ^i (h)δ(e,h),∀_(e∈E(G^i ),   i ∈ i,…n)  〗
+where the function δ(v,h) and δ(e,h) is 1 if vertex v and edge e belong to walk h and 0 otherwise.  The Iverson bracket (⟦  ⟧) operator in the objective function Equation 3 minimizes the total number of unique walks used across the compendium, hence identifying a jointly parsimonious assignment of copy number to walks across the compendium of graphs.   Equation 3 was solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package. Variant cycles and paths from the resulting solution were manually combined to yield a set of consistent linear paths, i.e. somatic haplotypes, to yield allelic reconstructions in Figure 5C. 
+
 
 \section{High-resolution reconstruction and lineage of post-crisis genomes}
 To gain further insight into structural variant evolution along these lineages, we chose 15 representative clones spanning the 5 clusters with rearrangements involving 12p for high-depth WGS to a median read depth of 50X (range: 30-88). Phylogenies derived from genome-wide SNV patterns demonstrated a median branch length of 551 SNVs (range: 9-2,409), a low mutation density (<1 SNV/Mbp) that is consistent with previous WGS studies of clones in cell culture37. This analysis revealed four major clades (Figure 5A). These clades had good concordance with copy number alteration and rearrangement junction patterns in the same 12p region, suggesting these clones represent distinct post-crisis evolutionary lineages (Figure 5B).
@@ -966,6 +1027,73 @@ We obtained expressed protein-coding gene fusion calls from a published TCGA RNA
 %% Appendix C
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter*{Appendix C: Chapter 4 supplementary materials and methods}
+\subsection*{Cell lines}
+MRC5 human lung fibroblasts (CCL-171), Phoenix-ampho (CRL-3213), RPE-1 hTERT (CRL-4000), HCT-116 (CCL-247) and U2-OS (HTB-96) cells were obtained from ATCC for this study. 293-FT cells were obtained from ThermoFisher. MRC5 cells and derivatives thereof were grown in EMEM media (ATCC) supplemented with 15\% fetal bovine serum (FBS; Gibco) and 100 U/mL of penicillin and 100 g/mL streptomycin (PenStrep, Gibco) at 37ºC, 5\% CO2. hTERT RPE-1 cells were grown in DMEM:F12 media (Gibco) with 10\% FBS and PenStrep at 37ºC, 5\% CO2. HCT-116 colorectal carcinoma cells and U2OS cells were grown in DMEM with 10\% FBS and PenStrep at 37ºC, 5\% CO2.
+
+\subsection*{Immortalized cell line panel }
+Details of the post-crisis immortalized cell line panel are provided in Supplementary Table 1. HA-1M cells were a kind gift of Silvia Bacchetti29, SW13/26/39 cells were a kind gift of Jerry Shay28, and Bet-3B/3K and BFT-3B/G/K cells were a kind gift of Roger Reddel27. 
+
+\subsection*{Cloning and plasmids}
+A dual-shRNA vector LM2PshRB.698-p21.890-PURO was used to knockdown Rb and p2149. The inducible dCas9-VPR (pCW57-dCas9-VPR) construct was created by Gibson assembly of the dCas9-VPR insert from SP-dCas9-VPR (Addgene\#63798) into pCW57-MCS1-P2A-MCS2-Neo (Addgene\#89180). 
+
+Retroviral pLVX-hTERT was a kind gift of Teresa Davoli. Activating TERT gRNAs were targeted up to 1000 bp upstream of the TERT promoter transcriptional start site, and designed using online software from the Broad Institute (portals.broadinstitute.org/gpp/public/analysis-tools/sgrna-design). gRNA sequences were cloned into a modified version of lentiGuide-Puro (Addgene\#52963) in which the selection cassette had been swapped for Zeocin resistance. Activating TERT gRNA sequences are shown in Supplementary Table 3. TTN gRNA sequences were used as described32.
+
+\subsection*{Viral gene delivery}
+Retroviral constructs were transfected into Phoenix amphitropic cells using calcium phosphate precipitation. Lentiviral constructs were transfected with appropriate packaging vectors using calcium phosphate precipitation into 293-FT cells. Viral supernatants were collected and filtered before addition to target cells, supplemented with 4 g/ml polybrene. For activating gRNA constructs, multiple viral supernatants were collected and concentrated using PEG-it Virus Precipitation Solution (System Biosciences LV810A-1). Cells were infected 2-3 times at 12-hour intervals before selection in the appropriate antibiotic. 
+
+Immunoblotting
+For immunoblotting, cell pellets were directly lysed in 1X Laemmli buffer (2\% SDS, 5\% -mercaptoethanol, 10\% glycerol, 0.002\% bromophenol blue and 62.5 mM Tris-HCl pH 6.8) at a concentration of 107 cells/ml. Lysates were denatured at 100C, and DNA was sheared with a 28½ gauge insulin needle. Lysates were resolved on SDS/PAGE gels (Life Technologies), transferred to nitrocellulose membranes and blocked with 5\% milk in TBS with 0.1\% Tween-20. Primary antibodies (anti-Cas9 7A9-3A3, Cell Signaling Technology \#14697S, anti-γ-tubulin Sigma\#T5326, anti- Human Retinoblastoma protein BD Pharmigen \#554136, anti-p21 F-5 Santa Cruz sc-6246) were incubated overnight, before membrane washing and incubation with appropriate HRP-conjugated secondary antibodies (Amersham) and detection with SuperSignal ECL West Pico PLUS chemiluminescence (ThermoFisher).
+
+Immunofluorescence 
+Cells were grown on glass coverslips and fixed in 3\% paraformaldehyde and 2\% sucrose. Coverslips were permeabilized in 0.5\% Triton-X-100/PBS, and blocked in goat block (0.1\% BSA, 3\% goat serum, 0.1\% Triton-X-100, 2mM EDTA) in PBS. Primary and secondary antibodies (Rabbit anti-53BP1 Abcam \#ab-175933, F(ab')2-Goat anti-Rabbit IgG (H+L) Cross-Adsorbed Alexa Fluor 488 ThermoFisher A-11070) were diluted in goat block. Slides were counter-stained with DAPI and mounted using Prolong gold anti-fade medium. Images were acquired on a DeltaVision microscope (Applied Precision) equipped with a cooled charge-coupled device camera (DV Elite CMOS Camera), with a PlanApo 60× 1.42 NA objective (Olympus America), and SoftWoRx software. Images were analyzed for foci numbers using a custom-made algorithm written for FIJI, courtesy of Leonid Timashev50.
+
+Metaphase spread preparation and staining
+Metaphase spreads were prepared by treatment of cells with 0.1 ug/ml colcemid (Roche) for 3 hours, before trypsinization and swelling at 37C for 5-10 mins in 0.075 M KCl. Cells were fixed in a freshly prepared 3:1 mixture of methanol to acetic acid and stored at 4C at least overnight. Spreads were prepared by dropping cell solution onto cold glass slides exposed to steam from a 75C water bath, flooding slide with acetic acid, before exposure of the dropped cells for 3-5 secs in steam. Slides were dried overnight before storage in 100\% Ethanol at -20C. For visualization of fusions, slides were rinsed in PBS, fixed in 4\% formaldehyde/PBS for 5 mins, and dehydrated in an ethanol series before co-denaturation of slide and PNA probes (TelG-Cy3 PNA Bio F1006, CENPB-AF488 PNA Bio F3004) for 3 mins at 80C in hybridization solution (10 mM Tris-HCl pH 7.2, 70\% formamide, 0.5\% Roche 11096176001 blocking reagent). Hybridization was carried out for 2 hours at RT in the dark, before washing twice in 10 mM Tris-HCl pH 7.2, 70\% formamide and 0.1\% BSA, then washing three times in 0.1 M Tris-HCl pH 7.2, 0.15M NaCl, 0.08\% Tween-20. DAPI was included in the second wash. Slides were dehydrated through an ethanol series before mounting with Prolong Gold antifade medium (Invitrogen). 
+For chromosome painting, slides were prepared as above for chromosome fusions, and co-denaturation of chromosome specific paints (XCP-12 Metasystems D-0312-050-FI, XCP-21 Metasystems D-0321-050-OR) was carried out at 75C for 2 mins, before hybridization overnight at 37C. Post hybridization washes were 0.4X SSC for 2 mins at 72C, 2X SSC, 0.05\% Tween-20 for 30 secs, followed by counterstaining in DAPI for 15 min, and a rinse in ddH2O before mounting in Prolong Gold antifade medium (Invitrogen). For karyotyping, slides were prepared as above, and analysis was carried out on DAPI stained chromosomes.
+
+BAC probes
+To identify individual chromosomes on metaphase spreads, BAC probes were ordered from BACPAC Genomics (Chr.12p11.2 RP11-90H7, Chr.18q12.3~21.1 RP11-91K12, Chr.6p21.2~21.3 RP11-79J17). Probe DNA was nick-translated with either Digoxigenin-11-UTP or Biotin-16-UTP (Roche) using DNase I (Roche) and DNA polymerase I (NEB) overnight at 15C. Probes were precipitated with Cot1 Human DNA (Invitrogen) and salmon sperm DNA (Invitrogen) and resuspended in 50\% formamide, 2X SSC and 10\% dextran sulfate before denaturation for 8 mins at 80C. Metaphase spreads were prepared as above, and slides were denatured with 70\% formamide, 2X SSC for 2 mins at 80C before dehydration through an ethanol series. Slides were co-denatured for 2 mins at 80C with TelG-647 (PNA Bio F1014) in hybridization solution (10mM Tris-HCl pH 7.2, 70\% formamide, 0.5\% Roche 11096176001 blocking reagent) followed by a 2-hour hybridization at RT. Denatured BAC probes were then applied and hybridized overnight at 37C. Slides were washed for 3 x 5 mins in 1X SSC at 60C, followed by a blocking step in 30 g/ml BSA, 4X SSC and 0.1\% Tween-20 for 30 mins at 37C. BAC probes were detected with anti-Digoxenin-Rhodamine (Roche 11207750910) and Avadin-FITC antibodies (VWR CAP21221) in 10 g/ml BSA, 1X SSC and 0.1\% Tween-20 by incubating for 30 mins at 37C, before washing twice for 5 mins in 4X SSC and 0.1\% Tween-20 at 42C. Counterstaining with DAPI was carried out for 15 mins at RT, before a further wash at 42C in 4X SSC, 0.1\% Tween-20 and mounting in Prolong-Gold antifade (Invitrogen). Images were acquired on the Deltavision microscope equipment detailed above. Images were analyzed using FIJI51. Briefly, individual chromosomes were detected with the BAC probes. Intensity measurements of the Tel-G signal were quantified for each p-arm and q-arm of identified chromosomes. Measurements were also taken for all other telomeres in the same spread. Background subtracted measurements for all telomeres were compared to the shortest (lowest intensity) of the Chr.12p (or Chr.18p or Chr.6p) telomeres on each spread, and the results expressed as a ratio. For identification of fusions containing chromosome 12, the same protocol was carried out using a centromere probe (CENPB-AF488, PNA Bio F3004).
+
+qPCR
+RNA was isolated from cell pellets using a Qiagen RNeasy kit, according to the manufacturer’s instructions. cDNA was synthesized using Superscript IV first-strand synthesis (ThermoFisher). qPCR was carried with SYBER Green reagents (ThermoFisher) and run on a Life Technologies QuantStudio 12K machine. qPCR primer sequences are shown in Supplementary Table 3. Expression was quantified using the standard CT method relative to -actin.
+
+TRAP assay
+Telomerase activity was assessed using the TRAPeze kit (EMD Millipore S7700) according to the manufacturer’s instructions. Amplification products were resolved on 12\% PAGE gels and visualized with EtBr staining. 
+
+STELA, Fusion PCR and telomeric blots
+High molecular weight DNA was extracted from cell pellets using a MagAttract HMW DNA kit (Qiagen) and solubilized by overnight digestion with EcoRI (for STELA and Fusion PCR) or a combination of AluI and MboI (for telomeric blots). STELA was carried out essentially as described34. Briefly, 10 ng of DNA was annealed to a mixture of  six telorette linkers (Supplementary Table 3) overnight at 35C, before dilution with water to a concentration of 200 pg/l. Multiple PCR reactions for each sample were carried out with 200 pg of annealed DNA using the XpYpE2 and teltail primers (Supplementary Table 3) and FailSafe PCR reagents (Epicentre). PCR conditions were as follows: 94C for 15s, 27 cycles of 95C for 15s, 58C for 20s, 68C for 10 mins, and a final extension at 68C for 9 mins. PCR products were resolved on 0.8\% TAE gels, denatured and transferred to Hybond membrane via Southern blotting. Products were detected with a randomly primed -32P DNA probe created by amplification of the telomere-adjacent region of the XpYp telomere (using XpYpE2 and XpYpB2 primers, Supplementary Table 3). For quantification, FIJI was used to measure relative signal between indicated molecular weight markers relative to background signal for each sample. 
+	Fusion PCR was carried out essentially as described11,35. Subtelomeric primers (Supplementary Table 3) used for amplification of telomeric fusions were XpYpM, 17p6 and 21q4. The control primer XpYpc2tr was included for control amplification of XpYp subtelomeric DNA and detected using EtBr. Fusion products were detected with a random primed -32P labelled DNA probe (21q probe) specific for the TelBam11 telomere subfamily36,52, which was created with the 21q4 primer and 21q-seq-rev2. The number of fusions per haploid genome (6 pg) is calculated based on the amount of input DNA in each PCR reaction. 
+Telomere length was assessed using telomeric restriction fragment analysis. Briefly, AluI/MboI-digested genomic DNA was run on 0.8\% TAE gels, before denaturation, neutralization, and transfer onto a Hybond membrane according to standard Southern blotting procedures. Telomeric DNA was detected using a -32P labelled Sty11 telomeric repeat probe45.
+
+WGS Library preparation
+Genomic DNA was extracted from cell pellets using a QIAGEN QIAamp DNA mini kit and sheared using a Covaris Ultrasonicator (E220) to approximately 300 bp fragments. DNA concentration was measured using Qbit 4.0 reagents (ThermoFisher) and 200 ng of fragmented DNA was used for library preparation. End repair and A-tailing was carried out with NEBNext End repair reaction enzyme mix and buffer (E7442), and KAPA Dual-Indexed Adapters (Roche) were ligated using the T4 DNA ligase kit from NEB (M0202). Post-ligation size selection was performed with AMPure XP beads (Beckman Coulter) before washing two times in 80\% ethanol. Libraries were amplified using KAPA HiFi HotStart ready mix (Roche) and P5 and P7 primers (IDT). PCR program was as follows: 98°C for 45 s, 5 cycles of 98°C for 15 s, 60°C for 30 s, 72°C for 30 s and a final extension at 72°C for 5 mins. A further size selection and washing step was carried out after library amplification, and library quality was confirmed on Bioanalyzer chips (Agilent) and using a KAPA Library Quantification kit (Roche). Libraries were pooled and submitted for sequencing on NovaSeq 6000 at the New York Genome Center. 
+
+WGS basic data processing
+Reads were aligned to GRCh37/hg19 using the Burroughs-Wheeler aligner (bwa mem v0.7.8, http://bio-bwa.sourceforge.net/)53. Best practices for post-alignment data processing were followed through use of Picard (https://broadinstitute.github.io/picard/) tools to mark duplicates, the GATK (v.2.7.4) (https://software.broadinstitute.org/gatk/) IndelRealigner module, and GATK base quality recalibration.  
+Variant rearrangement junctions were identified using SvAbA54 (https://github.com/walaj/svaba)
+ and GRIDSS31 (https://github.com/PapenfussLab/gridss) with standard settings. For MRC5 samples, the somatic variant setting of each tool was used, with the ancestral MRC5 line as the matched normal.  SvAbA was applied using a panel of normals (PON) that was constructed by running SvABA to obtain constitutional junction calls for 1,017 TCGA tumor/normal pairs (TCGA dbGaP: phs000178.v11.p8).  For GRIDSS, a PON was obtained from the Hartwig Medical Foundation (https://nextcloud.hartwigmedicalfoundation.nl). 1 kbp binned GC and mappability corrected read depth was computed using fragCounter (https://github.com/mskilab/fragcounter). Systematic read depth bias was subsequently removed using dryclean (https://github.com/mskilab/dryclean)55.
+
+Low-pass WGS clustering
+Genome-wide binned read depth was aggregated across 118 low pass WGS clones across 10 kbp bins by taking the median of 1 kbp binned normalized read depth from dryclean (see above). To minimize read depth noise in unmappable regions, recurrent (>10\% of the cohort) low-quality coverage regions (defined in ref.3) are combined with regions bearing consistently high variance in our high-pass sequencing dataset (standard deviation >0.3 for bin value over the mean in 100 kbp windows). Hierarchical clustering was then applied on the genome-wide Euclidean distance of bins, with “method = ward.D2” option. Six clusters were identified following dendrogram inspection.  
+
+\subsection*{Junction balance analysis }
+Preliminary junction balanced genome graphs were generated for MRC5 and SV40T cell lines from binned read depth and junction calls (see above) using JaBbA (https://github.com/mskilab/JaBbA)3. Briefly, 1 Kbp binned read depth output from dryclean was collapsed to 5 Kbp and JaBbA was run with slack penalty 500. gGnome (https://github.com/mskilab/gGnome) was used to identify complex structural variant patterns. Genome graphs and corresponding genomic data (e.g. binned coverage, allelic bin counts) were visualized using gTrack (https://github.com/mskilab/gTrack). 
+
+
+Loose end classification
+Each loose end in each MRC5 genome graph was analyzed to identify a clone specific (i.e. absent in the ancestral MRC5 line) origin for the mates of high mapping quality (MAPQ=60) reads mapping to the location and strand of the loose end. These mates were assessed for neo-telomeric sequences by counting instances of 11 permutations of a 12-bp telomere repeat motif (TTAGGGTTAGGG) (using the R / Bioconductor Biostrings package) in the mates. The mates were also assembled into contigs using fermi57 aligned using bwa mem58 via the RSeqLib R package56 to hg38 (which contains a more  highly resolved centromere build) to characterize novel repeat (e.g. centromere) fusions (GATK Human reference genome, hg38, data bundle including Homo_sapiens_assembly38.fasta, gs://gcp-public-data--broad-reference). The loose end loci were also assessed through overlap with the hg19 repeatMasker database (human_g1k_v37_decoy.repeatmasker) for the presence of reference annotated repeats that might explain the absence of a mappable junction explaining the copy number change.  
+
+SNV phylogeny
+To compute an SNV phylogeny across MRC clones, we first identified SNV that were acquired in MRC5 clones relative to the ancestral MRC5 line using Strelka259 (https://github.com/Illumina/strelka) under paired (i.e. tumor / normal) mode with the clone as the “tumor” and the MRC ancestral line as the “normal” sample and default parameters and GATK hg19 resource bundle (Genome Analysis Toolkit GATK Resource Bundle for hg19; gs://gatk-legacy-bundles). Acquired SNVs were first filtered according to the Strelka2 PASS filter as well as additional filters (MQ = 60, SomaticEVS>12, total ALT count > 4) yielding 27,220 total unique variants across the 13 MRC5 clones. Reference and variant allelic read counts were assessed at each SNV site (via the R / Bioconductor Rsamtools package, version 3.6.1, http://www.r-project.org/) across all 13 clones. We then further required a >0.5 posterior probability of a variant being present in a sample, by assuming Binomial likelihood of variant read count and using the aggregated allele frequency in all samples as the prior, resulting in the final 14,970 unique mutations. The binary matrix of clones by SNV loci. was then used to derive a neighbor-joining phylogenetic tree using the R / Bioconductor package ape. Following tree construction, we associated each SNV with its most likely phylogenetic tree branch by comparing the binary incidence vector associated with each SNV with the binary incidence vector associated with each tree branch, and finding the closest branch using Jaccard distance, only linking SNV to branches when the SNV was within <0.1 Jaccard distance of the closest branch, thus producing the groupings of SNVs in Figure 5A.   
+
+Parental SNP allelic phasing and imbalance
+Germline heterozygous sites in the parental MRC5 line were identified by computing allelic counts at HapMap sites (GATK human reference genome, hg19 data bundle, hapmap_3.3.b37.vcf) and identifying loci with variant allele fraction >0.3 and <0.7.  Y11, a clone with loss of a single allele at 12p, was chosen to phase parental SNPs on 12p. At each locus, the allele (reference or alternate) with a 0 read count was assigned to the “L” (lost) haplotype and the other allele was assigned to the “R” (retained) haplotype. (All heterozygous SNP loci in the region contained exactly one allele with a 0 read count). L and R allelic counts were then computed at these sites across all 13 high pass WGS and 131 low pass WGS samples. These counts were divided by the genome wide mean of heterozygous SNP allele counts (in these 100\% pure and nearly diploid samples) to derive the absolute allelic copy number60.  
+
+SNV clustering
+Inter-SNV distances were computed for all pairs of reference adjacent acquired SNVs associated with each MRC5 clone and visualized as rainfall plots. Runs of two or more SNVs with inter SNV distances < 2 Kbp were nominated as clusters. Two distinct SNV clusters were identified on chromosome 12p across the 13 clones.  
+
+Statistical Analysis
+Statistical analysis for in vitro experiments was carried out using Prism software (GraphPad Software). All relevant statistical experimental details (n numbers, SD) are provided in the figure legends. Statistically significant associations between binary variables were determined using two-tailed Fisher’s exact test. Significance was assessed on the basis of Bonferroni-corrected P values < 0.05. Effect sizes (odds ratios) are reported alongside 95\% confidence intervals for each test. Details of all other quantitative analyses (e.g. read depth processing, clone clustering, genome graph inference, allelic reconstructions, phylogenetic reconstruction, SNV clustering, parental SNP phasing) are described above.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1014,3 +1142,6 @@ All statistical tests are carried out using R (v3.6.1) and Bioconductor (v3.10) 
 %% For testing mutational status, only those DNA damage genes which intersected  between Cancer Gene Census (CGC) \cite{Sondka2018-ad} genes and genes in DNA damage repair pathways as annotated in \cite{pearl2015} were used. Final lists of genes that were nominated significant and mutational status within those genes per sample are found in \textbf{Table \ref{tab:S2}}.
 
 %The inference of JBGGs is a computationally challenging combinatorial optimization problem that others have approached using probabilistic graphical models (PGM) \cite{Li2016-qa,McPherson2017-ry} and mixed-integer programming (MIP) \cite{Medvedev:2010bm, Greenman:2012eg, Oesper2012-vw, Dzamba2017-wo, Aganezov2020-cu,Lee2021-rl}. A serious impediment to applying these approaches to the study of complex SVs is their inability to produce CN profiles of comparable quality to non-graph based CNA callers (e.g. CONSERTING \cite{Chen2015-sw}, BIC-Seq \cite{Xi2011-oa}) while also fitting JCN, across a wide range of tumor purities.
+
+% JaBbA method, need to adpat
+% We also validated JaBbA's estimates of JCN from short-read WGS with 10X Chromium linked-read WGS, which provides a more direct readout of JCN with its high number of long junction-spanning fragments. In the breast cancer cell line HCC1954, JaBbA-derived JCN estimates closely correlated with the coverage of junction-spanning linked-read barcodes ($R^2 = 0.91$, \textbf{Fig. \ref{fig:Fig1}C}). This included examples of low JCN (e.g. JCN = 1) junctions connecting both low and high CN intervals, as well as high JCN (JCN = 10)  junctions (\textbf{Fig. \ref{fig:Fig1}D}). These results show that JCN is a property that can be robustly inferred from short-read WGS and is independent from (interval) CN. 
