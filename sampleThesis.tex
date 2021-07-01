@@ -758,17 +758,17 @@ The remaining 74 clones (63\%) all showed a heterogenous pattern of copy number 
 \section{Joint inference of junction balance in MRC5} \label{sec:joint_jabba_mrc5}
 To chart structural variant evolution across sub-clades of MRC5 clones, a procedure was developed to jointly infer junction balanced genome graphs in a lineage (e.g. BFB lineage in Figure 5C). This co-calling algorithm augmented the existing JaBbA model, described in detail in3, enabling application to a compendium of genome graphs by minimizing the total number of unique loose ends assigned a nonzero copy number across the graph compendium.  
 
-Formally, we define a collection ${G^i = (V^i, E^i)}, i \in 1,\dots,n$ of identical genome graphs across $n$ clones, each a replica of a “prototype” genome graph $G^0 = (V^0, E^0)$. The mapping $p:V \cup E \rightarrow V^0 \cup E^0$ maps each vertex $v \in V^i$ and edge $e \in E^i,i \in 1,\dots,n$ to its corresponding vertex $p(v)\in V^0$ and edge $p(e) \in E^0$ in the prototype graph. We then jointly infer unique copy number assignments $\kappa^i$ to the vertices and edges of each genome graph $G^i$ by solving the mixed integer program:
+Formally, we define a collection ${G^i = (V^i, E^i)}, i \in 1,\dots,n$ of identical genome graphs across $n$ clones, each a replica of a \textit{prototype} genome graph $G^0 = (V^0, E^0)$. The mapping $p:V \cup E \rightarrow V^0 \cup E^0$ maps each vertex $v \in V^i$ and edge $e \in E^i,i \in 1,\dots,n$ to its corresponding vertex $p(v)\in V^0$ and edge $p(e) \in E^0$ in the prototype graph. We then jointly infer unique copy number assignments $\kappa^i$ to the vertices and edges of each genome graph $G^i$ by solving the mixed integer program:
 
 \begin{equation} \label{eq:multi_sample_jabba}
-    \begin{align*}
+    \begin{align}
         \underset{\kappa^i:V_I(G^i) \cup E(G^i) \rightarrow \mathbb{N}, i \in 1,\dots,n}{\text{minimize}} &
         \lambda \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) + \sum_{i \in 1,\dots,n}\mathcal{V}(G^i, \kappa^i, x^i, J^i) \\
-        \text{subject to:} & \kappa^i(v) = \kappa^i(\bar{v}), \forall_{v \in V_I^i} \\
+        \text{subject to: } & \kappa^i(v) = \kappa^i(\bar{v}), \forall_{v \in V_I^i} \\
         & \kappa^i(e) = \kappa^i(\bar{e}), \forall_{e \in E^i} \\
         & \kappa^i(v) = \sum_{e \in E^+(v,G^i)}\kappa^i(e) = \sum_{e \in E^-(v, G^i)}\kappa^i(e) \\
         & \kappa^i(e) \le u^i(e)
-    \end{align*}
+    \end{align}
 \end{equation}
 
 where $x^i$ and $J^i$ represent the binned read depth data and bin-node mappings for clone $i$ and  $\mathcal{V}(G^i,κ^i,x^i,J^i)$ is the read depth residual for genome graph i, analogous to \ref{eq:MIQP}.  A new term in this joint formulation is $u^i:E(G^i) \rightarrow \{0,\inf\}$, which is a constraint on the upper bound of each edge CN $\kappa(e) \in E(G^i)$, e.g. zero if there have been no read support for the junction in clone $i$. 
@@ -781,23 +781,26 @@ The coupling of multiple graphs happen through a joint complexity penalty $\math
 
 As in \ref{eq:MIQP}, the hyperparameter $\lambda$ in Equation \ref{eq:multi_sample_jabba} controls the relative contribution of the read-depth residual and complexity penalty to the objective function. 
 
-It is important to note that while each of the graphs $G^i$ have an identical structure, the constraints imposed by the upper bounds $u^i$ and bin profiles $x^i$ confine each graph to its junctions and read depth data, and hence lead to a unique fit $κ^i$ on the basis of this data.
+It is important to note that while each of the graphs $G^i$ have an identical structure, the constraints imposed by the upper bounds $u^i$ and bin profiles $x^i$ confine each graph to its junctions and read depth data, and hence lead to a unique fit $κ^i$ on the basis of this data. The $L_0$ penalty (defined using the Iversion bracket $[\![]\!]$ operator) in Equation \ref{eq:joint_loose_penalty} couples the solutions $κ^i$ by adding an exponential prior on the number of unique loose ends across the entire graph compendium, where uniqueness is defined by the mapping $p$ to the prototype graph $G^0$.
 
-The $L_0$ penalty (defined using the Iversion bracket $[\![]\!]$ operator) in Equation \ref{eq:joint_loose_penalty} couples the solutions $κ^i$ by adding an exponential prior on the number of unique loose ends across the entire graph compendium, where uniqueness is defined by the mapping $p$ to the prototype graph $G^0$.
-
-This joint mixed-integer programming model in Equation \ref{eq:multi_sample_jabba} is implemented in the “balance” function of gGnome. The model was applied to a collection of genome graphs representing the structure of chromosome 12 across 13 clones. The prototype graph for this genome graph collection was built from the disjoint union of intervals of the 13 preliminary graphs (via the GenomicRanges “disjoin” function) and the union of junction calls fit across those graphs (via gGnome “merge.Junction” function). Each graph was associated using the read depth data and bin-to-node mappings as per \cite{Hadi2020-um}. The mapping $u^i$ for each reference edge was set to $\inf$ while variant edges were assigned $\inf$ if bwa mem realignments of read pairs in each clone .bam file to the corresponding junction contig via rSeqLib (https://github.com/mskilab/rSeqLib, CITE!!!), otherwise they were assigned 0.  
+This joint mixed-integer programming model in Equation \ref{eq:multi_sample_jabba} is implemented in the “balance” function of gGnome. The model was applied to a collection of genome graphs representing the structure of chromosome 12 across 13 clones. The prototype graph for this genome graph collection was built from the disjoint union of intervals of the 13 preliminary graphs (via the GenomicRanges “disjoin” function) and the union of junction calls fit across those graphs (via gGnome “merge.Junction” function). Each graph was associated using the read depth data and bin-to-node mappings as per \cite{Hadi2020-um}. The mapping $u^i$ for each reference edge was set to $\inf$ while variant edges were assigned $\inf$ if bwa mem realignments of read pairs in each clone .bam file to the corresponding junction contig via rSeqLib (https://github.com/mskilab/rSeqLib, CITE!!!), otherwise they were assigned 0.
 
 Equation \ref{eq:multi_sample_jabba} was then solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package after setting the hyperparameter $\lambda$ to 100.  This value was chosen after a parameter sweep observing for the visual concordance of genome graphs, loose ends, and read depth profiles in the region.
 
 \section{Joint reconstruction of allelic evolution in MRC5}
 Evolving 12p alleles were jointly reconstructed across 13 MRC5 clones through the decomposition of junction balanced genome graphs $(G^i,κ^i)$ (see \nameref{sec:joint_jabba_mrc5} section above). The procedure for joint allelic phasing described in \cite{Hadi2020-um} and \nameref{eq:walk_decomposition} was extended to identify the most parsimonious (least unique walks needed) collection of paths and/or cycles $H$ and associated walk multiplicity $\kappa(H)$ that summed to the vertex and edge copy numbers in the compendium $(G^i,κ^i)$.
 
-Formally, the subgraph of vertices and edges with a nonzero copy number in each $(G^i,κ^i)$ were exhaustively traversed to derive all minimal paths and cycles $H^i$, where for each walk h∈H^i maps to subsets V(h)⊆V(G^i ) and E(h)⊆E(G^i ) of vertices and edges in the graph G^i.  The nodes and vertices of these walks were then projected to via the mapping p to define a unique set of walks H^0 in the prototype graph G^0. We extend our notation p (see previous section) so that for a walk h∈H^i   the mapping p(h)∈H^0 denotes the walk formed by projecting the vertices and edges of h via p to H^0.  With these definitions, the single graph haplotype inference defined in 3 was extended to a joint inference by solving the following mixed integer linear program to assign a copy number ϕ^i (h)∈N to each walk h∈H^i.
-(minimize_(ϕ^i:H^i→N,   i∈1,…,n) ∑_(h ∈〖 H〗^0)▒〖⟦∑_(h ̂∈h^i  | p(h ̂ )=h,   i ∈1,…n)▒〖 ϕ^i (h ̂ )  〗⟧  〗 )
-subject to:
-κ^i (v)=∑_(h∈H^i)▒〖ϕ^i (h)δ(v,h),∀_(v∈V_I (G^i ),   i ∈ i,…n)  〗
-κ^i (e)=∑_(h∈H^i)▒〖ϕ^i (h)δ(e,h),∀_(e∈E(G^i ),   i ∈ i,…n)  〗
-where the function δ(v,h) and δ(e,h) is 1 if vertex v and edge e belong to walk h and 0 otherwise.  The Iverson bracket (⟦  ⟧) operator in the objective function Equation 3 minimizes the total number of unique walks used across the compendium, hence identifying a jointly parsimonious assignment of copy number to walks across the compendium of graphs.   Equation 3 was solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package. Variant cycles and paths from the resulting solution were manually combined to yield a set of consistent linear paths, i.e. somatic haplotypes, to yield allelic reconstructions in Figure 5C. 
+Formally, the subgraph of vertices and edges with a nonzero copy number in each $(G^i,κ^i)$ were exhaustively traversed to derive all minimal paths and cycles $H^i$, where for each walk $h \in H^i$ maps to incident sequences of $V(h) \subseteq V^i$ and $E(h) \subseteq E^i$ of vertices and edges in the graph $G^i$.  The nodes and vertices of these walks were then projected to via the mapping $p$ to define a unique set of walks $H^0$ in the prototype graph $G^0$. We extend our notation $p$ (see previous section) so that for a walk $h \in H^i$ the mapping $p(h) \in H^0$ denotes the walk formed by projecting the vertices and edges of $h$ via $p$ to $H^0$.  With these definitions, the single graph haplotype inference defined in \ref{eq:walk_decomposition} was extended to a joint inference by solving the following mixed integer linear program to assign a copy number $\kappa^i(h) \in \mathbb{N}$ to each walk $h \in H^i$:
+
+\begin{equation} \label{eq:joint_walk_decomposition}
+    \begin{align}    
+        \underset{\kappa^i(h):H^i \rightarrow \mathbb{N}, i \in 1, \dots, n}{\text{minimize}} & \sum_{h \in H^0} [\![ \sum_{\hat{h} \in H^i | p(\hat{h} = h)} \kappa^i(h) ]\!] \\
+        \text{s.t. } & \kappa^i(v) = \sum_{h \in H^i} \kappa(h)\delta(h, v), \forall v \in V^i, i \in 1, \dots, n \\
+        & \kappa^i(e) = \sum_{h \in H^i} \kappa(h)\delta(h, e), \forall e \in E^i, i \in 1, \dots, n 
+    \end{align}
+\end{equation}
+
+where the function $\delta(v,h)$ and $\delta(e,h)$ is 1 if vertex $v$ and edge $e$ belong to walk $h$ and 0 otherwise, just like in \ref{eq:walk_decomposition}. The Iverson bracket ($[\![]\!]$) operator in the objective function Equation \ref{eq:joint_walk_decomposition} minimizes the total number of unique walks used across the compendium, hence identifying a jointly parsimonious assignment of copy number to walks across the compendium of graphs. Equation \ref{eq:joint_walk_decomposition} was solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package. Variant cycles and paths from the resulting solution were manually combined to yield a set of consistent linear paths, i.e. somatic haplotypes, to yield allelic reconstructions in Figure!!!.
 
 
 \section{High-resolution reconstruction and lineage of post-crisis genomes}
