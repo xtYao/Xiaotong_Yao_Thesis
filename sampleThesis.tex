@@ -239,6 +239,44 @@ For a breakend location in the middle of a chromosome, only one of its two sides
 \subsection{Build genome graph from breakends and junctions}
 To describe a rearranged and copy number altered reference genome, we partition $\mathcal{C}$ according to a collection of \textit{breakends} $\mathcal{B}$. We also define a set of \textit{junctions} $\mathcal{A}$ representing alternative adjacencies between a set of the breakends in $\mathcal{B}$. 
 
+\begin{algorithm} \caption{BuildGraph} \label{algo:buildgraph}
+    \begin{algorithmic}[1]
+        \Procedure{BuildGraph}{$\mathcal{A}$, $\mathcal{B}$} \Comment{Returns genome graph $G = (V, E, \psi, \phi)$}
+        \State $G \gets emptyGraph;\quad$ $\phi, \psi \gets emptyDictionary$
+        \State $\mathcal{B} = \mathcal{B} \cup \ getBreakPoints(\mathcal{A})$ \Comment{Extract additional breakends from junctions in $\mathcal{A}$}
+        \For{$B^i_k,\ k\in 1,\ldots,|B^i|-1,\ c \in 1,\ldots,|\mathcal{C}|/2$}
+        \State $v, \bar{v} \gets newVertices(2, \psi, "I")$ \Comment{$newVertices$ updates $\psi$ to map $v$ and $\bar{v}$ to "I"}
+        \State $\phi(v) = (i, B^i_k, B^i_{k+1}-1)$
+        \State $\phi(\bar{v}) = (-i, B^i_k, B^i_{k+1}-1)$
+        \State $l_1, \bar{l_1}, l_2, \bar{l_2} \gets newVertices(4, \psi, "L")$
+        \State $e_1, \bar{e_1}, e_2, \bar{e_2} \gets newEdges(\{ (l_1, v), (\bar{v},\bar{l_1}), (v, l_2), (\bar{l_2},\bar{v}) \}, \psi, "L")$
+        \State \algorithmicif\ $k = 1$ \ \algorithmicthen\ \ $\psi(\{l_1, e_1, \bar{l_1}, \bar{e_1} \}) \gets "T"$  \Comment{Label telomeric loose ends with "T"}
+        \State \algorithmicif\ $k = |B^i|-1$ \ \algorithmicthen\ $\psi(\{l_2, e_2, \bar{l_2}, \bar{e_2} \}) \gets "T"$
+        \State $V(G) \gets V(G) \cup  \{ v, \bar{v}, l_1, \bar{l_1}, l_2, \bar{l_2} \})$
+        \State $E(G) \gets E(G) \cup  \{ e_1, \bar{e_1}, e_2, \bar{e_2} \})$
+        \EndFor
+        \State $\mathcal{R} = referenceAdjacencies(\mathcal{B})$  \Comment{Get implied reference adjacencies from breakends}
+        % \State $\mathcal{A} = \mathcal{A} \cup \ reverseComplement(\mathcal{A})$  \Comment{Make sure $\mathcal{A}$ contains both forward and RC adjacencies} 
+        \For{$A = (i_1,r_1,i_2,r_2) \in \mathcal{A} \cup \mathcal{R}$}
+        \If{$sgn(i_1)>0$}
+        \State $v_1 \gets getVertex(\{ \hat{v} \ | \ \phi(v) = (i_1, q, r_1+\frac{-sgn(i)+1}{2}), v \in V(G), q \in \mathbb{N}\}$)
+        \Else
+        \State $v_1 \gets getVertex(\{ \hat{v} \ | \ \phi(\hat{v}) = (i_1, r_1 + \frac{-sgn(i)+1}{2}, q), v \in V(G), q \in \mathbb{N}\})$
+        \EndIf
+        \If{$sgn(i_2)>0$}
+        \State $v_2 \gets getVertex(\{ \hat{v} \ | \ \phi(v) = (i_2, r_2 + \frac{sgn(i_2)+1}{2}, q), v \in V(G), q \in \mathbb{N}\})$
+        \Else
+        \State $v_2 \gets getVertex(\{ \hat{v} \ | \ \phi(\hat{v}) = (i_2, q, r_2 + \frac{sgn(i_2)+1}{2}), v \in V(G), q \in \mathbb{N} \})$
+        \EndIf
+        \State \algorithmicif\ $A \in \mathcal{R}$ \algorithmicthen\ $e = newEdges((v_1, v_2), \psi, "R")$ \ \algorithmicelse \ $e = newEdges((v_1, v_2), \psi, "A")$
+        \State $E(G) \gets E(G) \cup \{e\}$
+        \EndFor
+        \State \textbf{return} $(V(G), E(G), \psi, \phi)$
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+
 % TODO!
 Each $b^i = C^ \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequence of integer coordinates $B^i = (B^i_k), 1 \le B^i_k \le L_i$ on chromosome $i$, where $B^i_1$ = 1 and $B^i_{|B^i|} = L^i$.  Each junction $A \in \mathcal{A}$ is a tuple $(i_1,r_1,i_2,r_2),\ r_1 \in B^{|i_1|}, r_2 \in B^{|i_2|}$, $|i_1|, |i_2| \in  1, \ldots, c$ representing a (3'-5' phosphodiester) bond between the position $r_1 + \frac{-sgn(i_1)+1}{2}$ on chromosome / strand $C^{i_1}$ and position $r_2+\frac{sgn(i_2)+1}{2}$ on chromosome / strand $C^{i_2}$.  For every adjacency $A = (i_1,r_1,i_2,r_2) \in \mathcal{A}$ we require $\mathcal{A}$ to contain the reverse complement adjacency $\bar{A} = (-i_2,r_2, -i_1,r_1)$. The adjacencies in $\mathcal{A}$ are "alternative" relative to a set of "reference adjacencies" $\mathcal{R}$ implied by $B^i$, comprising tuples $(i, B^i_k, i, B^i_k)$ and $(-i, B^i_k, -i, B^i_k)$ for each breakend $B^i_k, k\in 1,\dots,|B^i|$ in each chromosome $i \in 1,\ldots,c$.
 
@@ -248,7 +286,7 @@ Analogous to an assembly graph, on genome graph $G$, traveling through a walk $h
 
 First, given a tuple of genomic intervals $(v_1, v_2, \dots, v_k)$ whose order implies sequential covalent bonding, we can easily produce a genome graph and represent the tuple as a walk on that graph, by filling in edges between each consecutive pair of intervals based on their corresponding incident breakends, then add the same for the reverse complement walk. For example, the edge joining $(v_1, v_2)$ should be $(b_o(v_1), b_r(v_2))$. This observation implicated that any DNA sequence, as long as it can be constructed from pasting substrings of the reference genome, can be converted to a walk and a genome graph.
 
-Second, every interval has exactly one upstream neighbor (incident to its 5' breakend, except for the first interval), and one downstream neighbor (incident to its 3' breakend, except for the last interval), as genomic DNA is known to be linear. Thus, we can associate a walk with a non-negative integer $\phi(h) \in \mathbb{N}$ as the multiplicity of such molecule present in a genome. Consequently, the graph arise from these walks must posses be \textit{junction balanced}, a property we are going to define in \nameref{sub:JBGG} the next subsection.
+Second, every interval has exactly one upstream neighbor (incident to its 5' breakend, except for the first interval), and one downstream neighbor (incident to its 3' breakend, except for the last interval), as genomic DNA is known to be linear. Thus, we can associate a walk with a non-negative integer $\kappa(h) \in \mathbb{N}$ as the multiplicity of such molecule present in a genome. Consequently, the graph arise from these walks must posses be \textit{junction balanced}, a property we are going to define in \nameref{sub:JBGG} the next subsection.
 
 \subsection{Junction-balanced genome graph} \label{sub:JBGG}
 We define a mapping $\kappa:\{V \cup E\}\rightarrow \mathbb{N}$ of non-negative integer copy number (CN) to vertices and edges of $G$, where $\kappa(v),v \in V$ and  $\kappa(e),e \in E$ represent the CN of vertex $v$ and edge $e$, respectively. For a graph $G = (V, E)$ that arise from the aforementioned procedure from a set of tuples of genomic intervals, the following junction balance constraint is always true:
@@ -261,8 +299,8 @@ This is because to travel into $v$ once one must travel through one of the edges
 
 \begin{equation} \label{eq:sum_of_walk}
     \begin{split}
-        \forall v \in V, \kappa(v) = \sum_{h \in H}\phi(h)\delta(h, v) \\
-        \forall e \in E, \kappa(e) = \sum_{h \in H}\phi(h)\delta(h, e)
+        \forall v \in V, \kappa(v) = \sum_{h \in H}\kappa(h)\delta(h, v) \\
+        \forall e \in E, \kappa(e) = \sum_{h \in H}\kappa(h)\delta(h, e)
     \end{split}
 \end{equation}
 
@@ -289,15 +327,20 @@ However, such genome graphs only deal with the topology of junctions, and for a 
 
 \begin{equation} \label{eq:walk_decomposition}
     \begin{aligned}
-        \text{Given } G = (V, E), \kappa(G), \text{find } \phi(h):H \rightarrow \mathbb{N}, \\
-        s.t. \forall v \in V, \kappa(v) = \sum_{h \in H}\delta(h,v)\phi(h) \\
-        \forall e \in E, \kappa(e) = \sum_{h \in H}\delta(h,e)\phi(h) \\
-        \phi(h) = \phi(\bar{h})
+        \text{Given } & G = (V, E), \kappa(G) \\
+        \text{find } & \kappa(h):H \rightarrow \mathbb{N} \\
+        s.t. & \forall v \in V, \kappa(v) = \sum_{h \in H}\delta(h,v)\kappa(h) \\
+        & \forall e \in E, \kappa(e) = \sum_{h \in H}\delta(h,e)\kappa(h) \\
+        & \kappa(h) = \kappa(\bar{h})
     \end{aligned}
 \end{equation}
 
-%Suppose we are given an input JBGG with its junction-balanced CN $G, \kappa(G)$, the walk decomposition problem is now to find a multiplicity of every walk $\phi(h), h \in H$, such that Eq. \ref{eq:sum_of_walk} is satisfied. 
-Since in its essence, this is equivalent to a flow decomposition problem, the junction balance constraints \ref{eq:junction_balance_constraint} guarantee that it is feasible, usually with a huge number of possible solutions. Upon this pool of possible karyotypes, we can further define different loss functions, such as parsimony (number of unique walks with $\phi(h)>0$), to reach some optimal guesses at what the actual rearranged allele is that constitute the input JBGG. We shall see an example of solving a variation of this problem in \ref{chap:tel_crisis}.
+%Suppose we are given an input JBGG with its junction-balanced CN $G, \kappa(G)$, the walk decomposition problem is now to find a multiplicity of every walk $\kappa(h), h \in H$, such that Eq. \ref{eq:sum_of_walk} is satisfied. 
+Since in its essence, this is equivalent to a flow decomposition problem, the junction balance constraints \ref{eq:junction_balance_constraint} guarantee that it is feasible, usually with a huge number of possible solutions. Upon this pool of possible karyotypes, we can further define different loss functions, such as parsimony (number of unique walks with $\kappa(h)>0$), to reach some optimal guesses at what the actual rearranged allele is that constitute the input JBGG. Formally,
+
+
+
+We shall see an example of solving a variation of this problem in \ref{chap:tel_crisis}.
 
 When combined with read coverage data, we can further infer JBGG by filling in an optimal set of CNs for all the vertices and edges. We call this problem the inference or \textit{reconstruction of JBGG}, to which we will present one solution in the next section.
 
@@ -309,8 +352,6 @@ When combined with read coverage data, we can further infer JBGG by filling in a
 \section{Junction Balance Analysis infers copy numbers on genome graphs from short-read whole genome sequencing}
 
 We developed an algorithm, JaBbA, to accurately infer junction-balanced genome graphs from WGS data. In the following three subsections, we will 1) formally define this algorithm \textit{junction balance analysis}, 2) describe the pipeline implementing the algorithm, and 3) comprehensively compare its features and performance to other methods of similar purpose.
-
-Overall, the algorithm can be split into 3 parts, 1) building a primitive genome graph from the primary segmentation of coverage, 2) fitting integer CN for vertices and edges by solving the MIQP problem, and 3) simplify the output graph and report in the form of gGraph of gGnome package (see section \ref{sec:implement_ggnome}).
 
 %Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
 
@@ -373,6 +414,8 @@ The resulting MAP estimate $\hat{\kappa}$ defines the JBGG $(G,\hat{\kappa})$ wh
 
 
 \subsection{JaBbA pipeline}
+Overall, the pipeline can be split into 3 parts, 1) building a primitive genome graph from the primary segmentation of coverage, 2) fitting integer CN for vertices and edges by solving the MIQP problem, and 3) simplify the output graph and report in the form of gGraph of gGnome package (see section \ref{sec:implement_ggnome}).
+
 Junction Balance Analysis (JaBbA, \url{https://github.com/mskilab/JaBbA}) is an R package freely available under the MIT license. The required inputs to JaBbA are binned (e.g. 200bp) and normalized read depth data $y$, purity $\alpha$, ploidy $\tau$, a set of junctions $\mathcal{A}$ (see mathematical formulation above), and a hyperparameter $\lambda$. The key output is a \texttt{gGraph} object representing a junction-balanced genome graph (i.e. solution to \textbf{Eq. \ref{eq:MIQP}}) which can be queried and analyzed using downstream algorithms, e.g. SV event classification algorithms in the \texttt{gGnome} package (\url{https://github.com/mskilab/gGnome}, see "Structural variant event classification" section below). The workflow of JaBbA is composed of four phases: read depth preprocessing, graph building, JaBbA model fitting, and postprocessing.
 
 \subsubsection*{Read coverage preprocessing, primary segmentation, and purity-ploidy estimation}
@@ -413,42 +456,6 @@ Given known constitutional copy number (in practice, $\kappa_N(j) = 2$ for all b
 \subsubsection*{Graph building}
 To build the genome graph $G$, the binned read depth $x$ is segmented (e.g. using CBS) to yield the breakends $\mathcal{B}$.  These breakends are combined via \textbf{Algorithm \ref{algo:buildgraph}} with the junctions $\mathcal{A}$ to yield $G$.  Briefly, this procedure 1) divides the reference genome into internal vertices $v_I \in V_I$ each of which will be assumed to have a coherent CN, and 2) establishes edges $e \in E=E_{R} \cup E_{A} \cup E_{L}$ that each represents an adjacency consistent with the reference genome (REF edge, $E_R$), created by an rearrangement junction (ALT edge, $E_A$), or an unmatched breakend (loose end, $E_L$). The ends of the vertices are the union of junction breakends $getBreakPoints(\mathcal{A})$ and a primary segmentation of the genome $\mathcal{B}_{seg}$ using the Circular Binary Segmentation algorithm \cite{olshen2004} (CBS), or from user input.  The mapping $J(v)$ (see above) is constructed to associate internal vertices $v \in V_I(G)$ with partitions of bin indices.
 
-\begin{algorithm} \caption{BuildGraph} \label{algo:buildgraph}
-    \begin{algorithmic}[1]
-        \Procedure{BuildGraph}{$\mathcal{A}$, $\mathcal{B}$} \Comment{Returns genome graph $G = (V, E, \psi, \phi)$}
-        \State $G \gets emptyGraph;\quad$ $\phi, \psi \gets emptyDictionary$
-        \State $\mathcal{B} = \mathcal{B} \cup \ getBreakPoints(\mathcal{A})$ \Comment{Extract additional breakends from junctions in $\mathcal{A}$}
-        \For{$B^i_k,\ k\in 1,\ldots,|B^i|-1,\ c \in 1,\ldots,|\mathcal{C}|/2$}
-        \State $v, \bar{v} \gets newVertices(2, \psi, "I")$ \Comment{$newVertices$ updates $\psi$ to map $v$ and $\bar{v}$ to "I"}
-        \State $\phi(v) = (i, B^i_k, B^i_{k+1}-1)$
-        \State $\phi(\bar{v}) = (-i, B^i_k, B^i_{k+1}-1)$
-        \State $l_1, \bar{l_1}, l_2, \bar{l_2} \gets newVertices(4, \psi, "L")$
-        \State $e_1, \bar{e_1}, e_2, \bar{e_2} \gets newEdges(\{ (l_1, v), (\bar{v},\bar{l_1}), (v, l_2), (\bar{l_2},\bar{v}) \}, \psi, "L")$
-        \State \algorithmicif\ $k = 1$ \ \algorithmicthen\ \ $\psi(\{l_1, e_1, \bar{l_1}, \bar{e_1} \}) \gets "T"$  \Comment{Label telomeric loose ends with "T"}
-        \State \algorithmicif\ $k = |B^i|-1$ \ \algorithmicthen\ $\psi(\{l_2, e_2, \bar{l_2}, \bar{e_2} \}) \gets "T"$
-        \State $V(G) \gets V(G) \cup  \{ v, \bar{v}, l_1, \bar{l_1}, l_2, \bar{l_2} \})$
-        \State $E(G) \gets E(G) \cup  \{ e_1, \bar{e_1}, e_2, \bar{e_2} \})$
-        \EndFor
-        \State $\mathcal{R} = referenceAdjacencies(\mathcal{B})$  \Comment{Get implied reference adjacencies from breakends}
-        % \State $\mathcal{A} = \mathcal{A} \cup \ reverseComplement(\mathcal{A})$  \Comment{Make sure $\mathcal{A}$ contains both forward and RC adjacencies} 
-        \For{$A = (i_1,r_1,i_2,r_2) \in \mathcal{A} \cup \mathcal{R}$}
-        \If{$sgn(i_1)>0$}
-        \State $v_1 \gets getVertex(\{ \hat{v} \ | \ \phi(v) = (i_1, q, r_1+\frac{-sgn(i)+1}{2}), v \in V(G), q \in \mathbb{N}\}$)
-        \Else
-        \State $v_1 \gets getVertex(\{ \hat{v} \ | \ \phi(\hat{v}) = (i_1, r_1 + \frac{-sgn(i)+1}{2}, q), v \in V(G), q \in \mathbb{N}\})$
-        \EndIf
-        \If{$sgn(i_2)>0$}
-        \State $v_2 \gets getVertex(\{ \hat{v} \ | \ \phi(v) = (i_2, r_2 + \frac{sgn(i_2)+1}{2}, q), v \in V(G), q \in \mathbb{N}\})$
-        \Else
-        \State $v_2 \gets getVertex(\{ \hat{v} \ | \ \phi(\hat{v}) = (i_2, q, r_2 + \frac{sgn(i_2)+1}{2}), v \in V(G), q \in \mathbb{N} \})$
-        \EndIf
-        \State \algorithmicif\ $A \in \mathcal{R}$ \algorithmicthen\ $e = newEdges((v_1, v_2), \psi, "R")$ \ \algorithmicelse \ $e = newEdges((v_1, v_2), \psi, "A")$
-        \State $E(G) \gets E(G) \cup \{e\}$
-        \EndFor
-        \State \textbf{return} $(V(G), E(G), \psi, \phi)$
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
 
 
 \subsubsection*{JaBbA model fitting}
@@ -761,14 +768,14 @@ To chart structural variant evolution across sub-clades of MRC5 clones, a proced
 Formally, we define a collection ${G^i = (V^i, E^i)}, i \in 1,\dots,n$ of identical genome graphs across $n$ clones, each a replica of a \textit{prototype} genome graph $G^0 = (V^0, E^0)$. The mapping $p:V \cup E \rightarrow V^0 \cup E^0$ maps each vertex $v \in V^i$ and edge $e \in E^i,i \in 1,\dots,n$ to its corresponding vertex $p(v)\in V^0$ and edge $p(e) \in E^0$ in the prototype graph. We then jointly infer unique copy number assignments $\kappa^i$ to the vertices and edges of each genome graph $G^i$ by solving the mixed integer program:
 
 \begin{equation} \label{eq:multi_sample_jabba}
-    \begin{align}
+    \begin{aligned}
         \underset{\kappa^i:V_I(G^i) \cup E(G^i) \rightarrow \mathbb{N}, i \in 1,\dots,n}{\text{minimize}} &
         \lambda \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) + \sum_{i \in 1,\dots,n}\mathcal{V}(G^i, \kappa^i, x^i, J^i) \\
         \text{subject to: } & \kappa^i(v) = \kappa^i(\bar{v}), \forall_{v \in V_I^i} \\
         & \kappa^i(e) = \kappa^i(\bar{e}), \forall_{e \in E^i} \\
         & \kappa^i(v) = \sum_{e \in E^+(v,G^i)}\kappa^i(e) = \sum_{e \in E^-(v, G^i)}\kappa^i(e) \\
         & \kappa^i(e) \le u^i(e)
-    \end{align}
+    \end{aligned}
 \end{equation}
 
 where $x^i$ and $J^i$ represent the binned read depth data and bin-node mappings for clone $i$ and  $\mathcal{V}(G^i,κ^i,x^i,J^i)$ is the read depth residual for genome graph i, analogous to \ref{eq:MIQP}.  A new term in this joint formulation is $u^i:E(G^i) \rightarrow \{0,\inf\}$, which is a constraint on the upper bound of each edge CN $\kappa(e) \in E(G^i)$, e.g. zero if there have been no read support for the junction in clone $i$. 
@@ -793,11 +800,11 @@ Evolving 12p alleles were jointly reconstructed across 13 MRC5 clones through th
 Formally, the subgraph of vertices and edges with a nonzero copy number in each $(G^i,κ^i)$ were exhaustively traversed to derive all minimal paths and cycles $H^i$, where for each walk $h \in H^i$ maps to incident sequences of $V(h) \subseteq V^i$ and $E(h) \subseteq E^i$ of vertices and edges in the graph $G^i$.  The nodes and vertices of these walks were then projected to via the mapping $p$ to define a unique set of walks $H^0$ in the prototype graph $G^0$. We extend our notation $p$ (see previous section) so that for a walk $h \in H^i$ the mapping $p(h) \in H^0$ denotes the walk formed by projecting the vertices and edges of $h$ via $p$ to $H^0$.  With these definitions, the single graph haplotype inference defined in \ref{eq:walk_decomposition} was extended to a joint inference by solving the following mixed integer linear program to assign a copy number $\kappa^i(h) \in \mathbb{N}$ to each walk $h \in H^i$:
 
 \begin{equation} \label{eq:joint_walk_decomposition}
-    \begin{align}    
+    \begin{align*}
         \underset{\kappa^i(h):H^i \rightarrow \mathbb{N}, i \in 1, \dots, n}{\text{minimize}} & \sum_{h \in H^0} [\![ \sum_{\hat{h} \in H^i | p(\hat{h} = h)} \kappa^i(h) ]\!] \\
         \text{s.t. } & \kappa^i(v) = \sum_{h \in H^i} \kappa(h)\delta(h, v), \forall v \in V^i, i \in 1, \dots, n \\
         & \kappa^i(e) = \sum_{h \in H^i} \kappa(h)\delta(h, e), \forall e \in E^i, i \in 1, \dots, n 
-    \end{align}
+    \end{align*}
 \end{equation}
 
 where the function $\delta(v,h)$ and $\delta(e,h)$ is 1 if vertex $v$ and edge $e$ belong to walk $h$ and 0 otherwise, just like in \ref{eq:walk_decomposition}. The Iverson bracket ($[\![]\!]$) operator in the objective function Equation \ref{eq:joint_walk_decomposition} minimizes the total number of unique walks used across the compendium, hence identifying a jointly parsimonious assignment of copy number to walks across the compendium of graphs. Equation \ref{eq:joint_walk_decomposition} was solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package. Variant cycles and paths from the resulting solution were manually combined to yield a set of consistent linear paths, i.e. somatic haplotypes, to yield allelic reconstructions in Figure!!!.
@@ -1031,7 +1038,7 @@ We obtained expressed protein-coding gene fusion calls from a published TCGA RNA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter*{Appendix C: Chapter 4 supplementary materials and methods}
 \subsection*{Cell lines}
-MRC5 human lung fibroblasts (CCL-171), Phoenix-ampho (CRL-3213), RPE-1 hTERT (CRL-4000), HCT-116 (CCL-247) and U2-OS (HTB-96) cells were obtained from ATCC for this study. 293-FT cells were obtained from ThermoFisher. MRC5 cells and derivatives thereof were grown in EMEM media (ATCC) supplemented with 15\% fetal bovine serum (FBS; Gibco) and 100 U/mL of penicillin and 100 g/mL streptomycin (PenStrep, Gibco) at 37ºC, 5\% CO2. hTERT RPE-1 cells were grown in DMEM:F12 media (Gibco) with 10\% FBS and PenStrep at 37ºC, 5\% CO2. HCT-116 colorectal carcinoma cells and U2OS cells were grown in DMEM with 10\% FBS and PenStrep at 37ºC, 5\% CO2.
+MRC5 human lung fibroblasts (CCL-171), Phoenix-ampho (CRL-3213), RPE-1 hTERT (CRL-4000), HCT-116 (CCL-247) and U2-OS (HTB-96) cells were obtained from ATCC for this study. 293-FT cells were obtained from ThermoFisher. MRC5 cells and derivatives thereof were grown in EMEM media (ATCC) supplemented with 15\% fetal bovine serum (FBS; Gibco) and 100 U/mL of penicillin and 100 $\mu$g/mL streptomycin (PenStrep, Gibco) at 37ºC, 5\% CO2. hTERT RPE-1 cells were grown in DMEM:F12 media (Gibco) with 10\% FBS and PenStrep at 37ºC, 5\% CO2. HCT-116 colorectal carcinoma cells and U2OS cells were grown in DMEM with 10\% FBS and PenStrep at 37ºC, 5\% CO2.
 
 \subsection*{Immortalized cell line panel }
 Details of the post-crisis immortalized cell line panel are provided in Supplementary Table 1. HA-1M cells were a kind gift of Silvia Bacchetti29, SW13/26/39 cells were a kind gift of Jerry Shay28, and Bet-3B/3K and BFT-3B/G/K cells were a kind gift of Roger Reddel27. 
@@ -1044,15 +1051,16 @@ Retroviral pLVX-hTERT was a kind gift of Teresa Davoli. Activating TERT gRNAs we
 \subsection*{Viral gene delivery}
 Retroviral constructs were transfected into Phoenix amphitropic cells using calcium phosphate precipitation. Lentiviral constructs were transfected with appropriate packaging vectors using calcium phosphate precipitation into 293-FT cells. Viral supernatants were collected and filtered before addition to target cells, supplemented with 4 g/ml polybrene. For activating gRNA constructs, multiple viral supernatants were collected and concentrated using PEG-it Virus Precipitation Solution (System Biosciences LV810A-1). Cells were infected 2-3 times at 12-hour intervals before selection in the appropriate antibiotic. 
 
-Immunoblotting
+\subsection*{Immunoblotting}
 For immunoblotting, cell pellets were directly lysed in 1X Laemmli buffer (2\% SDS, 5\% -mercaptoethanol, 10\% glycerol, 0.002\% bromophenol blue and 62.5 mM Tris-HCl pH 6.8) at a concentration of 107 cells/ml. Lysates were denatured at 100C, and DNA was sheared with a 28½ gauge insulin needle. Lysates were resolved on SDS/PAGE gels (Life Technologies), transferred to nitrocellulose membranes and blocked with 5\% milk in TBS with 0.1\% Tween-20. Primary antibodies (anti-Cas9 7A9-3A3, Cell Signaling Technology \#14697S, anti-γ-tubulin Sigma\#T5326, anti- Human Retinoblastoma protein BD Pharmigen \#554136, anti-p21 F-5 Santa Cruz sc-6246) were incubated overnight, before membrane washing and incubation with appropriate HRP-conjugated secondary antibodies (Amersham) and detection with SuperSignal ECL West Pico PLUS chemiluminescence (ThermoFisher).
 
-Immunofluorescence 
+\subsection*{Immunofluorescence}
 Cells were grown on glass coverslips and fixed in 3\% paraformaldehyde and 2\% sucrose. Coverslips were permeabilized in 0.5\% Triton-X-100/PBS, and blocked in goat block (0.1\% BSA, 3\% goat serum, 0.1\% Triton-X-100, 2mM EDTA) in PBS. Primary and secondary antibodies (Rabbit anti-53BP1 Abcam \#ab-175933, F(ab')2-Goat anti-Rabbit IgG (H+L) Cross-Adsorbed Alexa Fluor 488 ThermoFisher A-11070) were diluted in goat block. Slides were counter-stained with DAPI and mounted using Prolong gold anti-fade medium. Images were acquired on a DeltaVision microscope (Applied Precision) equipped with a cooled charge-coupled device camera (DV Elite CMOS Camera), with a PlanApo 60× 1.42 NA objective (Olympus America), and SoftWoRx software. Images were analyzed for foci numbers using a custom-made algorithm written for FIJI, courtesy of Leonid Timashev50.
 
-Metaphase spread preparation and staining
-Metaphase spreads were prepared by treatment of cells with 0.1 ug/ml colcemid (Roche) for 3 hours, before trypsinization and swelling at 37C for 5-10 mins in 0.075 M KCl. Cells were fixed in a freshly prepared 3:1 mixture of methanol to acetic acid and stored at 4C at least overnight. Spreads were prepared by dropping cell solution onto cold glass slides exposed to steam from a 75C water bath, flooding slide with acetic acid, before exposure of the dropped cells for 3-5 secs in steam. Slides were dried overnight before storage in 100\% Ethanol at -20C. For visualization of fusions, slides were rinsed in PBS, fixed in 4\% formaldehyde/PBS for 5 mins, and dehydrated in an ethanol series before co-denaturation of slide and PNA probes (TelG-Cy3 PNA Bio F1006, CENPB-AF488 PNA Bio F3004) for 3 mins at 80C in hybridization solution (10 mM Tris-HCl pH 7.2, 70\% formamide, 0.5\% Roche 11096176001 blocking reagent). Hybridization was carried out for 2 hours at RT in the dark, before washing twice in 10 mM Tris-HCl pH 7.2, 70\% formamide and 0.1\% BSA, then washing three times in 0.1 M Tris-HCl pH 7.2, 0.15M NaCl, 0.08\% Tween-20. DAPI was included in the second wash. Slides were dehydrated through an ethanol series before mounting with Prolong Gold antifade medium (Invitrogen). 
-For chromosome painting, slides were prepared as above for chromosome fusions, and co-denaturation of chromosome specific paints (XCP-12 Metasystems D-0312-050-FI, XCP-21 Metasystems D-0321-050-OR) was carried out at 75C for 2 mins, before hybridization overnight at 37C. Post hybridization washes were 0.4X SSC for 2 mins at 72C, 2X SSC, 0.05\% Tween-20 for 30 secs, followed by counterstaining in DAPI for 15 min, and a rinse in ddH2O before mounting in Prolong Gold antifade medium (Invitrogen). For karyotyping, slides were prepared as above, and analysis was carried out on DAPI stained chromosomes.
+\subsection*{Metaphase spread preparation and staining}
+Metaphase spreads were prepared by treatment of cells with 0.1 $\mu$g/ml colcemid (Roche) for 3 hours, before trypsinization and swelling at 37C for 5-10 mins in 0.075 M KCl. Cells were fixed in a freshly prepared 3:1 mixture of methanol to acetic acid and stored at 4 \textdegree C at least overnight. Spreads were prepared by dropping cell solution onto cold glass slides exposed to steam from a 75\textdegree C water bath, flooding slide with acetic acid, before exposure of the dropped cells for 3-5 secs in steam. Slides were dried overnight before storage in 100\% Ethanol at -20 \textdegree C. For visualization of fusions, slides were rinsed in PBS, fixed in 4\% formaldehyde/PBS for 5 mins, and dehydrated in an ethanol series before co-denaturation of slide and PNA probes (TelG-Cy3 PNA Bio F1006, CENPB-AF488 PNA Bio F3004) for 3 mins at 80 \textdegree C in hybridization solution (10 mM Tris-HCl pH 7.2, 70\% formamide, 0.5\% Roche 11096176001 blocking reagent). Hybridization was carried out for 2 hours at RT in the dark, before washing twice in 10 mM Tris-HCl pH 7.2, 70\% formamide and 0.1\% BSA, then washing three times in 0.1 M Tris-HCl pH 7.2, 0.15M NaCl, 0.08\% Tween-20. DAPI was included in the second wash. Slides were dehydrated through an ethanol series before mounting with Prolong Gold antifade medium (Invitrogen). 
+
+For chromosome painting, slides were prepared as above for chromosome fusions, and co-denaturation of chromosome specific paints (XCP-12 Metasystems D-0312-050-FI, XCP-21 Metasystems D-0321-050-OR) was carried out at 75\textdegree C for 2 mins, before hybridization overnight at 37 \textdegree C. Post hybridization washes were 0.4X SSC for 2 mins at 72C, 2X SSC, 0.05\% Tween-20 for 30 secs, followed by counterstaining in DAPI for 15 min, and a rinse in ddH2O before mounting in Prolong Gold antifade medium (Invitrogen). For karyotyping, slides were prepared as above, and analysis was carried out on DAPI stained chromosomes.
 
 BAC probes
 To identify individual chromosomes on metaphase spreads, BAC probes were ordered from BACPAC Genomics (Chr.12p11.2 RP11-90H7, Chr.18q12.3~21.1 RP11-91K12, Chr.6p21.2~21.3 RP11-79J17). Probe DNA was nick-translated with either Digoxigenin-11-UTP or Biotin-16-UTP (Roche) using DNase I (Roche) and DNA polymerase I (NEB) overnight at 15C. Probes were precipitated with Cot1 Human DNA (Invitrogen) and salmon sperm DNA (Invitrogen) and resuspended in 50\% formamide, 2X SSC and 10\% dextran sulfate before denaturation for 8 mins at 80C. Metaphase spreads were prepared as above, and slides were denatured with 70\% formamide, 2X SSC for 2 mins at 80C before dehydration through an ethanol series. Slides were co-denatured for 2 mins at 80C with TelG-647 (PNA Bio F1014) in hybridization solution (10mM Tris-HCl pH 7.2, 70\% formamide, 0.5\% Roche 11096176001 blocking reagent) followed by a 2-hour hybridization at RT. Denatured BAC probes were then applied and hybridized overnight at 37C. Slides were washed for 3 x 5 mins in 1X SSC at 60C, followed by a blocking step in 30 g/ml BSA, 4X SSC and 0.1\% Tween-20 for 30 mins at 37C. BAC probes were detected with anti-Digoxenin-Rhodamine (Roche 11207750910) and Avadin-FITC antibodies (VWR CAP21221) in 10 g/ml BSA, 1X SSC and 0.1\% Tween-20 by incubating for 30 mins at 37C, before washing twice for 5 mins in 4X SSC and 0.1\% Tween-20 at 42C. Counterstaining with DAPI was carried out for 15 mins at RT, before a further wash at 42C in 4X SSC, 0.1\% Tween-20 and mounting in Prolong-Gold antifade (Invitrogen). Images were acquired on the Deltavision microscope equipment detailed above. Images were analyzed using FIJI51. Briefly, individual chromosomes were detected with the BAC probes. Intensity measurements of the Tel-G signal were quantified for each p-arm and q-arm of identified chromosomes. Measurements were also taken for all other telomeres in the same spread. Background subtracted measurements for all telomeres were compared to the shortest (lowest intensity) of the Chr.12p (or Chr.18p or Chr.6p) telomeres on each spread, and the results expressed as a ratio. For identification of fusions containing chromosome 12, the same protocol was carried out using a centromere probe (CENPB-AF488, PNA Bio F3004).
@@ -1083,14 +1091,14 @@ Genome-wide binned read depth was aggregated across 118 low pass WGS clones acro
 Preliminary junction balanced genome graphs were generated for MRC5 and SV40T cell lines from binned read depth and junction calls (see above) using JaBbA (https://github.com/mskilab/JaBbA)3. Briefly, 1 Kbp binned read depth output from dryclean was collapsed to 5 Kbp and JaBbA was run with slack penalty 500. gGnome (https://github.com/mskilab/gGnome) was used to identify complex structural variant patterns. Genome graphs and corresponding genomic data (e.g. binned coverage, allelic bin counts) were visualized using gTrack (https://github.com/mskilab/gTrack). 
 
 
-Loose end classification
-Each loose end in each MRC5 genome graph was analyzed to identify a clone specific (i.e. absent in the ancestral MRC5 line) origin for the mates of high mapping quality (MAPQ=60) reads mapping to the location and strand of the loose end. These mates were assessed for neo-telomeric sequences by counting instances of 11 permutations of a 12-bp telomere repeat motif (TTAGGGTTAGGG) (using the R / Bioconductor Biostrings package) in the mates. The mates were also assembled into contigs using fermi57 aligned using bwa mem58 via the RSeqLib R package56 to hg38 (which contains a more  highly resolved centromere build) to characterize novel repeat (e.g. centromere) fusions (GATK Human reference genome, hg38, data bundle including Homo_sapiens_assembly38.fasta, gs://gcp-public-data--broad-reference). The loose end loci were also assessed through overlap with the hg19 repeatMasker database (human_g1k_v37_decoy.repeatmasker) for the presence of reference annotated repeats that might explain the absence of a mappable junction explaining the copy number change.  
+\subsection*{Loose end classification}
+Each loose end in each MRC5 genome graph was analyzed to identify a clone specific (i.e. absent in the ancestral MRC5 line) origin for the mates of high mapping quality (MAPQ=60) reads mapping to the location and strand of the loose end. These mates were assessed for neo-telomeric sequences by counting instances of 11 permutations of a 12-bp telomere repeat motif (TTAGGGTTAGGG) (using the R / Bioconductor Biostrings package) in the mates. The mates were also assembled into contigs using fermi57 aligned using bwa mem58 via the RSeqLib R package56 to hg38 (which contains a more  highly resolved centromere build) to characterize novel repeat (e.g. centromere) fusions (GATK Human reference genome, hg38, data bundle including Homo\_sapiens\_assembly38.fasta, gs://gcp-public-data--broad-reference). The loose end loci were also assessed through overlap with the hg19 repeatMasker database (human\_g1k\_v37\_decoy.repeatmasker) for the presence of reference annotated repeats that might explain the absence of a mappable junction explaining the copy number change.  
 
-SNV phylogeny
+\subsection*{SNV phylogeny}
 To compute an SNV phylogeny across MRC clones, we first identified SNV that were acquired in MRC5 clones relative to the ancestral MRC5 line using Strelka259 (https://github.com/Illumina/strelka) under paired (i.e. tumor / normal) mode with the clone as the “tumor” and the MRC ancestral line as the “normal” sample and default parameters and GATK hg19 resource bundle (Genome Analysis Toolkit GATK Resource Bundle for hg19; gs://gatk-legacy-bundles). Acquired SNVs were first filtered according to the Strelka2 PASS filter as well as additional filters (MQ = 60, SomaticEVS>12, total ALT count > 4) yielding 27,220 total unique variants across the 13 MRC5 clones. Reference and variant allelic read counts were assessed at each SNV site (via the R / Bioconductor Rsamtools package, version 3.6.1, http://www.r-project.org/) across all 13 clones. We then further required a >0.5 posterior probability of a variant being present in a sample, by assuming Binomial likelihood of variant read count and using the aggregated allele frequency in all samples as the prior, resulting in the final 14,970 unique mutations. The binary matrix of clones by SNV loci. was then used to derive a neighbor-joining phylogenetic tree using the R / Bioconductor package ape. Following tree construction, we associated each SNV with its most likely phylogenetic tree branch by comparing the binary incidence vector associated with each SNV with the binary incidence vector associated with each tree branch, and finding the closest branch using Jaccard distance, only linking SNV to branches when the SNV was within <0.1 Jaccard distance of the closest branch, thus producing the groupings of SNVs in Figure 5A.   
 
-Parental SNP allelic phasing and imbalance
-Germline heterozygous sites in the parental MRC5 line were identified by computing allelic counts at HapMap sites (GATK human reference genome, hg19 data bundle, hapmap_3.3.b37.vcf) and identifying loci with variant allele fraction >0.3 and <0.7.  Y11, a clone with loss of a single allele at 12p, was chosen to phase parental SNPs on 12p. At each locus, the allele (reference or alternate) with a 0 read count was assigned to the “L” (lost) haplotype and the other allele was assigned to the “R” (retained) haplotype. (All heterozygous SNP loci in the region contained exactly one allele with a 0 read count). L and R allelic counts were then computed at these sites across all 13 high pass WGS and 131 low pass WGS samples. These counts were divided by the genome wide mean of heterozygous SNP allele counts (in these 100\% pure and nearly diploid samples) to derive the absolute allelic copy number60.  
+\subsection*{Parental SNP allelic phasing and imbalance}
+Germline heterozygous sites in the parental MRC5 line were identified by computing allelic counts at HapMap sites (GATK human reference genome, hg19 data bundle, hapmap\_3.3.b37.vcf) and identifying loci with variant allele fraction >0.3 and <0.7.  Y11, a clone with loss of a single allele at 12p, was chosen to phase parental SNPs on 12p. At each locus, the allele (reference or alternate) with a 0 read count was assigned to the “L” (lost) haplotype and the other allele was assigned to the “R” (retained) haplotype. (All heterozygous SNP loci in the region contained exactly one allele with a 0 read count). L and R allelic counts were then computed at these sites across all 13 high pass WGS and 131 low pass WGS samples. These counts were divided by the genome wide mean of heterozygous SNP allele counts (in these 100\% pure and nearly diploid samples) to derive the absolute allelic copy number60.
 
 SNV clustering
 Inter-SNV distances were computed for all pairs of reference adjacent acquired SNVs associated with each MRC5 clone and visualized as rainfall plots. Runs of two or more SNVs with inter SNV distances < 2 Kbp were nominated as clusters. Two distinct SNV clusters were identified on chromosome 12p across the 13 clones.  
