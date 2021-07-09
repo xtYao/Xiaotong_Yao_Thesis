@@ -231,7 +231,7 @@ Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-str
 \begin{figure}
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/junction_orientation.png}
-    \caption{Four basic classes of junctions. Dark gray indicates the \textit{cis} side and light gray the \textit{trans} side of a breakend.}
+    \caption{\textbf{Four basic classes of junctions.}}{Dark gray indicates the \textit{cis} side and light gray the \textit{trans} side of a breakend.}
     \label{fig:junction_orientations}
 \end{figure}
 
@@ -1205,9 +1205,29 @@ In conclusion, our data reveal that telomere crisis can instigate a wide spectru
 
 In this final chapter, I describe the collaborative effort within the Cancer Genome Atlas (TCGA) consortium to characterize the whole genomes of lung adenocarcinoma lacking canonical pathogenic alterations in RTK/RAS/RAF pathway as determined by whole exome sequencing (WES) and transcriptome sequencing (RNA-seq).
 
-\section{Introduction}
-
 \section{Identification of RPA(-) LUADs}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_pie.png}
+    \caption{\textbf{Driver alterations composition in 501 lung adenocarcinoma of TCGA.}}{About 23\% of TCGA LUAD cases have not been associated with an known alteration in the RTK/RAS/RAF pathway.}    
+    \label{fig:gdan_pie}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_cohort.png}
+    \caption{\textbf{Classification of RPA(+) and RPA(-) LUADs.}}{From the entire LUAD cohort, 383 RPA(+)\textsubscript{E} and 118 RPA(-)\textsubscript{E} samples are identified based on WES and RNA-seq data, and 85/118 RPA(-)\textsubscript{E} samples are sent for WGS. Our WGS analyses re-classify 28/85 RPA(-)\textsubscript{E} cases into RPA(+)\textsubscript{G}. Among the 383 RPA(+)\textsubscript{E} cases, 40 cases have WGS data from a previously published TCGA study (Imielinski et al. 2017). Together, we use 57 RPA(-)\textsubscript{G} cases, 68 RPA(+)\textsubscript{G} cases and a total of 411 RPA(+) cases for downstream analyses.}
+    \label{fig:gdan_cohort}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_rpa_oncoprint.png}
+    \caption{\textbf{RPA identified in WGS of the 85 RPA(-)\textsubscript{E} samples.}}{25/85 show at least one RPA while the remaining 57 are classified as RPA(-)\textsubscript{G}.}
+    \label{fig:gdan_rpa_oncoprint}
+\end{figure}
+
+
 A previously published TCGA study of lung adenocarcinoma identified 383 of 501 (76\%) of LUAD cases as RTK/RAS/RAF-alteration-positive, or RPA(+), using WES and RNA-seq (Table S1) (Campbell et al., 2016). Samples with an activating mutations in KRAS, EGFR, BRAF, ERBB2, MET, RIT1, NRAS, RAF1, HRAS, ARAF, MAP2K1 or SOS1; loss of function mutations in NF1 or RASA1; fusions in ALK, ROS1, RET, MET or NTRK2; and amplification of EGFR, ERBB2, KRAS, MET, FGFR1 or MAPK1 were classified as RPA(+) by WES and RNA-seq, which we henceforth designate as RPA(+)E. Among the remaining 118 LUADs, we performed WGS for 85 tumor-normal pairs (Fig. 1A-B, Fig. S1A) at average 73.5-fold (± 7.9 s.d.) and 37.0-fold (± 5.8 s.d.) coverage for tumor and matched normal samples, respectively, followed by somatic single-nucleotide variant (SNV), indel, copy number, and structural variant (SV) analysis (Methods).
 
 Our multi-step analysis schema is shown in Fig. S1. In the first step, we re-analyzed the 85 RPA(-)E cases to determine if there was truly no evidence of coding mutations in the RTK/RAS/RAF pathway. Surprisingly, we found that 20 of the 85 cases harbored KRAS hotspot mutations, with 8 samples showing the recently targetable p.G12C mutation (Canon et al., 2019; Ostrem et al., 2013). Re-examination of the WES data for those samples confirmed the mutation calls for 16 of the 20 samples, but the read support was insufficient to enable high-confidence variant calling without invoking the WGS information (Fig. 1C, Fig. S1B). The poor WES coverage for those KRAS mutations was likely due to low capture efficiency (Clark et al., 2011) for the first coding exon of KRAS, which contains codons 12 and 13. In addition, the samples with KRAS mutations missed by WES showed lower tumor purity than did KRAS-mutated samples identified by WES (Fig. S1C, Table S1), confirming that high sequencing depths were necessary for detecting the mutations reliably.
