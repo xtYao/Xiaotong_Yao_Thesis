@@ -155,7 +155,8 @@ Despite these observations, most studies on genomic structural variations have b
 The limitation of this approach is visible even in the simplest form of complex SV. Considering the toy model in (Fig 1A, adapted from MI/JM's review), where a unrearranged genomic contig \textit{ABCDE} underwent two rounds of tandem duplications, yet when mapped to the reference genome, the second junction appeared to be consistent with a deletion. As a result, the development of a more general framework to analyze complex SVs is needed.
 
 \section{Representation of structural variations with genome graphs}
-Graphs have been widely used to model genomic sequences for decades, with \textit{de novo} assembly as one of the fields most heavily reliant (citation SGA, Fermi, etc.). One way to describe sequence as graphs is that each vertex is the sequence of a contiguous DNA segment (contig) and following the adjacencies among vertices one can thread a path (or cycle) to obtain longer sequence and eventually approach a genome. In resequencing studies, we map reads to locations in an existing reference genome, and identify variants based on the discrepancy between reads and the mapped reference sequence. Nevertheless, we can apply a similar idea of modeling, now replacing actual DNA sequences to the genomic intervals they map to in the reference. There have been several studies employed the concept of \textit{interval graph} to model the somatic SVs in cancer genomes. which treats xxx (describe the interval graph models). %% TODO
+%% TODO!!!
+Graphs have been widely used to model genomic sequences for decades, with \textit{de novo} assembly as one of the fields most heavily reliant (citation SGA, Fermi, etc.). One way to describe sequence as graphs is that each vertex is the sequence of a contiguous DNA segment (contig) and following the adjacencies among vertices one can thread a path (or cycle) to obtain longer sequence and eventually approach a genome. In resequencing studies, we map reads to locations in an existing reference genome, and identify variants based on the discrepancy between reads and the mapped reference sequence. Nevertheless, we can apply a similar idea of modeling, now replacing actual DNA sequences to the genomic intervals they map to in the reference. There have been several studies employed the concept of \textit{interval graph} to model the somatic SVs in cancer genomes. which treats xxx (describe the interval graph models). 
 
 % Read Medevedev 2007 in detail!!
 In our published works and this dissertation, we have formulated a directed skew-symmetric graph data structure, called \textit{genome graph}, that is dual to the variations of interval graphs decribed above. Like the previous work, we will show that genome graphs can represent genomic rearrangements based on a reference genome and serve as a scaffold to inferring the derivative sequences.
@@ -172,7 +173,7 @@ Early efforts in this realm successfully identified many distinct patterns.
 Structural variation is a hallmark of cancer genomes. Recent pan-cancer whole genome sequencing (WGS) studies has revealed a more complete picture of the spectrum of structural variants (SVs) found in cancer genomes, ranging from simple deletions, duplications and translocations to complex and often multi-chromosomal rearrangements1–3. The PCAWG consortium catalogued WGS variants across >2,500 cases spanning 38 tumor types4 to identify novel classes of complex SVs and cluster these into signatures, mirroring previous work in the categorization of single nucleotide variants (SNVs) into distinct mutational processes5–8. The analysis of genome graphs provides a rigorous and unified framework to classify simple and complex SVs (including chromothripsis, breakage-fusion-bridge (BFB) cycles, and double minutes), identify novel event classes, and study the rearranged structure of aneuploid alleles 3.
 
 \section{Evolution of SVs after telomere crisis}
-Despite advances in the identification and classification of structural variations, a mechanistic understanding of the underlying causes is often still lacking. SV mutational processes may have a more complex etiology than those driving the formation of SNVs and generate a more complex spectrum of patterns: layers of simple SVs can reshape a locus gradually and across multiple alleles, and complex SVs can rapidly rewire many genomic regions. In addition, multiple underlying causes can lead to the same type of rearrangement, and diverse outcomes can originate from a single cause. Further, it has been expensive and technically challenging to delineate specific mechanisms, although some progress has been made9–14.
+Despite advances in the identification and classification of structural variations, a mechanistic understanding of the underlying causes is often still lacking. SV mutational processes may have a more complex etiology than those driving the formation of SNVs and generate a more complex spectrum of patterns: layers of simple SVs can reshape a locus gradually and across multiple alleles, and complex SVs can rapidly rewire many genomic regions. In addition, multiple underlying causes can lead to the same type of rearrangement, and diverse outcomes can originate from a single cause. Further, it has been expensive and technically challenging to delineate specific mechanisms, although some progress has been made9–14 .
 
 Telomere crisis, which is thought to occur at an early stage of carcinogenesis before a telomere maintenance mechanism is activated15, has been suggested as a cause of cancer genome SVs. A priori, the genomic consequences of telomere crisis are predicted to be profound: critically short telomeres in human cells can trigger a DNA damage response, and inappropriately engage DNA repair pathways resulting in telomere to telomere fusions16; 17. Subsequent cell divisions in the presence of fused dicentric chromosomes has long been considered a mechanism driving complex chromosomal rearrangements such as BFB cycles in tumors18; 19. The characteristic fold-back inversions of BFB cycles are known to contribute to tumorigenesis in acute lymphocytic leukemia (ALL)20 as well as squamous cell cancers and esophageal adenocarcinoma3. Modelling of telomere crisis in late generation telomerase-deficient mice lacking p53 showed that telomere dysfunction engenders cancers with non-reciprocal translocations, as well as focal amplifications and deletions in regions relevant to human cancers21; 22. Furthermore, mouse models of telomerase reactivation after a period of telomere dysfunction showed that acquisition of specific copy number aberrations and aneuploidy could drive malignant phenotypes23.
 
@@ -237,6 +238,7 @@ Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-str
 
 For a breakend location in the middle of a chromosome, only one of its two sides is incident to the junction, we call this side the \textit{cis} side for it is the part of the genome that will be on the derivative molecule after introducing the junction, and the other \textit{trans} side. Based on the relative locations and orientations of its two connected breakends, we can classify a junction into four basic classes (\textbf{Figure \ref{fig:junction_orientations}}): DUP-like (tandem duplication), DEL-like (deletion), INV-like (inversion), TRA-like (translocation), named after the most common and simplest SV events that can give rise to such junctions. In WGS studies, these junctions are the direct products of SV calling methods like SvABA \cite{wala2018}, GRIDSS \cite{Cameron2017-pz}, Delly \cite{Rausch2012-ly}, Lumpy \cite{Layer2014-xq}, CREST (cite), NovoBreak , and many more. In the following section we show a basic algorithm to build a genome graph from a set of breakends and junctions.
 
+% TODO!!!
 \subsection{Build genome graph from breakends and junctions}
 To describe a rearranged and copy number altered reference genome, we partition $\mathcal{C}$ according to a collection of \textit{breakends} $\mathcal{B}$. We also define a set of \textit{junctions} $\mathcal{A}$ representing alternative adjacencies between a set of the breakends in $\mathcal{B}$. 
 
@@ -278,7 +280,7 @@ To describe a rearranged and copy number altered reference genome, we partition 
 \end{algorithm}
 
 
-% TODO!
+% TODO!!!
 Each $b^i = C^ \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequence of integer coordinates $B^i = (B^i_k), 1 \le B^i_k \le L_i$ on chromosome $i$, where $B^i_1$ = 1 and $B^i_{|B^i|} = L^i$.  Each junction $A \in \mathcal{A}$ is a tuple $(i_1,r_1,i_2,r_2),\ r_1 \in B^{|i_1|}, r_2 \in B^{|i_2|}$, $|i_1|, |i_2| \in  1, \ldots, c$ representing a (3'-5' phosphodiester) bond between the position $r_1 + \frac{-sgn(i_1)+1}{2}$ on chromosome / strand $C^{i_1}$ and position $r_2+\frac{sgn(i_2)+1}{2}$ on chromosome / strand $C^{i_2}$.  For every adjacency $A = (i_1,r_1,i_2,r_2) \in \mathcal{A}$ we require $\mathcal{A}$ to contain the reverse complement adjacency $\bar{A} = (-i_2,r_2, -i_1,r_1)$. The adjacencies in $\mathcal{A}$ are "alternative" relative to a set of "reference adjacencies" $\mathcal{R}$ implied by $B^i$, comprising tuples $(i, B^i_k, i, B^i_k)$ and $(-i, B^i_k, -i, B^i_k)$ for each breakend $B^i_k, k\in 1,\dots,|B^i|$ in each chromosome $i \in 1,\ldots,c$.
 
 
@@ -315,13 +317,13 @@ In addition, since double-stranded DNA require both strands to have the same CN,
 
 We call the combination $(G,\kappa)$ for which $\kappa$ satisfies Eqs. \ref{eq:junction_balance_constraint}-\ref{eq:skew_symmetry} a \textit{junction-balanced genome graph} (JBGG).
 
-% TODO
+% TODO!!!
 % Flow decomposition:
-% Why is a complete graph contain all the possible walks?
+% Why is a complete graph contain all the possible walks from source to sink?
 \subsection{Decomposing a JBGG to walks}
 In a perfect scenario where we have infinitely long sequencing reads, we can read out any sequence directly and fully (telomere to telomere), for any rearranged karyotype. However, in practice, sequencing reads from existing technologies are fragmented and limited in length, so the walks representing complete and true karyotypes are always latent. Despite current long-read sequencing provides us a better chance at obtaining the rearranged allele, it is still "local" relative to the scale of some of the most long-range complex SV events like tyfonas \cite{Hadi2020-um} (see also Chapter \ref{chap:complex_events}). Furthermore, due to the differences in cost, accuracy, throughput, and analytical robustness, the overwhelming majority of cancer WGS data is still based on massive parallel short-read sequencing, with which SV events are detected as copy number aberrations and junctions. Despite certain challenges, for instance with SVs in repetitive regions, short-read WGS has been found to approach the complete SV repertoire well \cite{Behr2021-gf}.
 
-% TODO: why a complete genome graph contains all possible karyotypes
+% TODO!!!: why a complete genome graph contains all possible karyotypes
 Though we cannot directly read the derivative sequence after rearrangement, from junctions we can always build a genome graph (see \nameref{algo:buildgraph} in later sections). If we have the complete knowledge on all junctions, then this graph will encapsulate every possible karyotype that could result from them, hence must contain the set of walks representing the true sequence (proof not shown). The enumeration of all possible walks from all the source nodes to all the sink nodes is analogous to elementary flux mode of a stoichiometric matrix \cite{Maarleveld2013}, and produces a set of paths and cycles $H$ where the latter can be further embedded to form more complex walks.
 
 However, such genome graphs only deal with the topology of junctions, and for a coherent double-stranded DNA model, the vertices and edges' dosages need also be constrained by Eq. \ref{eq:junction_balance_constraint} and Eq. \ref{eq:skew_symmetry}. With that we can define the reverse problem of Eq. \ref{eq:sum_of_walk},
@@ -337,8 +339,17 @@ However, such genome graphs only deal with the topology of junctions, and for a 
 \end{equation}
 
 %Suppose we are given an input JBGG with its junction-balanced CN $G, \kappa(G)$, the walk decomposition problem is now to find a multiplicity of every walk $\kappa(h), h \in H$, such that Eq. \ref{eq:sum_of_walk} is satisfied. 
-Since in its essence, this is equivalent to a flow decomposition problem, the junction balance constraints \ref{eq:junction_balance_constraint} guarantee that it is feasible, usually with a huge number of possible solutions. Upon this pool of possible karyotypes, we can further define different loss functions, such as parsimony (number of unique walks with $\kappa(h)>0$), to reach some optimal guesses at what the actual rearranged allele is that constitute the input JBGG. Formally,
+Since in its essence, this is equivalent to a flow decomposition problem, the junction balance constraints \ref{eq:junction_balance_constraint} guarantee that it is feasible, usually with a huge number of possible solutions. Upon this pool of possible karyotypes, we can further define different loss functions, such as parsimony (number of unique walks with $\kappa(h)>0$), to reach some optimal guesses at what the actual rearranged allele is that constitute the input JBGG. Taking the most naive formulation as an example, to minimize the total number of unique walks to reconstitute an input JBGG, formally the question is defined as,
 
+\begin{equation} \label{eq:walk_decomposition_parsimony}
+    \begin{aligned}
+        \text{Given a JBGG } & G = (V, E), \kappa(G) \\
+        \underset{\kappa(h):H \rightarrow \mathbb{N}}{\text{minimize}} & \sum_{h \in H} [\![ \kappa(h) ]\!] \\
+        s.t. & \forall v \in V, \kappa(v) = \sum_{h \in H}\delta(h,v)\kappa(h) \\
+        & \forall e \in E, \kappa(e) = \sum_{h \in H}\delta(h,e)\kappa(h) \\
+        & \kappa(h) = \kappa(\bar{h})
+    \end{aligned}
+\end{equation}
 
 
 We shall see an example of solving a variation of this problem in \ref{chap:tel_crisis}.
