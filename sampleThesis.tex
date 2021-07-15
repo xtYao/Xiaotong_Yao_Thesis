@@ -27,6 +27,7 @@
 \usepackage{hyperref}
 
 \usepackage{booktabs}
+\usepackage{longtable}
 
 \usepackage{textcomp} % defines \textmu, which is now what inputenx seems to use for μ - probably due inpmath.. also \textdegree... but not \textrho
 \usepackage{textgreek}
@@ -76,6 +77,20 @@
 \renewcommand{\topfraction}{0.85}
 \renewcommand{\textfraction}{0.1}
 \renewcommand{\floatpagefraction}{0.75}
+
+% SO solution to resizing table within page
+\newsavebox{\mybox}
+\newenvironment{mytabularwrap}{\begin{lrbox}{\mybox}}
+  {\end{lrbox}%
+  \setbox0\hbox{\usebox\mybox}%
+  \ifdim\wd0<\textwidth
+      \usebox\mybox%
+  \else
+      \resizebox{\textwidth}{!}{\usebox\mybox}%
+  \fi
+}
+
+
 
 %% \title {Structural variations in cancer genomes: representation, inference, and applications}
 \title{Illuminating rearranged cancer genome structures through genome graphs}
@@ -515,7 +530,7 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
 \begin{table}[] \label{tab:jbgg_inference}
     \centering    
     \rotatebox[]{90}{
-        \begin{tabular}{@{}llll@{}}
+        \begin{tabular}{@{}cccc@{}}
             \toprule
             Method            & Scope    & Solver                & Publication             \\
             \midrule
@@ -657,6 +672,7 @@ As a meaningful default, we plot integer copy numbers of the segments on the Y a
 
 %===========================%
 \section{Discussion}
+In this chapter, we defined a skew-symmetric direct graph representation of a rearranged genome, termed genome graph. Even though this simple idea is not new by any measure, up until now, there has not been a
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
@@ -664,8 +680,99 @@ As a meaningful default, we plot integer copy numbers of the segments on the Y a
 \chapter{Distinct Classes of Complex Structural Variation Uncovered across Thousands of Cancer Genome Graphs} \label{chap:complex_events}
 In this chapter I will describe the discovery of three distinct types of complex SV events from 2778 genome graphs built with JaBbA from a pan-cancer cohort of over 30 types of cancers. Furthermore, I will show that the patients in this cohort can be stratified based on 13 simple to complex rearrangement patterns to clusters of differential overall survival, tumor type enrichment, and association with specific germline or somatic alterations.
 
+%\begin{mytabularwrap}
+    \begin{longtable}[l] {cccc} 
+        \label{tab:pancan_cohort} \\
+        \caption{\textbf{Pan-cancer WGS tumor type composition.}} \\
+
+        % \hline
+        % \multicolumn{4}{c}{Begin of Table}\\
+        \hline
+        \textbf{Abbreviation} & \textbf{Tumor Type} & \textbf{Number}  & \textbf{Number of cell lines} \\
+        \hline
+        \endfirsthead
+    
+        \hline
+        \multicolumn{4}{c}{Continuation of Table \ref{tab:pancan_cohort}}\\
+        \hline
+        \textbf{Abbreviation} & \textbf{Tumor Type} & \textbf{Number}  & \textbf{Number of cell lines} \\
+        \hline
+        \endhead
+
+        \hline
+        \endfoot
+    
+        \hline
+        \multicolumn{4}{c}{End of Table}\\
+        \hline\hline
+        \endlastfoot
+
+        AML          & Acute myeloid leukemia                & 56   & 6             \\
+        BE           & Barrett's esophagus                   & 340  & 0             \\
+        BLCA         & Bladder urothelial carcinoma          & 36   & 7             \\
+        BRCA         & Breast invasive carcinoma             & 257  & 35            \\
+        CESC         & Cervical squamous cell carcinoma      & 18   & 0             \\
+        COAD         & Colorectal adenocarcinoma             & 101  & 22            \\
+        ESAD         & Esophageal adenocarcinoma             & 432  & 1             \\
+        ESSC         & Esophageal squamous cell carcinoma    & 19   & 8             \\
+        GBM          & Glioblastoma multiforme               & 76   & 7             \\
+        HNSC         & Head and neck squamous cell carcinoma & 62   & 6             \\
+        KICH         & Kidney chromophobe                    & 50   & 0             \\
+        KIRC         & Kidney renal clear cell carcinoma     & 61   & 7             \\
+        KIRP         & Kidney renal papillary cell carcinoma & 40   & 0             \\
+        LGG          & Lower grade glioma                    & 57   & 5             \\
+        LIHC         & Liver hepatocellular carcinoma        & 66   & 10            \\
+        LUAD         & Lung adenocarcinoma                   & 144  & 29            \\
+        LUSC         & Lung squamous cell carcinoma          & 68   & 15            \\
+        MALY         & Malignant lymphoma                    & 112  & 4             \\
+        MELA         & Melanoma                              & 256  & 34            \\
+        MESO         & Mesothelioma                          & 4    & 2             \\
+        MM           & Multiple myeloma                      & 4    & 4             \\
+        OTHER        & Other                                 & 10   & 8             \\
+        OV           & Ovarian serous cystadenocarcinoma     & 73   & 23            \\
+        PACA         & Pancreatic carcinoma                  & 27   & 9             \\
+        PBCA         & Pediatric brain carcinoma             & 4    & 4             \\
+        PRAD         & Prostate adenocarcinoma               & 115  & 3             \\
+        SARC         & Sarcoma                               & 58   & 8             \\
+        SCLC         & Small cell lung carcinoma             & 46   & 46            \\
+        STAD         & Stomach adenocarcinoma                & 64   & 21            \\
+        THCA         & Thyroid carcinoma                     & 62   & 2             \\
+        UCEC         & Uterine corpus endometrial carcinoma  & 60   & 11            \\
+        \hline
+        \textbf{Total}  & & 2778 & 337          \\
+        \hline
+    \end{longtable}
+%\end{mytabularwrap}
+
+\begin{table}[h!] \label{tab:pancan_dataset}
+    \caption{\textbf{Pan-cancer WGS datasets and sources.}}
+    \rotatebox[]{90}{        
+        \begin{tabular}{cccccc} 
+        \hline
+        \textbf{Abbreviation} & \textbf{Total Number} & \textbf{Attempted JaBbA} & \textbf{Analyzed} & \textbf{Reference} & \textbf{Repository} \\
+        \hline
+        BARRETTS     & 347           & 340             & 340      & \cite{Paulson2021-nd}    & TBD                      \\
+        CA           & 190           & 116             & 115      & \cite{Hadi2020-um}       & TBD                      \\
+        IPM          & 140           & 83              & 80       & \cite{Hadi2020-um}       & TBD                      \\
+        CCLE         & 330           & 326             & 322      & \cite{Ghandi2019-wx}     & SRA: PRJNA523380         \\
+        ESAD-UK      & 423           & 422             & 422      & \cite{frankell2019}      & EGA: EGAD00001004137     \\
+        KLUAD        & 49            & 49              & 49       & \cite{Lee2019-nm}        & EGA: EGAD00001004793     \\
+        MALY         & 101           & 100             & 100      & \cite{Richter2012-ur}    & EGA: EGAD00001002123     \\
+        MELA         & 183           & 183             & 183      & \cite{hayward2017}       & EGA: EGAD00001003388     \\
+        MI           & 29            & 0               & 0        & \cite{Imielinski2012-vv} & dbGaP: phs000488.v1.p1   \\
+        NZ           & 131           & 122             & 122      & \cite{Nik-Zainal2016-bz} & EGA: EGAS00001001178     \\
+        TCGA         & 1021          & 1017            & 990      & \cite{Ding2018-fa}       & dbGaP: phs000178.v10.p8  \\
+        BACA         & 57            & 55              & 55       & \cite{baca2013}          & dbGaP: phs000447.v1.p1   \\
+        \hline
+        Total        & 3001          & 2813            & 2778     &                          &                          \\
+        \hline
+        \end{tabular}
+    }    
+\end{table}
+
+
 \section{Analysis of pan-cancer genome graphs}
-To investigate the topology of JCN across cancers, we assembled a dataset comprising 2,813 short-read WGS tumor or cell line samples spanning 31 primary tumor types (Table \ref{tab:S1}), including WGS for 539 previously unpublished cases  (\textbf{Table \ref{tab:S2}}). In total, our analysis included 1,648 WGS samples not included in the Pan-Cancer Analysis of Whole Genomes (PCAWG) effort \cite{pcawg_marker2020-yi}.  Application of harmonized pipelines followed by JaBbA (\textbf{Fig. \ref{fig:Fig1}B}) yielded 2,778 high quality genome graphs (\textbf{Fig. \ref{fig:Fig1}E}, see \nameref{sec:methods} for sample characteristics and exclusion criteria).
+To investigate the topology of JCN across cancers, we assembled a dataset comprising 2,813 short-read WGS tumor or cell line samples spanning 31 primary tumor types (Table \ref{tab:pancan_cohort}), including WGS for 539 previously unpublished cases  (\textbf{Table \ref{tab:S2}}). In total, our analysis included 1,648 WGS samples not included in the Pan-Cancer Analysis of Whole Genomes (PCAWG) effort \cite{pcawg_marker2020-yi}. Application of harmonized pipelines followed by JaBbA (\textbf{Fig. \ref{fig:Fig1}B}) yielded 2,778 high quality genome graphs (\textbf{Fig. \ref{fig:Fig1}E}, see \nameref{sec:methods} for sample characteristics and exclusion criteria).
 
 \begin{figure*}[!t]
     \centering
@@ -782,7 +889,7 @@ To investigate the topology of JCN across cancers, we assembled a dataset compri
 
 % \begin{table}[!ht]
 %     \captionsetup{justification=raggedright,singlelinecheck=off}
-%     \caption{\textbf{Sources of pan-cancer WGS datasets used in this study, related to Figure \ref{fig:Fig1}} Summary (table in pdf format) of the number of samples from each dataset, the completeness of the pipelines, and the citation if the dataset is published before.}
+%     \caption{\textbf{Sources of pan-cancer WGS datasets used in \cite{Hadi2020-um}, related to Figure \ref{fig:Fig1}} Summary (table in pdf format) of the number of samples from each dataset, the completeness of the pipelines, and the citation if the dataset is published before.}
 %     \label{tab:S2}
 % \end{table}
 
