@@ -672,7 +672,7 @@ As a meaningful default, we plot integer copy numbers of the segments on the Y a
 
 %===========================%
 \section{Discussion}
-In this chapter, we defined a skew-symmetric direct graph representation of a rearranged genome, termed genome graph. Even though this simple idea is not new by any measure, up until now, there has not been a
+In this chapter, I defined a skew-symmetric direct graph representation of a rearranged genome, termed genome graph. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
@@ -1035,7 +1035,8 @@ In this chapter I set out to capture the SV events in human cell lines directly 
     \label{fig:tc_bft3b_complex}
 \end{figure*}
 
-In order to determine the SVs in post-telomere crisis genomes, we examined nine SV40 large T-transformed cell lines that had undergone spontaneous telomerase activation after passage into telomere crisis (Supplementary Table 1, Supplementary Figure 1A). The cell lines represent independent immortalization events in a variety of cell lineages27–29. We carried out whole genome sequencing of these nine post-crisis cell lines and their pre-crisis counterparts to a median depth of 40X (range: 15-51) and generated junction-balanced genome graphs3 via JaBbA from SvABA30 and GRIDSS31 junction calls (see Methods).
+% TODO: add table of the nine SV40T cell lines
+In order to determine the SVs in post-telomere crisis genomes, we examined nine SV40 large T-transformed cell lines that had undergone spontaneous telomerase activation after passage into telomere crisis (Figure \ref{fig:tc_prev_circos}, \ref{fig:tc_prev_all_circos}). The cell lines represent independent immortalization events in a variety of cell lineages \cite{Bryan1995-ik,Shay1989-ua,Counter1992-yg}. We carried out whole genome sequencing of these nine post-crisis cell lines and their pre-crisis counterparts to a median depth of 40X (range: 15-51) and generated junction-balanced genome graphs3 via JaBbA from SvABA\cite{Wala2018-qa} and GRIDSS\cite{Cameron2021-db} junction calls (see \ref{app:tc_wgs_processing}).
 
 Using short-read WGS data, JaBbA optimally assigns a copy number to both vertices (intervals) and edges (junctions, adjacencies) of genome graphs by fitting a probabilistic model to binned genome-wide read depth. These graphs obey a basic stoichiometric constraint of DNA dosage, namely that every copy of every (interstitial) segment must have a left and a right neighbor. The topology of these genome graphs can be further analyzed to identify simple and complex SV events, including chromothripsis and BFB cycles.
 
@@ -1559,7 +1560,7 @@ In addition to these \textit{de novo} simulated BAMs, we also obtained WGS for H
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Appendix B
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter*{Appendix B: Chapter 3 supplementary materials and methods}
+\chapter*{Appendix B: Chapter 3 supplementary materials and methods} \label{app:b}
 
 \subsection*{Structural variant event classification}
 To identify simple and complex structural variant events in the genome graph output of JaBbA, we implemented a set of classifiers.  These are implemented in the $\ttt{events}$ function in the \texttt{gGnome} package (freely available from: \url{https://github.com/mskilab/gGnome}), which calls the classifier functions below. Procedures followed to discover each event type are described below.
@@ -1645,7 +1646,7 @@ We obtained expressed protein-coding gene fusion calls from a published TCGA RNA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Appendix C
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter*{Appendix C: Chapter 4 supplementary materials and methods}
+\chapter*{Appendix C: Chapter 4 supplementary materials and methods} \label{app:c}
 \subsection*{Cell lines}
 MRC5 human lung fibroblasts (CCL-171), Phoenix-ampho (CRL-3213), RPE-1 hTERT (CRL-4000), HCT-116 (CCL-247) and U2-OS (HTB-96) cells were obtained from ATCC for this study. 293-FT cells were obtained from ThermoFisher. MRC5 cells and derivatives thereof were grown in EMEM media (ATCC) supplemented with 15\% fetal bovine serum (FBS; Gibco) and 100 U/mL of penicillin and 100 $\mu$g/mL streptomycin (PenStrep, Gibco) at 37ºC, 5\% CO2. hTERT RPE-1 cells were grown in DMEM:F12 media (Gibco) with 10\% FBS and PenStrep at 37ºC, 5\% CO2. HCT-116 colorectal carcinoma cells and U2OS cells were grown in DMEM with 10\% FBS and PenStrep at 37ºC, 5\% CO2.
 
@@ -1690,7 +1691,7 @@ Telomere length was assessed using telomeric restriction fragment analysis. Brie
 \subsection*{WGS Library preparation}
 Genomic DNA was extracted from cell pellets using a QIAGEN QIAamp DNA mini kit and sheared using a Covaris Ultrasonicator (E220) to approximately 300 bp fragments. DNA concentration was measured using Qbit 4.0 reagents (ThermoFisher) and 200 ng of fragmented DNA was used for library preparation. End repair and A-tailing was carried out with NEBNext End repair reaction enzyme mix and buffer (E7442), and KAPA Dual-Indexed Adapters (Roche) were ligated using the T4 DNA ligase kit from NEB (M0202). Post-ligation size selection was performed with AMPure XP beads (Beckman Coulter) before washing two times in 80\% ethanol. Libraries were amplified using KAPA HiFi HotStart ready mix (Roche) and P5 and P7 primers (IDT). PCR program was as follows: 98\textdegree C for 45 s, 5 cycles of 98\textdegree C for 15 s, 60\textdegree C for 30 s, 72\textdegree C for 30 s and a final extension at 72\textdegree C for 5 mins. A further size selection and washing step was carried out after library amplification, and library quality was confirmed on Bioanalyzer chips (Agilent) and using a KAPA Library Quantification kit (Roche). Libraries were pooled and submitted for sequencing on NovaSeq 6000 at the New York Genome Center. 
 
-\subsection*{WGS basic data processing}
+\subsection*{WGS basic data processing} \label{app:tc_wgs_processing}
 Reads were aligned to GRCh37/hg19 using the Burroughs-Wheeler aligner (bwa mem v0.7.8, http://bio-bwa.sourceforge.net/)53. Best practices for post-alignment data processing were followed through use of Picard (https://broadinstitute.github.io/picard/) tools to mark duplicates, the GATK (v.2.7.4) (https://software.broadinstitute.org/gatk/) IndelRealigner module, and GATK base quality recalibration.
 
 Variant rearrangement junctions were identified using SvAbA54 (https://github.com/walaj/svaba) and GRIDSS31 (https://github.com/PapenfussLab/gridss) with standard settings. For MRC5 samples, the somatic variant setting of each tool was used, with the ancestral MRC5 line as the matched normal.  SvABA was applied using a panel of normals (PON) that was constructed by running SvABA to obtain constitutional junction calls for 1,017 TCGA tumor/normal pairs (TCGA dbGaP: phs000178.v11.p8).  For GRIDSS, a PON was obtained from the Hartwig Medical Foundation (https://nextcloud.hartwigmedicalfoundation.nl). 1 kbp binned GC and mappability corrected read depth was computed using fragCounter (https://github.com/mskilab/fragcounter). Systematic read depth bias was subsequently removed using dryclean (https://github.com/mskilab/dryclean)55.
