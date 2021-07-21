@@ -30,6 +30,7 @@
 \usepackage{longtable}
 \usepackage{multirow}
 \usepackage{multicol}
+\usepackage{tabu}
 
 \usepackage{textcomp} % defines \textmu, which is now what inputenx seems to use for μ - probably due inpmath.. also \textdegree... but not \textrho
 \usepackage{textgreek}
@@ -345,6 +346,8 @@ In a perfect scenario where we have infinitely long sequencing reads, we can rea
 Though we cannot directly read the derivative sequence after rearrangement, from junctions we can always build a genome graph (see \nameref{algo:buildgraph} in later sections). If we have the complete knowledge on all junctions, then this graph will encapsulate every possible karyotype that could result from them, hence must contain the set of walks representing the true sequence (proof not shown). The enumeration of all possible walks from all the source nodes to all the sink nodes is analogous to elementary flux mode of a stoichiometric matrix \cite{Maarleveld2013}, and produces a set of paths and cycles $H$ where the latter can be further embedded to form more complex walks.
 
 However, such genome graphs only deal with the topology of junctions, and for a coherent double-stranded DNA model, the vertices and edges' dosages need also be constrained by Eq. \ref{eq:junction_balance_constraint} and Eq. \ref{eq:skew_symmetry}. With that we can define the reverse problem of Eq. \ref{eq:sum_of_walk},
+
+
 
 \begin{equation} \label{eq:walk_decomposition}
     \begin{aligned}
@@ -684,9 +687,9 @@ As in its present form, JaBbA have two major limitations. One, the main product 
 
 Two, the quadratic loss function delay the solution on very complicated graphs. Within this formulation, solving \ref{eq:MIQP} over the whole genome directly is sometimes intractable. We currently use a procedure of dividing the whole genome graph into uncoupled subgraphs, where the vertices from different partitions are disconnected or only connected through a set of vertices whose CN is fixed, due to very small variance in their MLE CN (or plainly, long segments with enough data to have a nearly definite CN). However, there is not a particular reason why this quadratic portion should not be replaced with absolute values and be solved as a MILP with much higher effciency. We leave that for the next phase of development.
 
-Three, the graph inferred by JaBbA is a consensus representation of the whole sample, which often have intra-tumoral heterogeneities in junction and CN. In theory, the 
+Three, the graph inferred by JaBbA is a consensus representation over the whole sample, which does not directly model intra-tumoral heterogeneity (ITH). The inferred integer copy numbers can be interpreted as "copies per cancer cell" and when there is heterogeneity, which is known to be widespread (CITE), the true values of this quantity could be deviated non-integers. The inference of subclonal CNAs directly from bulk short-read WGS remains challenging \cite{McPherson2017-ry} while maintaining accuracy in CN estimation. However, as we will discuss again in the next chapter, most of the SV patterns we can observe from bulk JBGGs are ancestral or from major clone. With isogenic cloning designs \cite{Dewhurst2021-jk} or the emerging single-cell WGS technologies \cite{Zahn2017-re,laks2019,Salehi2021-xi}, JaBbA is still a reliable and promising tool to reconstruct high-fidelity JBGGs from clonal populations.
 
-We also implemented the genome graph data structure in an open source R package gGnome, and as far as we are concerned, it is the first in class API to genome graphs that can 1) allow creation, combination, arithmetics of genome graphs, 2) support various algorithms including but not limited to decomposition to linear alleles, finding shortest paths, cluster vertices and edges, 3) parse the results of all the JBGG inference methods into a centralized object, 4) visualize genome graphs statically and interactively. We believe this package should greatly help the research community routinely incorporate graph-based analysis of SVs into the analysis of whole genome sequencing.
+We also implemented the genome graph data structure in an open source R package gGnome, and to our knowledge, it is the first in class API to genome graphs that can 1) allow creation, combination, arithmetics of genome graphs, 2) support various algorithms including but not limited to decomposition to linear alleles, finding shortest paths, cluster vertices and edges, 3) parse the results of all the JBGG inference methods into a centralized object, 4) visualize genome graphs statically and interactively. We believe this package should greatly help the research community routinely incorporate graph-based analysis of SVs into the analysis of whole genome sequencing.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
@@ -694,33 +697,32 @@ We also implemented the genome graph data structure in an open source R package 
 \chapter{Distinct Classes of Complex Structural Variation Uncovered across Thousands of Cancer Genome Graphs} \label{chap:complex_events}
 In this chapter I will describe the discovery of three distinct types of complex SV events from 2778 genome graphs built with JaBbA from a pan-cancer cohort of over 30 types of cancers. Furthermore, I will show that the patients in this cohort can be stratified based on 13 simple to complex rearrangement patterns to clusters of differential overall survival, tumor type enrichment, and association with specific germline or somatic alterations.
 
-%\begin{mytabularwrap}
-    \begin{longtable}[l] {cccc} 
+\newpage
+
+\begin{center}
+    \begin{longtabu} to 0.95\linewidth {cccc}
         \label{tab:pancan_cohort} \\
         \caption{\textbf{Pan-cancer WGS tumor type composition.}} \\
-
-        % \hline
-        % \multicolumn{4}{c}{Begin of Table}\\
         \hline
-        \textbf{Abbreviation} & \textbf{Tumor Type} & \textbf{Number}  & \textbf{Number of cell lines} \\
+        \textbf{Abbreviation} & \textbf{Tumor Type} & \textbf{Number}  & \textbf{Cell lines} \\
         \hline
         \endfirsthead
     
         \hline
         \multicolumn{4}{c}{Continuation of Table \ref{tab:pancan_cohort}}\\
         \hline
-        \textbf{Abbreviation} & \textbf{Tumor Type} & \textbf{Number}  & \textbf{Number of cell lines} \\
+        \textbf{Abbreviation} & \textbf{Tumor Type} & \textbf{Number}  & \textbf{Cell lines} \\
         \hline
         \endhead
-
+    
         \hline
         \endfoot
-    t
+    
         \hline
         \multicolumn{4}{c}{End of Table}\\
         \hline\hline
         \endlastfoot
-
+    
         AML          & Acute myeloid leukemia                & 56   & 6             \\
         BE           & Barrett's esophagus                   & 340  & 0             \\
         BLCA         & Bladder urothelial carcinoma          & 36   & 7             \\
@@ -755,8 +757,12 @@ In this chapter I will describe the discovery of three distinct types of complex
         \hline
         \textbf{Total}  & & 2778 & 337          \\
         \hline
-    \end{longtable}
-%\end{mytabularwrap}
+    \end{longtabu}
+        
+\end{center}
+
+
+\newpage
 
 \begin{table}[h!] \label{tab:pancan_dataset}
     \caption{\textbf{Pan-cancer WGS datasets and sources.}}
@@ -783,7 +789,7 @@ In this chapter I will describe the discovery of three distinct types of complex
         \end{tabular}
     }    
 \end{table}
-
+\newpage
 
 \section{Analysis of pan-cancer genome graphs}
 To investigate the topology of JCN across cancers, we assembled a dataset comprising 2,813 short-read WGS tumor or cell line samples spanning 31 primary tumor types (Table \ref{tab:pancan_cohort}), including WGS for 539 previously unpublished cases  (Table \ref{tab:pancan_dataset}). In total, our analysis included 1,648 WGS samples not included in the Pan-Cancer Analysis of Whole Genomes (PCAWG) effort \cite{pcawg_marker2020-yi}. Application of harmonized pipelines followed by JaBbA (Figure \ref{fig:jabba_io}) yielded 2,778 high quality genome graphs (Figure \ref{fig:pancancer}, see \nameref{app:b} for sample characteristics and exclusion criteria).
@@ -807,6 +813,13 @@ To investigate the topology of JCN across cancers, we assembled a dataset compri
     \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn.png}
     \caption{\textbf{Illustration of JCN.}}
     \label{fig:jcn}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/variant_subgraph.png}
+    \caption{\textbf{Example of chromothripsis and chromoplexy.}}}
+    \label{fig:variant_subgraph}
 \end{figure*}
 
 \begin{figure}
@@ -907,7 +920,7 @@ To investigate the topology of JCN across cancers, we assembled a dataset compri
 %     \label{tab:S2}
 % \end{table}
 
-Analyzing junction-balanced genome graph topology, we identified subgraphs associated with previously identified complex rearrangement patterns such as chromothripsis, chromoplexy, and TICs (\textbf{Fig. \ref{fig:Fig1}B, right panel}) implementing criteria described in previous publications within our framework (see \nameref{app:a}).
+Analyzing junction-balanced genome graph topology, we identified subgraphs associated with previously identified complex rearrangement patterns such as chromothripsis, chromoplexy, and TICs (Figure \ref{fig:}) implementing criteria described in previous publications within our framework (see \nameref{app:a}).
 
 %Consistent with our 10X Chromium WGS benchmarks (see above) (\textbf{Fig. \ref{fig:Fig1}C}), we observed wide variation in inferred JCN across our datasets which correlated with observed read depth changes at breakends (\textbf{Fig. \ref{fig:Fig1}F}). While the vast majority of junctions demonstrated low-JCN (JCN $\le$ 3), we observed a long tail of junctions with elevated– (JCN > 3) and high-JCN (JCN > 7) (\textbf{Fig. \ref{fig:Fig1}G}).
 
@@ -1000,7 +1013,7 @@ Our study provides a template for integrating short-read WGS with long-range gen
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 4: SV evolution after telomere crisis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Structural variant evolution after telomere crisis} \label{chap:tel_crisis}
+\chapter{Structural variant evolution after telomere crisis} \label{chap:tel_crisis} 
 In this chapter I set out to capture the SV events in human cell lines directly resulting from natural telomere crisis. Sally Dewhurst designed and created the \textit{in vitro} telomere crisis model, executed all the experiments, and analyzed the data except for the WGS parts. Huasong Tian prepared WGS libraries.
 
 % \section{Introduction}
