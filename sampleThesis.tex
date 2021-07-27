@@ -171,9 +171,9 @@ JaBbA -- Junction Balance Analysis
 %% To motivate what comes next.
 \chapter{Introduction}
 \section{From patterns to mechanisms to etiology}
-Genomic instability is a hallmark of cancer \cite{Hanahan2011-ni} and the pool of variants in cancer genomes are shaped by various mutagenesis pathways, repair, and somatic evolution. The goal of studying patterns of SVs is to find common classes out of large panels of tumors, and link them back to the possible mechanisms from which specific SVs arise. 
+Genomic instability is a hallmark of cancer \cite{Hanahan2011-ni} and the pool of variants in cancer genomes are shaped by various mutagenesis pathways, repair, and somatic evolution. The goal of studying patterns of SVs is to find common classes out of large panels of tumors, and link them back to the possible mechanisms from which specific SVs arise.
 
-Even though this rearrangement of chromosomes as an intrinsic property of cancers has been proposed \cite{Boveri2008-rl} and verified for more than a century , the usage of massively parallel sequencing in the past decade has been revolutionary in the characterization of a much bigger reportoire of SV events in unprecedented details. With whole genome sequencing (WGS), we are profiling large numbers of cancer genomes revealing ubiquitous yet heterogeneous patterns of single nucleotide variations (SNV), insertions and deletions (INDEL), and structural variations (SV).
+Even though rearrangement of chromosomes as an intrinsic property of cancers has been proposed \cite{Boveri2008-rl} and verified for more than a century, the usage of massively parallel sequencing in the past decade has been revolutionary in the characterization of a much bigger reportoire of SV events in unprecedented details. With whole genome sequencing (WGS), we are profiling large numbers of cancer genomes revealing ubiquitous yet heterogeneous patterns of single nucleotide variations (SNV), insertions and deletions (INDEL), and structural variations (SV).
 
 Practically, SVs in cancer genomes have been routinely characterized in two separate ways: 1) the discordant read pairing or observed (either directly within one read or assembled from a group of overlapping reads) sequences indicate a variant junction -- two disconnected genomic loci in reference genome that are adjacent in the sample \cite{wala2018,Cameron2017-pz,Rausch2012-ly,Wang2011-lg,Layer2014-xq}; and 2) the read depth accrued within a genomic interval informs its copy number (CN)\cite{Ha2014-ai,Xi2011-oa,Carter2012-xo,Favero2015-hj,Van_Loo2010-ed,Shen2016-fi}. Leveraging these two readouts of the underlying rearranged genome, various cancer WGS studies have describe a plethora of complex SV patterns.
 
@@ -250,7 +250,10 @@ We postulated that a more comprehensive analysis of candidate RPA(-) LUADs using
 %% Chapter 2: formalize genome graphs and JaBbA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Junction-balanced genome graphs represent structurally altered genomes}
-In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can unify a diverse array of putative functional events including fusion genes and enhancer hijiacking. Last but not least, taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for oncologists to fully take advantage of cancer WGS data.
+% I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can unify a diverse array of putative functional events including fusion genes and enhancer hijiacking. 
+In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. Taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for researchers to incorporate genome graphs in WGS studies.
+
+\newpage
 
 %===========================%
 \section{Genome graph as a general data structure to represent rearranged genome}
@@ -266,16 +269,16 @@ As is the convention in defining reference genomes, on the positive strand $C^i,
 Taken the above definitions together, each segment $s = C^{\pm{i}}[q,r]$ has two breakends, left (smaller coordinate) $b_L(s) = \{b_r(v), b_o(\bar{v})\} = C^{i}_q$ and right (larger coordinate) $b_R(s) = \{b_o(v), b_r(\bar{v})\} = C^{-i}_{r}, v = C^{i}[q,r], i>0$.
 
 \subsection{Genome graph}
+Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a multi-set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric \cite{Goldberg1996-qm} with the mapping function "reverse complement" denoted with a bar over, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represents a double stranded DNA segment. Since any vertex maps to a genomic interval, we mark its location in the reference genome with $v = C^{i}[q,r]$.
+
 % definition in as plain language as possible
 % need to define: reference genome, interval, signed interval, junction
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/ggraph_schematic.png}
     \caption{Schematic of a genome graph}
     \label{fig:ggraph_schematic}
 \end{figure}
-
-Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the vertices $V$ is a multi-set of signed intervals, and edges $E$ is a set of directed adjacencies representing the 3'-5' phosphodiester bonds between vertices. Since genomic DNA is a pair of reverse complement strands, we restrict $G$ to be skew-symmetric \cite{Goldberg1996-qm} with the mapping function "reverse complement" denoted with a bar over, such that for any vertex $v \in V$, there exists its \textit{symmetric} vertex $\bar{v} \in V$, and for any edge $e = (v_1, v_2) \in E$, $\bar{e} = (\bar{v_2}, \bar{v_1}) \in E$. Intuitively, each reverse complement pair of vertices represents a double stranded DNA segment. Since any vertex maps to a genomic interval, we mark its location in the reference genome with $v = C^{i}[q,r]$.
 
 Because the phosphodiester bonds are always connecting the outgoing (3') end of a source vertex $v_1 = C^{i_1}[q_1,r_1]$ and the receiving (5') end of a sink vertex $v_2 = C^{i_2}[q_2,r_2]$, we can denote the genomic location of an edge $e = (v_1, v_2)$ with a tuple of the connected breakends $e = (b_o(v_1), b_r(v_2))$. For a node $v$ we name the set of incoming edges to its 5' end $E_{-}(v)$ and the set of outgoing edges from its 3' end $E_{+}(v)$.
 
@@ -283,7 +286,7 @@ Following this definition, there are at least two types of edges. The first type
 
 Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-stranded DNA segment, a reverse complement pair of edges $\{e, \bar{e}\}$ compose a \textit{junction}. Trivially, $e$ and $\bar{e}$ will always be the same type of edge, so we also have two types of junctions, REF and ALT. Each junction $a = \{e, \bar{e}\}, v_1 = C^{i_1}[q_1,r_1], v_2 = C^{i_2}[q_2,r_2]$ can be represented with the two breakends it connects, namely $b_1 = \{b_o(v_1), b_r(\bar{v_1})\} = C^{i_1}_{q_1 [1-I(i_1)] + r_1 I(i_1)}$, and similarly $b_2 = C^{i_2}_{q_2 [1-I(i_2)] + r_2 I(i_2)}$, where indicator function $I:\mathbb{R}\rightarrow \{0, 1\}, I(x)=1, if x \ge 0, I(x) = 0, if x<0$.
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/junction_orientation.png}
     \caption{\textbf{Four basic classes of junctions.}}{Dark gray indicates the \textit{cis} side and light gray the \textit{trans} side of a breakend.}
@@ -294,10 +297,19 @@ For a breakend location in the middle of a chromosome, only one of its two sides
 
 % TODO!!!
 \subsection{Build genome graph from breakends and junctions}
-To describe a rearranged and copy number altered reference genome, we partition $\mathcal{C}$ according to a collection of \textit{breakends} $\mathcal{B}$. We also define a set of \textit{junctions} $\mathcal{A}$ representing alternative adjacencies between a set of the breakends in $\mathcal{B}$. 
+To describe a rearranged and copy number altered reference genome, we partition $\mathcal{C}$ according to a collection of \textit{breakends} $\mathcal{B}$. We also define a set of \textit{junctions} $\mathcal{A}$ representing alternative adjacencies between a set of the breakends in $\mathcal{B}$.
 
 
-\begin{algorithm} \caption{BuildGraph} \label{algo:buildgraph}
+
+
+% TODO!!!
+Each $b^i = C^ \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequence of integer coordinates $B^i = (B^i_k), 1 \le B^i_k \le L_i$ on chromosome $i$, where $B^i_1$ = 1 and $B^i_{|B^i|} = L^i$.  Each junction $A \in \mathcal{A}$ is a tuple $(i_1,r_1,i_2,r_2),\ r_1 \in B^{|i_1|}, r_2 \in B^{|i_2|}$, $|i_1|, |i_2| \in  1, \ldots, c$ representing a (3'-5' phosphodiester) bond between the position $r_1 + \frac{-sgn(i_1)+1}{2}$ on chromosome / strand $C^{i_1}$ and position $r_2+\frac{sgn(i_2)+1}{2}$ on chromosome / strand $C^{i_2}$.  For every adjacency $A = (i_1,r_1,i_2,r_2) \in \mathcal{A}$ we require $\mathcal{A}$ to contain the reverse complement adjacency $\bar{A} = (-i_2,r_2, -i_1,r_1)$. The adjacencies in $\mathcal{A}$ are "alternative" relative to a set of "reference adjacencies" $\mathcal{R}$ implied by $B^i$, comprising tuples $(i, B^i_k, i, B^i_k)$ and $(-i, B^i_k, -i, B^i_k)$ for each breakend $B^i_k, k\in 1,\dots,|B^i|$ in each chromosome $i \in 1,\ldots,c$.
+
+
+
+\begin{algorithm}[h!] 
+    \caption{BuildGraph} 
+    \label{algo:buildgraph}  
     \begin{algorithmic}[1]
         \Procedure{BuildGraph}{$\mathcal{A}$, $\mathcal{B}$} \Comment{Returns genome graph $G = (V, E, \psi, \phi)$}
         \State $G \gets emptyGraph;\quad$ $\phi, \psi \gets emptyDictionary$
@@ -312,7 +324,16 @@ To describe a rearranged and copy number altered reference genome, we partition 
         \State \algorithmicif\ $k = |B^i|-1$ \ \algorithmicthen\ $\psi(\{l_2, e_2, \bar{l_2}, \bar{e_2} \}) \gets "T"$
         \State $V(G) \gets V(G) \cup  \{ v, \bar{v}, l_1, \bar{l_1}, l_2, \bar{l_2} \})$
         \State $E(G) \gets E(G) \cup  \{ e_1, \bar{e_1}, e_2, \bar{e_2} \})$
-        \EndFor
+        \EndFor        
+        \algstore{buildgraph}        
+    \end{algorithmic}
+\end{algorithm}
+
+\newpage
+
+\begin{algorithm}[h!]
+    \begin{algorithmic}
+        \algrestore{buildgraph}
         \State $\mathcal{R} = referenceAdjacencies(\mathcal{B})$  \Comment{Get implied reference adjacencies from breakends}
         % \State $\mathcal{A} = \mathcal{A} \cup \ reverseComplement(\mathcal{A})$  \Comment{Make sure $\mathcal{A}$ contains both forward and RC adjacencies} 
         \For{$A = (i_1,r_1,i_2,r_2) \in \mathcal{A} \cup \mathcal{R}$}
@@ -334,10 +355,7 @@ To describe a rearranged and copy number altered reference genome, we partition 
     \end{algorithmic}
 \end{algorithm}
 
-
-% TODO!!!
-Each $b^i = C^ \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequence of integer coordinates $B^i = (B^i_k), 1 \le B^i_k \le L_i$ on chromosome $i$, where $B^i_1$ = 1 and $B^i_{|B^i|} = L^i$.  Each junction $A \in \mathcal{A}$ is a tuple $(i_1,r_1,i_2,r_2),\ r_1 \in B^{|i_1|}, r_2 \in B^{|i_2|}$, $|i_1|, |i_2| \in  1, \ldots, c$ representing a (3'-5' phosphodiester) bond between the position $r_1 + \frac{-sgn(i_1)+1}{2}$ on chromosome / strand $C^{i_1}$ and position $r_2+\frac{sgn(i_2)+1}{2}$ on chromosome / strand $C^{i_2}$.  For every adjacency $A = (i_1,r_1,i_2,r_2) \in \mathcal{A}$ we require $\mathcal{A}$ to contain the reverse complement adjacency $\bar{A} = (-i_2,r_2, -i_1,r_1)$. The adjacencies in $\mathcal{A}$ are "alternative" relative to a set of "reference adjacencies" $\mathcal{R}$ implied by $B^i$, comprising tuples $(i, B^i_k, i, B^i_k)$ and $(-i, B^i_k, -i, B^i_k)$ for each breakend $B^i_k, k\in 1,\dots,|B^i|$ in each chromosome $i \in 1,\ldots,c$.
-
+\newpage
 
 \subsection{Walks on a genome graph map to rearranged karyotype}
 Analogous to an assembly graph, on genome graph $G$, traveling through a walk $h = (v_1, e_1, v_2, e_2, \dots, e_{k-1}, v_k), k \in \mathbb{N^+}$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, \dots, k-1$, is equivalent to generating a substring of DNA sequence, simply by concatening the reference sequences of the vertices. If some of the edges along the walk belong to ALT edges $E_{A}$, then the walk represents a possible derivative sequence resulted from the SVs that gave rise to these edges. Since $G$ is skew-symmetric, every walk $h$ has a reverse complement walk $\bar{h} = (\bar{v_k}, \bar{e_{k-1}}, \dots, \bar{e_2}, \bar{v_2}, \bar{e_1}, \bar{v_1})$. We also denote the number of times a walk $h$ travel through a node $v$ or an edge $e$ using $\delta : (V \cup E, H) \rightarrow \mathbb{N}$. Based on this definition, we have two important observations.
