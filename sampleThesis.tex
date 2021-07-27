@@ -687,12 +687,26 @@ To facilitate the analyses of genome graphs, we built an R package \textit{gGnom
 
 % package structure
 % construction
-We constructed two main classes, \textit{gGraph} and \textit{gWalk}, corresponding to genome graph and walks. In the most basic form, a genome graph can be initiated with a reference genome alone, where each node is a chromosome and no edges exist (\texttt{gG()}). On top of that, we can segment the whole genome based on a set of breakpoint coordinates, by automatically connecting two consecutive nodes with a (pair of reverse complement) REF edge (\texttt{gG(breaks = breakpoints)}). When a ALT junction emerges, it joins two breakends that are not adjacent in reference genome to form new (pair of reverse complement) ALT edges (\texttt{gG(juncs = junctions)}). More often in practical scenarios, we start from a copy number-annotated genome graph inferred from WGS. gGnome allows one to parse the results from most of the existing genome graph reconstruction methods (JaBbA, ReMixT, Weaver, PREGO, RCK, CouGaR, AmpliconArchitect).
+We constructed two main classes, \texttt{gGraph} and \texttt{gWalk}, corresponding to genome graph and walks. In the most basic form, a genome graph can be initiated with a reference genome alone, where each node is a chromosome and no edges exist (\texttt{gG()}). On top of that, we can segment the whole genome based on a set of breakpoint coordinates, by automatically connecting two consecutive nodes with a (pair of reverse complement) REF edge (\texttt{gG(breaks = breakpoints)}). When a ALT junction emerges, it joins two breakends that are not adjacent in reference genome to form new (pair of reverse complement) ALT edges (\texttt{gG(juncs = junctions)}). One can create any genome graph from the input data of segmentation (in a format equivalent to \texttt{GRanges}), and/or a set of junctions (in a format equivalent to \texttt{GRangesList}). More often in practical scenarios, we start from a copy number-annotated genome graph inferred from WGS. gGnome allows one to parse the results from most of the existing genome graph reconstruction methods (JaBbA, ReMixT, Weaver, PREGO, RCK, CouGaR, AmpliconArchitect).
+
 
 % subgraph
 With a genome graph (supposedly stored in variable \texttt{gg}), we can make a series of queries based on vertex and edge metadata, with the graph subsetting operator "[,]", where the expression before the comma filters the vertices and the latter filters the edges. For example, when looking up amplified subgraphs where the vertex CN is larger than twice the ploidy (supposedly stored in variable \texttt{pl}), one can execute \texttt{gg[cn>pl*2,]}. 
 
-% decomposition
+% viz by gTrack
+To quickly explore any part of a genome graph, we integrated our static genome browser-style plotting package \texttt{gTrack}. With any genome graph, one can simply call \texttt{gg\$gtrack} to get the \texttt{gTrack} object to then plot using \texttt{plot} function. All the optional arguments of \texttt{gTrack} can be passed down natively from this interface. For example, if one wants to plot copy number stored in the metadata column "cn" on the Y-axis, it is as simple as \texttt{gg\$gtrack(y.field = "cn")}. As a more powerful alternative, we also provide interactive visualization through \textit{gGnome.js}, described in the next section. Here, with any \texttt{gGraph} object, one can simply generate the required JSON format with \texttt{gg\$json()}.
+
+% distance
+Given a genome graph, can also calculate a lower bound  shortest derivative (in the rearranged genome) genomic distance between any two genomic loci after rearrangements, by summing up the width of vertices the path traversed (encoded in the gGraph method \texttt{gg\$dist}). Taking advantage of the optimal implementation of Floyd-Warshall by the \textit{igraph} R interface, this can be immediately scaled up to find all shortest paths from one set of genomic loci another set, encoded in the function \texttt{proximity}.
+
+% clusters
+One of the more interesting topics in SV pattern discovery is the clustered junctions. We can easily cluster vertices and/or edges based on their connectivity, implemented in \texttt{gg\$ecluster} for edges and \texttt{gg\$cluster} for vertices. The output cluster membership (weakly connected or strongly connected), will be recorded in a metadata column and can be used to retrieve the corresponding subgraph, for instance, \texttt{gg\$ecluster(); gg[,ecluster==1]}.
+
+% maxflow
+Besides, with a non-negative numeric field associated with vertices and edges, for example, copy numbers, we can also regard that as \textit{capacity} in traditional flow problems. For example, the \textit{max flow} problem with CN means the "maximum number of copies of such DNA molecules that connects genomic locus A and B".
+
+% event calling
+Next, we provide functions to replicate our algorithms in \cite{Hadi2020-um} and this disseration for finding the subgraphs of 13 different SV events. The \texttt{events(gg)} function will automatically search the given graph for these patterns with the default parameters and annotate any findings in the metadata columns with the name of the event, like "chromothripsis". Plus, after running the function, there will be a new data table of all the findings appended to the field of \texttt{gg\$meta\$events}.
 
 %===========================%
 \section{Neo-connectivities on a genome graph encode putative functional events}
