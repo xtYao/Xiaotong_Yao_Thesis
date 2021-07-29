@@ -177,9 +177,22 @@ JaBbA -- Junction Balance Analysis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 
+% intro: define biological/technical questions
+% -- gGnome: current SV analysis limited by lack of a representation of complex SVs and a set of practical tools
+% -- JaBbA: a reliable, high-fidelity method to infer JBGG from WGS is needed
+% -- Distinct SV classes: analyzing JCN topography lead to new SV patterns
+% -- Telomere: no answer to what SVs are the direct result of crisis
+% -- LUAD: can WGS find new drivers after WES defined RPAs
 
+% Discussion:
+% -- gGnome fulfills the need for analyzing complex SVs
+% -- JaBbA provides a viable option to scale up genome graph analysis
+% -- Tyfonas emerge from high JCN subgraphs and distinct from DM/BFB
+% -- SV patterns can stratify pan-cancer cohort
+% -- TC: both simple & complex observed in previous models
+% -- TC: MRC5 model after crisis show instability triggered by shortest telomere and result in diverging & converging patterns of SVs
+% -- LUAD: nominating alternative SV drivers, recurrent non-coding mutations, non-canonical coding mutations, missed RPAs when no known RPA is found by WES
 
-\chapter{Old Introduction}
 \section{From patterns to mechanisms to etiology}
 Genomic instability is a hallmark of cancer \cite{Hanahan2011-ni} and the pool of variants in cancer genomes are shaped by various mutagenesis pathways, repair, and somatic evolution. The goal of studying patterns of SVs is to find common classes out of large panels of tumors, and link them back to the possible mechanisms from which specific SVs arise.
 
@@ -192,7 +205,7 @@ In \cite{stephens2011}, Stephens et al. observed the phenomenon and coined the t
 In prostate carcinoma genomes, Baca et al. \cite{baca2013} discovered chained, long-range, reciprocal junctions that are formed through simutaneous multi-loci (>2) translocations. Even though it is also a complex SV event with clustered junctions, its pattern is qualitatively distinct from chromothripsis, with usually smaller footprint, long-range chains, sometimes involving many chromosomes (>=3), and less loss of genetic materials limited to the \textit{deletion bridges} between adjacent junctions along the chain. Furthermore, there are also experimental evidence that androgen receptors are co-recruited with topoisomerase II beta (TOP2B) to sites of TMPRSS-ERG fusion and lead to double strand breaks (DSB) \cite{Haffner2010-cy}, indicating that chromoplexy may have a transcription-related origin than a chromothripsis.
 
 % adpated from TC
-More recently, pan-cancer WGS studies have systematically categorized the spectrum of structural variants (SVs) found in cancer genomes, ranging from simple deletions, duplications and translocations to complex and often multi-chromosomal rearrangements\cite{Drier2013-oe,Yang2013-fl,Hadi2020-um}. 
+% More recently, pan-cancer WGS studies have systematically categorized the spectrum of structural variants (SVs) found in cancer genomes, ranging from simple deletions, duplications and translocations to complex and often multi-chromosomal rearrangements\cite{Drier2013-oe,Yang2013-fl,Hadi2020-um}. 
 
 The Pan-cancer Analysis of Whole Genomes (PCAWG) consortium catalogued WGS variants across >2,500 cases spanning 38 tumor types\cite{pcawg_marker2020-yi} to identify novel classes of complex SVs and cluster these into signatures, mirroring previous work in the categorization of single nucleotide variants (SNVs) into distinct mutational processes\cite{Li2020-ds,Alexandrov2013-zv,Nik-Zainal2012-dc,Menghi2018-er}. 
 
@@ -212,7 +225,6 @@ The limitation of this approach in dealing with complex SV events is visible eve
 
 
 \section{Representation of structural variations with genome graphs}
-%% TODO!!!
 Graphs have been widely used to model genomic sequences for decades, with \textit{de novo} assembly as one of the fields most heavily reliant (citation SGA, Fermi, etc.). One way to describe sequence as graphs is that each vertex is the sequence of a contiguous DNA segment (contig) and following the adjacencies among vertices one can thread a path (or cycle) to obtain longer sequence and eventually approach a genome. In resequencing studies, we map reads to locations in an existing reference genome, and identify variants based on the discrepancy between reads and the mapped reference sequence. Nevertheless, we can apply a similar idea of modeling, now replacing actual DNA sequences to the genomic intervals they map to in the reference. There have been several studies employed the concept of \textit{interval graph} to model the somatic SVs in cancer genomes. which marks the left and right bourndaries of each double stranded genomic intervals with two vertices and categorize the adjacencies between vertices as either constituting the interval (interval edge) or junction (reference and variant edges) \cite{Oesper2012-vw}.
 
 % Read Medevedev 2007 in detail!!
@@ -234,7 +246,8 @@ Elevated JCN might occur through the focal (e.g. extrachromosomal) amplification
 \section{Visualizing structural variations for clinical oncology}
 Another major obstacle between genome graphs and its wider adoption by the research community is the lack of proper visulization tools. Projection of data onto reference genome coordinates, or genome browsers, have been the quintessential tool of genomics \cite{}, yet for structural variations (SV), most of them are constrained to plot one or two regions at a time. Cancer genomes, however, can contain complex structural variation wherein a wide range of loci can be inter-stitched and the interpretation of an event is often dependent on its many individual rearrangement junctions (RJ).
 
-% \section{JaBbA zeta intro, to be reorganized}
+
+
 % Cancer genomes are shaped by mutational processes that create both simple and complex structural variants (SVs). 
 \section{Evolution of SVs after telomere crisis}
 % from telomere intro
