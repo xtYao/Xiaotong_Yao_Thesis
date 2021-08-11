@@ -1399,8 +1399,8 @@ Formally, we define a collection ${G^i = (V^i, E^i)}, i \in 1,\dots,n$ of identi
     \begin{aligned}
         \underset{\kappa^i:V_I(G^i) \cup E(G^i) \rightarrow \mathbb{N}, i \in 1,\dots,n}{\text{minimize}} &
         \lambda \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) + \sum_{i \in 1,\dots,n}\mathcal{V}(G^i, \kappa^i, x^i, J^i) \\
-        \text{subject to: } & \kappa^i(v) = \kappa^i(\bar{v}), \forall_{v \in V_I^i} \\
-        & \kappa^i(e) = \kappa^i(\bar{e}), \forall_{e \in E^i} \\
+        \text{subject to: } & \kappa^i(v) = \kappa^i(\bar{v}), \forall{v \in V_I^i} \\
+        & \kappa^i(e) = \kappa^i(\bar{e}), \forall{e \in E^i} \\
         & \kappa^i(v) = \sum_{e \in E^+(v,G^i)}\kappa^i(e) = \sum_{e \in E^-(v, G^i)}\kappa^i(e) \\
         & \kappa^i(e) \le u^i(e)
     \end{aligned}
@@ -1411,7 +1411,7 @@ where $x^i$ and $J^i$ represent the binned read depth data and bin-node mappings
 The coupling of multiple graphs happen through a joint complexity penalty $\mathcal{R}$, which only penalize a loose end once for all the clones. Formally,
 
 \begin{equation} \label{eq:joint_loose_penalty}
-    \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) = \sum_{v \in V(G^0)}[\![ \sum_{\hat{v}|\hat{v} \in G^i, p(\hat{v})=v, i \in 1,\dots,n} \kappa^i(\hat{v}) ]\!]
+    \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) = \sum_{e^{0}_{L} \in E_{L}(G^0)}[\![ \sum_{\hat{e_L}|\hat{e_L} \in E^{i}_{L}, p(\hat{e_L})=e^{0}_{L}, i \in 1,\dots,n} \kappa^i( \hat{e_L} ) ]\!]
 \end{equation}
 
 As in \ref{eq:MIQP}, the hyperparameter $\lambda$ in Equation \ref{eq:multi_sample_jabba} controls the relative contribution of the read-depth residual and complexity penalty to the objective function. 
@@ -1439,21 +1439,21 @@ Equation \ref{eq:multi_sample_jabba} was then solved using the IBM CPLEX (v12.6.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_kataegis.png}
+    \includegraphics[height=0.85\textheight]{figures/600ppi/tc_kataegis.png}
     \caption{\textbf{Clustered SNVs around junction breakends.}}
     \label{fig:tc_kataegis}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_12q_del.png}
+    \includegraphics[height=0.85\textheight]{figures/600ppi/tc_12q_del.png}
     \caption{\textbf{Simple deletion on chromosome 12q present in Y15, Y8, Z43, but not Y11.}}
     \label{fig:tc_12q_del}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_loose_end.png}
+    \includegraphics[height=0.85\textheight]{figures/600ppi/tc_loose_end.png}
     \caption{\textbf{Distinct loose ends among the diverging BFB clones.}}
     \label{fig:tc_loose_end}
 \end{figure}
@@ -1471,9 +1471,9 @@ Formally, the subgraph of vertices and edges with a nonzero copy number in each 
 
 \begin{equation} \label{eq:joint_walk_decomposition}
     \begin{aligned}
-        \underset{\kappa^i(h):H^i \rightarrow \mathbb{N}, i \in 1, \dots, n}{\text{minimize}} & \sum_{h \in H^0} [\![ \sum_{\hat{h} \in H^i | p(\hat{h} = h)} \kappa^i(h) ]\!] \\
-        \text{s.t. } & \kappa^i(v) = \sum_{h \in H^i} \kappa(h)\delta(h, v), \forall v \in V^i, i \in 1, \dots, n \\
-        & \kappa^i(e) = \sum_{h \in H^i} \kappa(h)\delta(h, e), \forall e \in E^i, i \in 1, \dots, n
+        \underset{\kappa^i(h):H^i \rightarrow \mathbb{N}, i \in 1, \dots, n}{\text{minimize}} & \sum_{h \in H^0} [\![ \sum_{\hat{h} \in H^i | p(\hat{h} = h)} \kappa^i(\hat{h}) ]\!] \\
+        \text{s.t. } & \kappa^i(v) = \sum_{\hat{h} \in H^i} \kappa(\hat{h})\delta(\hat{h}, v), \forall v \in V^i, i \in 1, \dots, n \\
+        & \kappa^i(e) = \sum_{\hat{h} \in H^i} \kappa(\hat{h})\delta(\hat{h}, e), \forall e \in E^i, i \in 1, \dots, n
     \end{aligned}
 \end{equation}
 
