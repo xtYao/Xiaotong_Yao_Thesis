@@ -73,6 +73,10 @@
 %the tolerance to 9999
 \tolerance=9999
 
+% making footnotes
+\usepackage[symbol]{footmisc}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
 \bibliographystyle{plain}
 %\bibliographystyle{IEEEbib}
 
@@ -80,6 +84,12 @@
 \renewcommand{\topfraction}{0.85}
 \renewcommand{\textfraction}{0.1}
 \renewcommand{\floatpagefraction}{0.75}
+
+\renewcommand{\contentsname}{Table of Contents}
+\addto\captionsenglish{
+  \renewcommand{\contentsname}%
+    {Table of Contents}%
+}
 
 % SO solution to resizing table within page
 \newsavebox{\mybox}
@@ -99,11 +109,17 @@
 % include the clinical report system in the Conclusions
 % rinse once to fix all citations
 
+% 1. Confirm conferral date with Registrar; update title page if necessary.
+% 2. Please change title of "Contents" to "Table of Contents"
+% 3. Text in figure is too small; all lettering must be readable even when reduced 25%, including axes and legends. Please enlarge the text/figure to make the text readable; if the figure or caption exceed one page, please start the next page with "Figure X (continued)". Alternatively, you can separate and enlarge portions of the figures, rotate them 90 degrees, or adjust the background color for better contrast. (Figures 1.4, 4.1, 5.22, 5.28, 6.3)
+% 4. When chapters are based on published materials, it must be noted appropriately. Please see guidelines for more information.
+% 5. While not necessary, it would alleviate confusion to include more of the last paragraph on page 79 with its last line appearing on page 81, as well as "6.11" appearing on page 162.
+% 5. Captions for tables must appear above the table. (Table B.1)
 
 %% \title {Structural variants in cancer genomes: representation, inference, and applications}
 \title{A genome graph paradigm for cancer genome structure}
 \author {Xiaotong Yao}
-\conferraldate {Aug}{2021}
+\conferraldate {Dec}{2021}
 \degreefield {Ph.D. Computational Biology}
 \copyrightholder{Xiaotong Yao}
 \copyrightyear{2021}
@@ -316,16 +332,23 @@ For example, one of the most common and deadliest cancer \cite{Siegel2019-gb}, l
 
 Apparently, the remaining 20-30\% of cases, which we refer to as RTK/RAS/RAF pathway alteration-negative or RPA(-) LUADs, pose a major clinical challenge in precision thoracic oncology \cite{Campbell2016-xv}. One immediate question is whether RPA(-) LUAD driven by some distinct RTK/RAS/RAF-independent pathways, or whether the profiling technology (WES and RNA-seq) missed relevant events due to techinical factors like uneven coverage or low sample purities. 
 
-Whole genome sequencing offers a chance to gain a better picture of the variants within these tumors. We anticipate the addition of WGS data to at least 1) either verify the RPA(-) status or recover previously missed known RPAs, 2) nominate potential SV and non-coding drivers hard to capture with WES, 3) determine the extent and type of genomic instability to compare to RPA(+) LUADs. Our genome graph paradigm offers a unique advantage to not only enhance the accuracy of identifying candidate alterations, but also reveal their underlying mutational mechanism. In all, we performed WGS on LUAD samples from The Cancer Genome Atlas (TCGA) cohort that had appeared in previous analyses to lack an RTK/RAS/RAF pathway-activating alteration \cite{Campbell2016-xv} and comprehensively characterized their variant landscape in \nameref{chap:gdan}.
+Whole genome sequencing offers a chance to gain a better picture of the variants within these tumors. We anticipate the addition of WGS data to at least 1) either verify the RPA(-) status or recover previously missed known RPAs, 2) nominate potential SV and non-coding drivers hard to capture with WES, 3) determine the extent and type of genomic instability to compare to RPA(+) LUADs. Our genome graph paradigm offers a unique advantage to not only enhance the accuracy of identifying candidate alterations, but also reveal their underlying mutational mechanism. To that end, we performed WGS on LUAD samples from The Cancer Genome Atlas (TCGA) cohort that had appeared in previous analyses to lack an RTK/RAS/RAF pathway-activating alteration \cite{Campbell2016-xv} and comprehensively characterized their variant landscape in \nameref{chap:gdan}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 2: formalize genome graphs and JaBbA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Junction-balanced genome graphs represent structurally altered genomes} \label{chap:gg}
 % I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can unify a diverse array of putative functional events including fusion genes and enhancer hijiacking. 
-In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. Taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for researchers to incorporate genome graphs in WGS studies.
+In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. Taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for researchers to incorporate genome graphs in WGS studies. 
 
-The gGnome package is conceptualized and developed together with Marcin Imieliski, Kevin Hadi, Julie Behr, and gGnome.js with Marcin Imielinski and Charalampos Xanthopoulakis.
+Part of this chapter is described in our published article \cite{Hadi2020-um}*, led by Kevin Hadi, Julie Behr, Marcin Imielinski, and myself.
+
+\textit{
+    \textbf{Individual contributions:} Marcin Imielinski and I conceptualized, formulated, and implemented JaBbA for Junction Balance Analysis. Kevin Hadi and I collected and processed the WGS data from simulations and HCC1954, HCC1143 cell lines. I carried out the benchmarking experiments of JaBbA. Marcin Imielinski and I proposed and developed gGnome, and Kevin Hadi, Julie Behr, Zi-ning Choo, Alon Shaiber, Joe DeRose have contributed. Charalampos Xanthoupolakis, Marcin Imielinski, and I designed the gGnome.js genome browser for genome graphs.    
+}
+
+% \chapter[Evolution and phase of clustered deletions]{Evolution and phase of clustered deletions*}\label{chrig}
+\footnotetext[1]{Hadi, K., Yao, X., Behr, J.M., et al. Distinct classes of complex structural variation uncovered across thousands of cancer genome graphs. Cell, 183(1):197–210, 2020.}
 
 \newpage
 
@@ -868,8 +891,17 @@ We believe this suite of packages including gGnome/gGnome.js/JaBbA should greatl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Distinct Classes of Complex Structural variant Uncovered across Thousands of Cancer Genome Graphs} \label{chap:complex_events}
-In this chapter I will describe the discovery of three distinct types of complex SV events from 2778 genome graphs built with JaBbA from a pan-cancer cohort of over 30 types of cancers. Furthermore, I will show that the patients in this cohort can be stratified based on 13 simple to complex rearrangement patterns to clusters of differential overall survival, tumor type enrichment, and association with specific germline or somatic alterations.
+\chapter{Distinct Classes of Complex Amplicons Uncovered across Thousands of Cancer Genome Graphs} \label{chap:complex_events}
+In this chapter I will describe the classification of three distinct types of complex amplification events from 2778 genome graphs built with JaBbA from a pan-cancer cohort of over 30 types of cancers. Furthermore, I will show that the patients in this cohort can be stratified based on a total of 13 simple to complex genome graph-based SV patterns to clusters of differential overall survival, tumor type enrichment, and association with specific germline or somatic alterations.
+
+This work is part of our publication \cite{Hadi2020-um}*, led by Kevin Hadi, Julie Behr, Marcin Imielinski, and myself.
+
+\textit{
+    \textbf{Individual contributions:} I collected and processed the WGS and associated biological or clinical data for the pan-cancer cohort. I executed and controlled the quality of the output genome graphs. I contributed to the classification of amplicons and carried out the analysis of fusion genes. I contributed to the algorithms identifying the 13 SV event types. I carried out the patient clustering analysis and the associations with the tumor types, genotypes, and overall survival.
+}
+
+% \chapter[Evolution and phase of clustered deletions]{Evolution and phase of clustered deletions*}\label{chrig}
+\footnotetext[1]{Hadi, K., Yao, X., Behr, J.M., et al. Distinct classes of complex structural variation uncovered across thousands of cancer genome graphs. Cell, 183(1):197–210, 2020.}
 
 \newpage
 
@@ -1245,9 +1277,11 @@ Two, within the high-JCN candidates in our amplicon clustering analysis, there i
 %% Chapter 4: SV evolution after telomere crisis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Structural variant evolution after telomere crisis} \label{chap:tel_crisis} 
-In this chapter I set out to capture the SV events in human cell lines directly resulting from natural telomere crisis. Sally Dewhurst designed and created the \textit{in vitro} telomere crisis model, executed all the experiments, and analyzed the data except for the WGS parts. Huasong Tian prepared WGS libraries.
+In this chapter I set out to capture the SV events in human cell lines directly resulting from natural telomere crisis. This chapter is based on our published article \cite{Dewhurst2021-jk}*.
 
-% \section{Introduction}
+\textit{\textbf{Individual contributions:} Sally Dewhurst, Titia de Lange, Marcin Imielinski conceptualized and initiated the project. Sally Dewhurst collected the previous published cell lines spontaneously escaped telomere crisis. Sally Dewhurst designed and created the \textit{in vitro} telomere crisis model, executed all the experiments, and analyzed the data except for the WGS parts. I carried out all the analysis involving whole genome sequencing data. Marcin Imielinski and I designed multi-sample alogorithms for inferring evolving karyotypes.}
+
+\footnotetext[1]{Dewhurst, S. M., Yao, X., et al. Structural variant evolution after telomere crisis. Nat. Commun. 12, 2093 (2021)}
 
 \section{Genomic complexity after spontaneous telomerase activation}
 
@@ -1305,42 +1339,44 @@ Strikingly, besides one instance of chromothripsis (Figure \ref{fig:tc_ct_sw26})
 In summary, across the eight post-crisis cell lines, spontaneous escape from crisis was associated with a highly variable spectrum of SV patterns, ranging from relatively unaltered genomes to complex non-canonical patterns of amplification as well as numerical gains and losses. Importantly, BFB-like patterns and chromothripsis were not a general feature of the post-crisis genomes.
 
 \section{An in vitro system for telomerase-mediated escape from natural telomere crisis}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_system.png}
-    \caption{\textbf{\textit{In vitro} iCRISPRa system to activate endogeneous TERT expression}}
-    \label{fig:tc_system}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_system.png}
+%     \caption{\textbf{\textit{In vitro} iCRISPRa system to activate endogeneous TERT expression}}
+%     \label{fig:tc_system}
+% \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_tert_western.png}
-    \caption{\textbf{Detection of TERT protein after doxycycline induction.}}
-    \label{fig:tc_tert_western}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_tert_western.png}
+%     \caption{\textbf{Detection of TERT protein after doxycycline induction.}}
+%     \label{fig:tc_tert_western}
+% \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_tert_qpcr.png}
-    \caption{\textbf{Expression of TERT mRNA after doxycycline induction.}}
-    \label{fig:tc_tert_qpcr}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_tert_qpcr.png}
+%     \caption{\textbf{Expression of TERT mRNA after doxycycline induction.}}
+%     \label{fig:tc_tert_qpcr}
+% \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_growth_original.png}
-    \caption{\textbf{Population doubling in induced versus control group over time.}}
-    \label{fig:tc_growth_original}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_growth_original.png}
+%     \caption{\textbf{Population doubling in induced versus control group over time.}}
+%     \label{fig:tc_growth_original}
+% \end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics{figures/600ppi/tc_stela.png}
+%     \caption{\textbf{STELA of XpYp telomeres in MRC5/Rbsh/p21sh/iCRISPRa-TERT cells with or without doxycycline treatment at 70 and 150 days of culture.}}{}
+%     \label{fig:tc_stela}
+% \end{figure}
+
+Despite
 
 To gain a clearer insight into the nature of SVs that arise during telomere crisis, we developed an in vitro system in which we could reproduce telomere crisis and generate a large number of post-crisis clones. MRC5 human lung fibroblasts were chosen to model telomere crisis since they lack telomerase activity and as a consequence have a well-defined in vitro replicative potential determined by telomere attrition. To bypass senescence, the Rb and p21 pathways were inactivated by infecting the population of MRC5 cells with a retrovirus bearing shRNAs targeting the respective transcripts (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 2A). This population of MRC5/Rbsh/p21sh was then endowed with an inducible CRISPR activation system (iCRISPRa) to activate the TERT promoter and induce telomerase expression (Figure \ref{fig:tc_system}). The iCRISPRa system employed a doxycycline-inducible nuclease-dead Cas9 fused to a tripartite transcriptional activator (VP64-p65-Rta) \cite{Chavez2015-md} and four gRNAs targeting the TERT promoter (Figure \ref{fig:tc_tert_western}, \ref{fig:tc_system}). Addition of doxycycline (dox) to MRC5/Rbsh/p21sh/iCRISPRa-TERT cells resulted in induction of TERT mRNA within 96 hours, whereas without dox, TERT transcripts are undetectable in this cell line (p<0.001, Figure \ref{fig:tc_tert_qpcr}). A similar dox-induced increase in mRNA expression was noted upon introduction of sgRNAs to a control gene (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 2C). Induction of telomerase activity was readily detectable in a TRAP (telomerase repeated amplification protocol) assay (data not included, refer to \cite{Dewhurst2021-jk} Figure 2C). However, the induced TERT mRNA levels and the TRAP activity were significantly lower than in telomerase-positive control cell lines. The relatively weak telomerase activity in this system harmonizes with recent work showing that cancer-associated TERT promoter mutations initially result in low levels of telomerase activity that is not sufficient to maintain bulk telomere length \cite{Chiba2017-gq}.
-
-\begin{figure}
-    \centering
-    \includegraphics{figures/600ppi/tc_stela.png}
-    \caption{\textbf{STELA of XpYp telomeres in MRC5/Rbsh/p21sh/iCRISPRa-TERT cells with or without doxycycline treatment at 70 and 150 days of culture.}}{}
-    \label{fig:tc_stela}
-\end{figure}
 
 At approximately 120 days after the start of the experiment (55 days with dox) the MRC5/Rbsh/p21sh/iCRISPRa-TERT population was proliferating faster than their untreated counterparts (Figure \ref{fig:tc_growth_original}). Inspection of individual telomere lengths using Single Telomere Length Analysis (STELA, \cite{Baird2003-cj}) revealed that although telomerase expression was sufficient to allow the cells to proliferate, it was not sufficient to maintain bulk telomere length (Figure \ref{fig:tc_stela}). After 150 days of continuous culture, the majority (86\%) of XpYp telomeres in induced MRC5/Rbsh/p21sh/iCRISPRa-TERT cells were between 1-4 kb compared to 40\% in uninduced cells (data not included, refer to \cite{Dewhurst2021-jk} Figure 2F, Supplementary Figure 2D). Consistent with this, genomic blotting showed bulk telomere shortening in both induced and uninduced cells (data not included, refer to \cite{Dewhurst2021-jk} Figure 2G). These telomere dynamics are consistent with the expectation that in the culture without telomerase, cells with critically short telomeres will preferentially be lost, leading to a surviving population with relatively longer telomeres. In contrast, cells in the induced culture with (low) telomerase activity have the ability to elongate the shortest telomeres. As a result, the induced cells are expected to tolerate telomere attrition better and present with overall shorter telomeres at later time points.
 
@@ -1919,7 +1955,11 @@ Beyond tumor tissues from biopsy, there are also emerging new materials that are
 
 Like we demonstrated with MRC5 telomere crisis model, a well-controlled \textit{in vitro} system can be instrumental to precisely define the structural outcomes of a mutational process. There are successful stories of evaluating the SNV/INDEL mutation signatures induced by exposure to external mutagens in cell models \cite{Zou2021-je}. Specifically for SVs, Umbreit et al. characterized the consequences of mechanically broken dicentric chromosome bridge \cite{Umbreit2020-kr}. Shoshani et al. captured the continuous instability in eccDNA in response to therapeutic pressure \cite{Shoshani2020-zj}. Ly et al. constructed an elegant model of inactivated centromere that led to missegregation, which caused various complex SVs including chromothripsis and eccDNA \cite{Ly2019-bt}. Needless to say, applying a more general paradigm like genome graphs to these data will greatly enhance our power in answering such critical questions.
 
-Finally, our genome graph paradigm provides practical tools to smoothly integrate into whole genome analysis of cancers. We show our characterization of lung adenocarcinoma lacking alterations in RTK/RAS/RAF pathway as an example. Not only did WGS recover missed hotspot KRAS mutations due to WES sampling bias, it also revealed numerous alternative alterations like the focal deletion of transcription start site of tumor suppressors, and complex amplification of oncogenes. At this crossroad of exhausting recurrence signal to find cancer drivers, it is increasingly important to analyze genome structures, mutational processes, and getting creative ways to nominate new hypotheses.
+Finally, our genome graph paradigm provides practical tools to smoothly integrate into whole genome analysis of cancers. We show our characterization of lung adenocarcinoma lacking alterations in RTK/RAS/RAF pathway as an example. Some deletions of the TSS of tumor suppresors we captured are very focal and subtle, that is hard to identify by WES platform, yet they can greatly reduce the expression of affected genes. We were able to see them thanks to the increased sensitivity of SVs by combining the signals from both junctions and coverage, demonstrating the technical advantage of JaBbA over decouple approaches.
+
+Limited by the sample size, we do not have the statistical power to detect new signficantly recurrent alterations that is lacking in the RPA(+) samples, but we observe biologically important genes being amplified in likely eccDNA forms that result in their overexpression. Even though they are not detected through, 
+
+At this crossroad of exhausting recurrence signal to find cancer drivers, it is increasingly important to analyze genome structures, mutational processes, and getting creative ways to nominate new hypotheses.
 
 For clinical oncology, WGS is becoming recognized as a powerful alternative to the more popular and so far more cost-effective capture-based platforms (CITE Olivier opinion piece). Not only it uncovers known SV drivers at a pristine accuracy, the variant patterns (largely passengers) also indicate the vulnerability of the tumor. They can serve as a new kind of biomarkers for DNA repair defects or immunogenecity.
 
