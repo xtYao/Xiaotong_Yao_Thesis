@@ -224,6 +224,7 @@
 }
 \raggedbottom
 \renewcommand{\contentsname}{Table of Contents}
+
 \renewcommand{\l@figure}{\@dottedtocline{1}{1.5em}{2.6em}}
 \let\l@table\l@figure
 
