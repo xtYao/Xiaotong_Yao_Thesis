@@ -79,7 +79,7 @@
 
 \bibliographystyle{plain}
 %\bibliographystyle{IEEEbib}
-
+%\captionsetup{justification=raggedright,singlelinecheck=false}
 \renewcommand{\caption}[1]{\singlespacing\hangcaption{#1}\normalspacing}
 \renewcommand{\topfraction}{0.85}
 \renewcommand{\textfraction}{0.1}
@@ -334,14 +334,23 @@ Given the expanding repertoire of structural variant present in so many cancer t
 
 Second, considering the complications during spontaneous TERT activation, we set out to design a system known to experience natural replicative telomere attrition, activates TERT on cue, and allow us to harvest cells precisely after they escaped telomere crisis. We use low-pass (read depth) WGS to screen for CNAs and further subject representative clones taking different CNA configurations to high-pass WGS to reconstruct the exact rearranged haplotypes after telomere crisis by genome graph analysis. This will enable us to infer phylogeny among diverging clones, deduce the sequence of events triggered by crisis, and gain much deeper insight into how they start, progress, and conclude. In short, through both approaches, we observe a wide spectrum of SV events, from totally quiet genomes to simple arm-level gain and loss to complex chromothripsis or BFB patterns. Hence, telomere crisis can instigate varying SV events, and using BFB and chromothripsis alone cannot accurately predict the presence of telomere crisis in the life history of a cancer.
 
-In chapter 4 \ref{chap:tel_crisis} I will dive deep into this detailed charaterization of the structural outcomes of telomere crisis, and discuss about the implications of adopting our genome graph framework to resolve evolving genome structures among multiple related samples in the Concluding Remarks \ref{chap:conclude}.
+In Chapter \ref{chap:tel_crisis} I will dive deep into this detailed charaterization of the structural outcomes of telomere crisis, and discuss about the implications of adopting our genome graph framework to resolve evolving genome structures among multiple related samples in the Concluding Remarks \ref{chap:conclude}.
 
-\section{Whole genome analysis of tumors}
-In the previous chapters, I have discussed how our genome graph paradigm can represent complex genome structures, how it can be used to uncover new SV patterns and precisely define the consequences of known mutational processes like telomere crisis. Nonetheless, the primary and ultimate goal of cancer genomics is to improve the clinical managements of the disease. This means identifying the actionable features of cancers from sequencing data, including driver mutations in or amplification of (proto)oncogenes, loss-of-function mutations or deletion of tumor suppressor genes, fusion genes, so that patients can be paired with therapies specifically targeting these vulnerabilities of their tumor to achieve better effectiveness or lower toxicity. In short, this is the core promise of precision oncology.
+%% TODO!!!!!
+\section{Genome graphs facilitates Whole genome analysis of tumors}
+Having discussed how our genome graph paradigm can represent complex genome structures and be used to study SV patterns, I will take it a step further and show how it can improve the whole genome analysis of tumors by better modeling of the rearrangements.
 
-Naturally, the very first step in this process is to know upon which features (e.g. mutation, SCNA, fusion) the tumors depend. As theorized in Lawrence et al.
+The most important goal of sequencing cancer genomes is to pinpoint the somatic alterations responsible for the malignant phenotype, or \textit{drivers}. To achieve that, the main signal to rely on is the recurrent alteration of a particular region of the genome from independent patients tumors. Since each patient's tumor can be regarded an independent clonal expansion, if a particular genomic region is altered in a cohort more than expected from a null distribution where the region is not positively selected, it can be nominated as selected in these cancers. 
 
-The Cancer Genome Atlas (TCGA) is one of the earliest large-scale cancer sequencing projects that has laid the foundation of multimodal molecular taxonomy of numerous cancer types with identified recurrent somatic variants, transcriptomic or proteomic subtypes, aberrant signaling pathways. Yet, limited by the cost and difficulty to analyze, WGS was not the primary choice of genome profiling for the most part. Whole exome sequencing (WES), which is built to capture all of the known coding sequences, has been an essential tools for researcher and oncologists alike. However, by definition, WES will miss regions outside its scope. After we approach the full capacity of WES on defining driver events in cancer cohorts, there are usually a subset tumors in which we cannot define a clear driver.
+The Cancer Genome Atlas (TCGA) is one of the earliest large-scale cancer sequencing projects that has laid the foundation for molecular taxonomy of cancer.
+
+% Nonetheless, the primary and ultimate goal of cancer genomics is to improve the clinical managements of the disease. This means identifying the actionable features of cancers from sequencing data, including driver mutations in or amplification of (proto)oncogenes, loss-of-function mutations or deletion of tumor suppressor genes, fusion genes, so that patients can be paired with therapies specifically targeting these vulnerabilities of their tumor to achieve better effectiveness or lower toxicity. In short, this is the core promise of precision oncology.
+
+% Naturally, the very first step in this process is to know upon which features (e.g. mutation, SCNA, fusion) the tumors depend. As theorized in Lawrence et al.
+
+
+
+with identified recurrent somatic variants, transcriptomic or proteomic subtypes, aberrant signaling pathways. Yet, limited by the cost and difficulty to analyze, WGS was not the primary choice of genome profiling for the most part. Whole exome sequencing (WES), which is built to capture all of the known coding sequences, has been an essential tools for researcher and oncologists alike. However, by definition, WES will miss regions outside its scope. After we approach the full capacity of WES on defining driver events in cancer cohorts, there are usually a subset tumors in which we cannot define a clear driver.
 
 
 In the last Chapter \ref{chap:gdan} and Concluding Remarks \ref{chap:conclude}, we shall discuss about how our genome graph paradigm achieves a more comprehensive characterization of whole genomes of clinically relevant cancer samples.
@@ -396,9 +405,9 @@ Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the 
 % definition in as plain language as possible
 % need to define: reference genome, interval, signed interval, junction
 \begin{figure}[h!]
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/ggraph_schematic.png}
-    \caption{\textbf{Schematic of a genome graph.}}{}
+    \caption{\textbf{Schematic of a genome graph.}}{Grey and purple rectangles are positive and negative strand intervals. Links are edges of different types: black, reference; red, alternate or aberrant; blue, loose ends; dark blue, telomeric ends.}
     \label{fig:ggraph_schematic}
 \end{figure}
 
@@ -409,7 +418,7 @@ Following this definition, there are at least two types of edges. The first type
 Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-stranded DNA segment, a reverse complement pair of edges $\{e, \bar{e}\}$ compose a \textit{junction}. Trivially, $e$ and $\bar{e}$ will always be the same type of edge, so we also have two types of junctions, REF and ALT. Each junction $a = \{e, \bar{e}\}, v_1 = C^{i_1}[q_1,r_1], v_2 = C^{i_2}[q_2,r_2]$ can be represented with the two breakends it connects, namely $b_1 = \{b_o(v_1), b_r(\bar{v_1})\} = C^{i_1}_{q_1 [1-I(i_1)] + r_1 I(i_1)}$, and similarly $b_2 = C^{i_2}_{q_2 [1-I(i_2)] + r_2 I(i_2)}$, where indicator function $I:\mathbb{R}\rightarrow \{0, 1\}, I(x)=1, if x \ge 0, I(x) = 0, if x<0$.
 
 \begin{figure}[h!]
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/junction_orientation.png}
     \caption{\textbf{Four basic classes of junctions.}}{Dark gray indicates the \textit{cis} side and light gray the \textit{trans} side of a breakend.}
     \label{fig:junction_orientations}
@@ -617,7 +626,13 @@ which combines the quadratic read depth residual $\mathcal{V}$ and $\ell_1$-norm
     \end{aligned}
 \end{equation}
 
-The resulting MAP estimate $\hat{\kappa}$ defines the JBGG $(G,\hat{\kappa})$ which is outputted and returned to the user.
+\begin{figure} \label{fig:jabba_formulation}
+    \centering
+    \includegraphics*[width=0.95\textwidth]{figures/600ppi/jabba_formulation.png}
+    \caption{\textbf{JaBbA formulation.}}{A schematic of the mixed integer quadratic program optimization problem that JaBbA solves.}
+\end{figure}
+
+The resulting MAP estimate $\hat{\kappa}$ defines the JBGG $(G,\hat{\kappa})$ which is outputted and returned to the user (Figure \ref*{fig:jabba_formulation}).
 
 
 \subsection{JaBbA pipeline}
@@ -746,44 +761,44 @@ In the simplest terms, reconstructing genome graphs consists of two tasks: estim
 %% \texttt{FACETS}, \texttt{TITAN}, \texttt{FREEC}
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn_accuracy_sim.png}
-    \caption{\textbf{Junction copy number accuracy.}}
+    %\centering
+    \includegraphics[width=0.9\textwidth]{figures/600ppi/jcn_accuracy_sim.png}
+    \caption{\textbf{Junction copy number accuracy.}}{Benchmarking across 40 simulated genomes and HCC1954, with four technical replicates at ten different sample purity levels by admixing with matched normal genome. The numbers in parentheses after the names of the methods indicate the numbers of successful runs out of 40. F1 score is the harmonic mean of precision and recall. Same for Figure \ref*{fig:junc_inc_f1}, \ref*{fig:cn_bp_f1}, \ref*{fig:cn_mse}, \ref*{fig:cn_scatter}. This figure shows the accuracy of JCN estimation for simulated genomes only (fraction of junctions with correctly estimated JCN).}
     \label{fig:jcn_accuracy_sim}
 \end{figure}
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/junc_inc_f1.png}
+    %\centering
+    \includegraphics[height=0.8\textheight]{figures/600ppi/junc_inc_f1.png}
     \caption{\textbf{F1 score of junction incorporation.}}
     \label{fig:junc_inc_f1}
 \end{figure}
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_bp_f1.png}
+    %\centering
+    \includegraphics[height=0.8\textheight]{figures/600ppi/cn_bp_f1.png}
     \caption{\textbf{F1 score of copy number change point placement.}}
     \label{fig:cn_bp_f1}
 \end{figure}
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_mse.png}
-    \caption{\textbf{Mean square error of CN estimation.}}
+    %\centering
+    \includegraphics[height=0.8\textheight]{figures/600ppi/cn_mse.png}
+    \caption{\textbf{Root mean square error of estimated CN from gold standard.}}
     \label{fig:cn_mse}
 \end{figure}
 
 \begin{figure}
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_scatter.png}
-    \caption{\textbf{Estimted versus gold standard CN.}}
+    \caption{\textbf{Estimted versus gold standard CN in all successful runs.}}{Pearson correlation coefficients $\rho$ using all points are labeled.}
     \label{fig:cn_scatter}
 \end{figure}
 
 \begin{figure}
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/example_bfb.png}
-    \caption{\textbf{Reconstructed genome graph around HER2 amplification in HCC1954 cell line.}}
+    \caption{\textbf{Reconstructed genome graphs around HER2 in HCC1954.}}{Example of a putative BFBC event in HCC1954 and the reconstruction by five different methods (top five) and the binned read coverage transformed in CN space (bottom).}
     \label{fig:example_bfb}
 \end{figure}
 
@@ -834,9 +849,9 @@ To visualize the genome graphs we developed \texttt{gGnome.js} (source code at \
 
 % gGnome.js figure
 \begin{figure}[h!]
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/ggjs.png}
-    \caption{\textbf{A snapshot of the gGnome.js interface of a BFB cycles event in an esophageal adenocarcinoma sample.}}{}
+    \caption{\textbf{A snapshot of the gGnome.js interface of a BFB cycles event in an esophageal adenocarcinoma sample.}}{From the bottom to the top: X axis is the reference genome. Y axis is mapped to JaBbA-inferred copy number. Colored bars are vertices and links edges. Viewing windows can be created by selecting regions on the whole genome bar above the plotting region. Sample information is displayed along with the currently viewing windows. Toolbar at the very top allows for quick search of samples, focus on an annotated region, locate a specific range by coordinates or gene name, as well as controlling visible tracks in the browser.}
     \label{fig:ggjs}
 \end{figure}
 % 
@@ -1031,42 +1046,42 @@ While the vast majority of junctions demonstrated low-JCN (JCN $\le$ 3), we obse
 
 
 \begin{figure*}[!t]
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/pancancer.png}
-    \caption{\textbf{Pan-cancer WGS tumor types.}}
+    \caption{\textbf{Pan-cancer WGS tumor types.}}{See Table \ref{tab:pancan_cohort} for abbreviations. $*$ marks datasets with multiple samples per patient.}
     \label{fig:pancancer}
 \end{figure*}
 
 \begin{figure*}
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn_hist.png}
-    \caption{\textbf{Pan-cancer junction copy number (JCN) distribution.}}
+    \caption{\textbf{Pan-cancer junction copy number (JCN) distribution.}}{Colored bars show categories in the cohort. Low JCN, 1 to 3; elevated JCN, >3; high JCN, >7}
     \label{fig:jcn_hist}
 \end{figure*}
 
 \begin{figure*}
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn.png}
-    \caption{\textbf{Illustration of JCN.}}
+    \caption{\textbf{Illustration of elevated JCN.}}{Elevated junction copy number (JCN=2) arises from the duplication of an allele harboring a DEL-like junction, resulting in a characteristic read depth and junction pattern from which a junction-balanced genome graph can be reconstructed.}
     \label{fig:jcn}
 \end{figure*}
 
 \begin{figure*}
-    \centering
+    %\centering
     \includegraphics[height=0.95\textheight]{figures/600ppi/variant_subgraph.png}
-    \caption{\textbf{Example of chromothripsis and chromoplexy.}}
+    \caption{\textbf{Examples of chromothripsis and chromoplexy.}}{}
     \label{fig:variant_subgraph}
 \end{figure*}
 
 \begin{figure}
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon.png}
     \caption{\textbf{Candidate amplicon subgraphs and the feature space construction.}}
     \label{fig:amplicon_features}
 \end{figure}
 
 \begin{figure*}
-    \centering
+    %\centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_clustering.png}
     \label{fig:amplicon_definition}
     \caption{\textbf{Classification of amplicons with high-JCN junctions.}}
