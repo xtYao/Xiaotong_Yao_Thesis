@@ -143,7 +143,7 @@
 \end{abstract}
 
 \begin{biosketch}
-    Xiaotong Yao has had strong interest in biology from an early age and later developed an appreciation for using computational methods to answer biological questions. His interest for computational biology started with systems biology and synthetic biology by participating in the 2011 International Genetically Engineered Machine Competition. Subsequently, he curated lipid metabolic pathways in the \textit{Streptomyces avermitilis} metabolic network. To get formally trained in computational biology, he joined the Master's program in Bioinformatics and Systems Biology at the Biology Department of New York University, where he built predictive models for protein sumoylation from public protein function databases. Following a passion for precision medicine, in 2015, he became a PhD student in the Tri-institute Program in Computational Biology and Medicine at Weill Cornell Medicine, focusing on cancer genomics, and in 2016 he joined Dr. Marcin Imielinski's lab to persue his dissertation research in using genome graphs to model complex Structural variants in cancer whole genomes.
+    Xiaotong Yao has had strong interest in biology from an early age and later developed an appreciation for using computational methods to answer biological questions. His interest for computational biology started with systems biology and synthetic biology by participating in the 2011 International Genetically Engineered Machine Competition. Subsequently, he curated lipid metabolic pathways in the \textit{Streptomyces avermitilis} metabolic network. To get formally trained in computational biology, he joined the Master's program in Bioinformatics and Systems Biology at the Biology Department of New York University, where he built predictive models for protein sumoylation from public protein function databases. Following a passion for precision medicine, in 2015, he became a PhD student in the Tri-institute Program in Computational Biology and Medicine at Weill Cornell Medicine, focusing on cancer genomics, and in 2016 he joined Dr. Marcin Imielinski's lab to persue his dissertation research in using genome graphs to model complex Structural variants in cancer whole genomes. He aspires to continue the research in cancer genomics in the future towards making a more direct impact on the patients' outcomes.
 \end{biosketch}
 
 \begin{dedication}
@@ -151,8 +151,7 @@
 \end{dedication}
 
 \begin{acknowledgements}
-%Dr. Marcin Imielinski
-
+    This thesis is founded by my mentor Dr. Marcin Imielinski. In 2016, I was pondering whether a particular recurrent SV events in prostate cancer genomes is just a variant calling artifact, when Marcin generously broke me free from the existing framework of counting junctions like mutations, by revealing a possibility where all SVs in a genome can be unified in one graph. The elegance of this formulation immediately captured my interest, but it was not until after numerous afternoons sitting down with Marcin, browsing through thousands of genome graphs, improving our models over and over, that I finally felt I grasped the significance of this work. 
 
     Kevin Hadi
 
@@ -338,10 +337,12 @@ Second, considering the complications during spontaneous TERT activation, we set
 In Chapter \ref{chap:tel_crisis} I will dive deep into this detailed charaterization of the structural outcomes of telomere crisis, and discuss about the implications of adopting our genome graph framework to resolve evolving genome structures among multiple related samples in the Concluding Remarks \ref{chap:conclude}.
 
 %% TODO!!!!!
-\section{Genome graphs facilitates Whole genome analysis of tumors}
+\section{Genome graphs facilitates whole genome analysis of tumors}
+The most important goal of sequencing cancer genomes is to pinpoint the somatic alterations responsible for the malignant phenotype, or \textit{drivers}. To achieve that, the main signal to rely on is the recurrent alteration of a particular region of the genome from independent patients tumors. Since each patient's tumor can be regarded an independent clonal expansion, if a particular genomic region is altered in a cohort more than expected from a null distribution where the region is not positively selected, it can be nominated as selected in these cancers. 
+
 Having discussed how our genome graph paradigm can represent complex genome structures and be used to study SV patterns, I will take it a step further and show how it can improve the whole genome analysis of tumors by better modeling of the rearrangements.
 
-The most important goal of sequencing cancer genomes is to pinpoint the somatic alterations responsible for the malignant phenotype, or \textit{drivers}. To achieve that, the main signal to rely on is the recurrent alteration of a particular region of the genome from independent patients tumors. Since each patient's tumor can be regarded an independent clonal expansion, if a particular genomic region is altered in a cohort more than expected from a null distribution where the region is not positively selected, it can be nominated as selected in these cancers. 
+
 
 The Cancer Genome Atlas (TCGA) is one of the earliest large-scale cancer sequencing projects that has laid the foundation for molecular taxonomy of cancer.
 
@@ -748,7 +749,7 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
 \end{table}
 \newpage
 
-\subsubsection*{Comparison to previous methods}
+\subsubsection*{Comparison to previous genome graph reconstruction methods}
 % TODO!
 To my best knowledge, there have been 8 published methods to reconstruct JBGGs from WGS data (Table \ref{tab:jbgg_inference}). AmpliconArchitect and CouGaR work only within amplified regions of the genome, while the other methods all infer JBGG genome-wide. Most adopt a undirected variation of the interval graph structure, while JaBbA is built upon a skew-symmetric directed graph. Weaver and ReMixT solve the problem with probabilistic graphical models, and the others utilize different variations of integer programming.
 
@@ -1735,6 +1736,9 @@ In conclusion, our data reveal that telomere crisis can instigate a wide spectru
 \chapter{Whole-genome characterization of lung adenocarcinomas lacking alterations in the RTK/RAS/RAF pathway} \label{chap:gdan}
 
 In this final chapter, I describe the collaborative effort within the Cancer Genome Atlas (TCGA) consortium to characterize the whole genomes of lung adenocarcinoma lacking canonical pathogenic alterations in RTK/RAS/RAF pathway as determined by whole exome sequencing (WES) and transcriptome sequencing (RNA-seq).
+
+\textit{\textbf{Individual contributions:}} The Cancer Genome Atlas consortium conceptualized, initiated the project, and collected data. Jian Carrot-Zhang, 
+
 
 \section{Identification of RPA(-) LUADs}
 \begin{figure}
