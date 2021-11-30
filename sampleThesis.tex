@@ -77,7 +77,8 @@
 \usepackage[symbol]{footmisc}
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
-\bibliographystyle{plain}
+%\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 %\bibliographystyle{IEEEbib}
 %\captionsetup{justification=raggedright,singlelinecheck=false}
 \renewcommand{\caption}[1]{\singlespacing\hangcaption{#1}\normalspacing}
@@ -104,17 +105,17 @@
 }
 
 % Final edits:
-% Write a good acknowledgement
-% Remove Sally text and figures and just refer to them
+% done Write a good acknowledgement
+% done Remove Sally text and figures and just refer to them
 % include the clinical report system in the Conclusions
 % rinse once to fix all citations
 
-% 1. Confirm conferral date with Registrar; update title page if necessary.
-% 2. Please change title of "Contents" to "Table of Contents"
+% done 1. Confirm conferral date with Registrar; update title page if necessary.
+% done 2. Please change title of "Contents" to "Table of Contents"
 % 3. Text in figure is too small; all lettering must be readable even when reduced 25%, including axes and legends. Please enlarge the text/figure to make the text readable; if the figure or caption exceed one page, please start the next page with "Figure X (continued)". Alternatively, you can separate and enlarge portions of the figures, rotate them 90 degrees, or adjust the background color for better contrast. (Figures 1.4, 4.1, 5.22, 5.28, 6.3)
-% 4. When chapters are based on published materials, it must be noted appropriately. Please see guidelines for more information.
+% done 4. When chapters are based on published materials, it must be noted appropriately. Please see guidelines for more information.
 % 5. While not necessary, it would alleviate confusion to include more of the last paragraph on page 79 with its last line appearing on page 81, as well as "6.11" appearing on page 162.
-% 5. Captions for tables must appear above the table. (Table B.1)
+% done 5. Captions for tables must appear above the table. (Table B.1)
 
 %% \title {Structural variants in cancer genomes: representation, inference, and applications}
 \title{A genome graph paradigm for cancer genome structure}
@@ -142,7 +143,7 @@
 \end{abstract}
 
 \begin{biosketch}
-    Xiaotong Yao has had strong interest in biology from an early age and later developed an appreciation for using computational methods to answer biological questions. His interest for computational biology started with systems biology and synthetic biology by participating in the 2011 International Genetically Engineered Machine Competition. Subsequently, he curated lipid metabolic pathways in the \textit{Streptomyces avermitilis} metabolic network. To get formally trained in computational biology, he joined the Master's program in Bioinformatics and Systems Biology at the Biology Department of New York University, where he built predictive models for protein sumoylation from public protein function databases. Following a passion for precision medicine, in 2015, he became a PhD student in the Tri-institute Program in Computational Biology and Medicine at Weill Cornell Medicine, focusing on cancer genomics, and in 2016 he joined Dr. Marcin Imielinski's lab to persue his dissertation research in using genome graphs to model complex Structural variants in cancer whole genomes.
+    Xiaotong Yao has had strong interest in biology from an early age and later developed an appreciation for using computational methods to answer biological questions. His interest for computational biology started with systems biology and synthetic biology by participating in the 2011 International Genetically Engineered Machine Competition. Subsequently, he curated lipid metabolic pathways in the \textit{Streptomyces avermitilis} metabolic network. To get formally trained in computational biology, he joined the Master's program in Bioinformatics and Systems Biology at the Biology Department of New York University, where he built predictive models for protein sumoylation from public protein function databases. Following a passion for precision medicine, in 2015, he became a PhD student in the Tri-institute Program in Computational Biology and Medicine at Weill Cornell Medicine, focusing on cancer genomics, and in 2016 he joined Dr. Marcin Imielinski's lab to persue his dissertation research in using genome graphs to model complex Structural variants in cancer whole genomes. He aspires to continue the research in cancer genomics in the future towards making a more direct impact on the patient outcomes.
 \end{biosketch}
 
 \begin{dedication}
@@ -150,23 +151,13 @@
 \end{dedication}
 
 \begin{acknowledgements}
-    Dr. Marcin Imielinski
-    I would like to thank my mentor Dr. Marcin Imielinski for the 
-
-    Kevin Hadi
-
-    Julie Behr
+    This thesis is founded by my mentor Dr. Marcin Imielinski. In 2016, I was pondering whether a particular recurrent SV event is just a variant calling artifact, when Marcin generously broke me free from the existing framework of counting junctions like mutations, by revealing a possibility where all SVs in a genome can be unified in one graph to reveal their complexity. The elegance of this formulation immediately captured my interest, but it was not until after numerous afternoons sitting down with Marcin, browsing through thousands of genome graphs, improving our models over and over, that I finally felt I started to grasp the significance of this work. During the challenging times of preparing for manuscript submission, responses to reviewers, Marcin's astuteness has been the constant guidance I held onto. Beyond imparting his unique combination of expertise in computational sciences and medicine, working with Marcin instilled in me a swift yet rigorous approach to data analysis and scientific investigation in general, that can best be summarized by a quote from the famous investor Naval Ravikant -- \textit{Impatience with actions, patience with results.} With new data at hand there should be immediate list of things burning to be found out; always ask yourself the next question; fail quick and iterate; battle-test your code; motivate every sentence in a presentation or manuscript with a question -- are just a few of the teachings that were cast into my tenets. Besides extraordinary professional and academic mentoring, Marcin actively cared for my physical and mental health. For that, I will be forever grateful for the chance to have done this work with Marcin.
     
-    Aditya Deshpande
+    Next, I want to thank my wonderful teammates and fellow graduate students, Kevin Hadi, Julie Behr, Aditya Deshpande, who have been offering support and encouragement when things got tricky, critic and reflection when there is room for improvement. It is a privliege to have friends who are also role models. I also thank the rest of the Imielinski lab members for feedback on all the projects and unconditional support throughout this period.
 
-    Committee
+    In true spirit of science as a collective effort, I want to thank all the collaborators whose names I cannot list in an exhausting manner. Working with these brightest minds has been an honor and I will carry the gifts of this experience onwards. Special thanks to Drs. Sally Dewhurst and Titia de Lange for giving me the opportunity to making discoveries on the SV outcomes of telomere crisis; Dr. Carrot-Zhang, for characterizing the whole genome of lung adenocarcinomas; Dr. Nicolas Robine for many projects together and continuous supportive conversations.
 
-    Collaborators
-
-    Program
-
-    Sample donors
-
+    Last but not least, I want to thank the rest of my thesis committee Drs. Christina Leslie (chairperson), Simon Powell, and Iman Hajirasouliha for helping me through the academic training.
 \end{acknowledgements}
 
 \contentspage
@@ -185,6 +176,7 @@ CNA -- copy number aberration
 JaBbA -- Junction Balance Analysis
 
 \symlist
+
 
 \normalspacing \setcounter{page}{1} \pagenumbering{arabic}
 \pagestyle{cornell} \addtolength{\parskip}{0.5\baselineskip}
@@ -337,36 +329,23 @@ Second, considering the complications during spontaneous TERT activation, we set
 In Chapter \ref{chap:tel_crisis} I will dive deep into this detailed charaterization of the structural outcomes of telomere crisis, and discuss about the implications of adopting our genome graph framework to resolve evolving genome structures among multiple related samples in the Concluding Remarks \ref{chap:conclude}.
 
 %% TODO!!!!!
-\section{Genome graphs facilitates Whole genome analysis of tumors}
-Having discussed how our genome graph paradigm can represent complex genome structures and be used to study SV patterns, I will take it a step further and show how it can improve the whole genome analysis of tumors by better modeling of the rearrangements.
+\section{Genome graphs facilitates whole genome analysis of tumors}
+The most important goal of sequencing cancer genomes is to pinpoint the somatic alterations responsible for the malignant phenotype, or \textit{drivers}. To achieve that, the main signal to rely on is the recurrent alteration of a particular region of the genome from independent patients tumors. To put simply, each patient's tumor can be regarded an independent clonal expansion, if a particular genomic region is altered in a cohort more than expected from a null distribution where the region is not positively selected, it can be nominated as selected in these cancers. In theory, whole genome sequencing (WGS) is a more ideal tool to profiling the cancer genomes for such purpose since it samples reads from the whole genome, while whole exome sequencing (WES) only mainly captures the known exonic sequences. Yet, limited by higher cost and difficulty to analyze, WGS was not the primary choice of earlier cancer genome profiling efforts. For example, the Cancer Genome Atlas (TCGA), as one of the earliest large-scale cancer sequencing projects, relied mainly on WES, while powerful at discovering recurrent coding mutations, also misses by design non-coding mutations, and the vast majority of SVs.
 
-The most important goal of sequencing cancer genomes is to pinpoint the somatic alterations responsible for the malignant phenotype, or \textit{drivers}. To achieve that, the main signal to rely on is the recurrent alteration of a particular region of the genome from independent patients tumors. Since each patient's tumor can be regarded an independent clonal expansion, if a particular genomic region is altered in a cohort more than expected from a null distribution where the region is not positively selected, it can be nominated as selected in these cancers. 
+Having discussed how our genome graph paradigm can represent complex genome structures and be used to study SV patterns, I will take it a step further and show how it enables a more comprehensive whole genome analysis of tumors by better modeling of the rearrangements. More specifically, as part of the next phase of TCGA effort to push for whole genome characterizations, we focused on a subset lung adenocarcinomas (LUAD) in which WES and RNA-seq (for fusion transcripts) did not assign a clear driver. In the last Chapter \ref{chap:gdan}, 
 
-The Cancer Genome Atlas (TCGA) is one of the earliest large-scale cancer sequencing projects that has laid the foundation for molecular taxonomy of cancer.
-
-% Nonetheless, the primary and ultimate goal of cancer genomics is to improve the clinical managements of the disease. This means identifying the actionable features of cancers from sequencing data, including driver mutations in or amplification of (proto)oncogenes, loss-of-function mutations or deletion of tumor suppressor genes, fusion genes, so that patients can be paired with therapies specifically targeting these vulnerabilities of their tumor to achieve better effectiveness or lower toxicity. In short, this is the core promise of precision oncology.
-
-% Naturally, the very first step in this process is to know upon which features (e.g. mutation, SCNA, fusion) the tumors depend. As theorized in Lawrence et al.
-
-
-
-with identified recurrent somatic variants, transcriptomic or proteomic subtypes, aberrant signaling pathways. Yet, limited by the cost and difficulty to analyze, WGS was not the primary choice of genome profiling for the most part. Whole exome sequencing (WES), which is built to capture all of the known coding sequences, has been an essential tools for researcher and oncologists alike. However, by definition, WES will miss regions outside its scope. After we approach the full capacity of WES on defining driver events in cancer cohorts, there are usually a subset tumors in which we cannot define a clear driver.
-
-
-In the last Chapter \ref{chap:gdan} and Concluding Remarks \ref{chap:conclude}, we shall discuss about how our genome graph paradigm achieves a more comprehensive characterization of whole genomes of clinically relevant cancer samples.
-
-
-
-I will demonstrate how to integrate it into a comprehensive whole genome characterization of a specific cancer cohort. 
-
-
-
-
-For example, one of the most common and deadliest cancer \cite{Siegel2019-gb}, lung adenocarcinoma (LUAD), has been known to be driven by genetic alterations (e.g. mutations, fusions, amplifications, deletions) in receptor tyrosine kinases (RTK) and its downstream RAS/RAF/MEK cascade proteins, that eventually activate MAPK signaling pathway \cite{Desai2014-qe}. Previously, a series of TCGA studies estimated 70-80\% of LUAD cases harbor drivers in the RTK/RAS/RAF pathway using WES and transcriptome sequencing (RNA-seq) \cite{Campbell2016-xv,Cancer_Genome_Atlas_Research_Network2014-ju,Imielinski2012-vv}. Based on these knowledge, many small moledcule inhibitors have been developed to target various proteins along this pathway including EGFR, BRAF, ALK, RET, ROS1, KRAS, and provide unprecedented clinical benefit for LUAD patients \cite{Zhong2021-st}. Thus, it is crucial to design theraputic regime based on accurate information about if and what RTK/RAS/RAF pathway alterations (RPA) are present and likely functional within a tumor.
+As one of the most common and deadliest cancer \cite{Siegel2019-gb}, lung adenocarcinoma has been known to be driven by genetic alterations (e.g. mutations, fusions, amplifications, deletions) in receptor tyrosine kinases (RTK) and its downstream RAS/RAF/MEK cascade proteins, that eventually activate MAPK signaling pathway \cite{Desai2014-qe}. Previously, a series of TCGA studies estimated 70-80\% of LUAD cases harbor drivers in the RTK/RAS/RAF pathway using WES and transcriptome sequencing (RNA-seq) \cite{Campbell2016-xv,Cancer_Genome_Atlas_Research_Network2014-ju,Imielinski2012-vv}. Based on these knowledge, many small moledcule inhibitors have been developed to target various proteins along this pathway including EGFR, BRAF, ALK, RET, ROS1, KRAS, and provide unprecedented clinical benefit for LUAD patients \cite{Zhong2021-st}. Thus, it is crucial to design theraputic regime based on accurate information about if and what RTK/RAS/RAF pathway alterations (RPA) are present and likely functional within a tumor.
 
 Apparently, the remaining 20-30\% of cases, which we refer to as RTK/RAS/RAF pathway alteration-negative or RPA(-) LUADs, pose a major clinical challenge in precision thoracic oncology \cite{Campbell2016-xv}. One immediate question is whether RPA(-) LUAD driven by some distinct RTK/RAS/RAF-independent pathways, or whether the profiling technology (WES and RNA-seq) missed relevant events due to techinical factors like uneven coverage or low sample purities. 
 
 Whole genome sequencing offers a chance to gain a better picture of the variants within these tumors. We anticipate the addition of WGS data to at least 1) either verify the RPA(-) status or recover previously missed known RPAs, 2) nominate potential SV and non-coding drivers hard to capture with WES, 3) determine the extent and type of genomic instability to compare to RPA(+) LUADs. Our genome graph paradigm offers a unique advantage to not only enhance the accuracy of identifying candidate alterations, but also reveal their underlying mutational mechanism. To that end, we performed WGS on LUAD samples from The Cancer Genome Atlas (TCGA) cohort that had appeared in previous analyses to lack an RTK/RAS/RAF pathway-activating alteration \cite{Campbell2016-xv} and comprehensively characterized their variant landscape in \nameref{chap:gdan}.
+
+% Nonetheless, the primary and ultimate goal of cancer genomics is to improve the clinical managements of the disease. This means identifying the actionable features of cancers from sequencing data, including driver mutations in or amplification of (proto)oncogenes, loss-of-function mutations or deletion of tumor suppressor genes, fusion genes, so that patients can be paired with therapies specifically targeting these vulnerabilities of their tumor to achieve better effectiveness or lower toxicity. In short, this is the core promise of precision oncology.
+% Naturally, the very first step in this process is to know upon which features (e.g. mutation, SCNA, fusion) the tumors depend. As theorized in Lawrence et al.
+% with identified recurrent somatic variants, transcriptomic or proteomic subtypes, aberrant signaling pathways. 
+% After we approach the full capacity of WES on defining driver events in cancer cohorts, there are usually 
+% and Concluding Remarks \ref{chap:conclude}, we shall discuss about how our genome graph paradigm achieves a more comprehensive characterization of whole genomes of clinically relevant cancer samples.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 2: formalize genome graphs and JaBbA
@@ -724,6 +703,7 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
 \newpage
 \begin{table}[] \label{tab:jbgg_inference}
     \centering    
+    \caption{\textbf{Comparison of JBGG reconstruction methods.}}{Except for AmpliconArchitect and CouGaR, which only reconstruct complex amplicons, most methods build genome-wide JBGGs. MIQP, mixed-integer quadratic programming; ILP, integer linear programming; LBP, loopy belief propagation; MILP, mixed-integer linear programming.}
     \rotatebox[]{90}{
         \begin{tabular}{@{}cccc@{}}
             \toprule
@@ -742,12 +722,12 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
             %    CCR \\
             \bottomrule
         \end{tabular}            
-    }
-    \caption{\textbf{Comparison of JBGG reconstruction methods.}}{Except for AmpliconArchitect and CouGaR, which only reconstruct complex amplicons, most methods build genome-wide JBGGs. MIQP, mixed-integer quadratic programming; ILP, integer linear programming; LBP, loopy belief propagation; MILP, mixed-integer linear programming.}
+    }    
 \end{table}
+
 \newpage
 
-\subsubsection*{Comparison to previous methods}
+\subsubsection*{Comparison to previous genome graph reconstruction methods}
 % TODO!
 To my best knowledge, there have been 8 published methods to reconstruct JBGGs from WGS data (Table \ref{tab:jbgg_inference}). AmpliconArchitect and CouGaR work only within amplified regions of the genome, while the other methods all infer JBGG genome-wide. Most adopt a undirected variation of the interval graph structure, while JaBbA is built upon a skew-symmetric directed graph. Weaver and ReMixT solve the problem with probabilistic graphical models, and the others utilize different variations of integer programming.
 
@@ -1445,46 +1425,45 @@ In about 120 days after the initial cultutre (55 days with dox treatment), the M
     \label{fig:tc_sum_coverage_low}
 \end{figure}
 
-\begin{table}[h!]
-\label{tab:tc_sequenced_clones}
-\begin{tabular}{ccc}
-\hline
-\multirow{0}{0pt}{Name} & \multicolumn{2}{c}{\textbf{Number   Sequenced}} \\ \cline{2-3} 
-                      & Low Pass         & High   Pass         \\ \hline
-Parental cell lines   & 3                & 1                   \\
-Day 120 (Y) clones    & 37               & 5                   \\
-Day 150 (Z) clones    & 83               & 8                   \\
-Control (CT) clones   & 8                & 0                   \\ \hline
-\end{tabular}
-\caption{\textbf{Number of clones analyzed by high and low-pass WGS.}}
+\begin{table}[h!] \label{tab:tc_sequenced_clones}
+    \caption{\textbf{Number of clones analyzed by high and low-pass WGS.}}
+    \begin{tabular}{ccc}
+    \hline
+    \multirow{0}{0pt}{Name} & \multicolumn{2}{c}{\textbf{Number   Sequenced}} \\ \cline{2-3} 
+                        & Low Pass         & High   Pass         \\ \hline
+    Parental cell lines   & 3                & 1                   \\
+    Day 120 (Y) clones    & 37               & 5                   \\
+    Day 150 (Z) clones    & 83               & 8                   \\
+    Control (CT) clones   & 8                & 0                   \\ \hline
+    \end{tabular}
 \end{table}
 
 \begin{table}[] \label{tab:tc_sv40t}
-\rotatebox[]{90}{
-    \begin{tabular}{ccccc}
-        \hline
-        \textbf{Name}                  & \textbf{Cell Line/Tissue Source}              & \textbf{Telomerase Status}   & \textbf{Reference}                 & \textbf{Kind gift of}             \\ \hline
-        HA1 p15               & Human Embryonic   Kidney cells       & -            & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
-        SW13 PD73             & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-        SW26 PD68.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-        SW39 PD72.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-        Bet3B p3              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}     & Roger Reddel, CMRI       \\
-        Bet3K p7              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
-        BFT3B p10             & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
-        BFT3G p7              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
-        BFT3K p9              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
-        HA1-IM PD216          & Human Embryonic   Kidney cells       & + & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
-        SW13 PD184            & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-        SW26 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-        SW39 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-        Bet3B p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-        Bet3K p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-        BFT3B p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-        BFT3G p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-        BFT3K p34 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\ \hline
-    \end{tabular}
-}
-\caption{\textbf{SV40T immortalized pre-crisis and post-crisis telomerase positive cell lines.}}
+    \caption{\textbf{SV40T immortalized pre-crisis and post-crisis telomerase positive cell lines.}}
+    \rotatebox[]{90}{
+        \begin{tabular}{ccccc}
+            \hline
+            \textbf{Name}                  & \textbf{Cell Line/Tissue Source}              & \textbf{Telomerase Status}   & \textbf{Reference}                 & \textbf{Kind gift of}             \\ \hline
+            HA1 p15               & Human Embryonic   Kidney cells       & -            & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
+            SW13 PD73             & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+            SW26 PD68.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+            SW39 PD72.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+            Bet3B p3              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}     & Roger Reddel, CMRI       \\
+            Bet3K p7              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
+            BFT3B p10             & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
+            BFT3G p7              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
+            BFT3K p9              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
+            HA1-IM PD216          & Human Embryonic   Kidney cells       & + & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
+            SW13 PD184            & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+            SW26 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+            SW39 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+            Bet3B p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+            Bet3K p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+            BFT3B p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+            BFT3G p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+            BFT3K p34 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\ \hline
+        \end{tabular}
+    }
 \end{table}
 
 To assess the genome structure of proliferating post-crisis cells, single cell clones were isolated from induced MRC5/Rbsh/p21sh/iCRISPRa-TERT cells at day 120 (‘Y clones’) and day 150 (‘Z clones’) (Figure \ref{fig:tc_growth}). The clonal yield at day 150 was greater than at day 120 in induced cells but no clones could be isolated from the uninduced population at either timepoint. The lower clonal yield at day 120 may be due to incomplete stabilization of the telomeres since clones from this time-point showed a higher burden of fused telomeres than those derived from day 150 (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4A). Post-crisis clones from both timepoints showed evidence of ultra-short telomeres and reduced telomere length (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4B-C). Telomerase activity in post-crisis clones was comparable to the parental induced population, indicating that clone viability was not due to selection for increased telomerase activity (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4D). To generate control clones which had not passed through a period of telomere crisis, early passage MRC5 cells were infected with a retrovirus expressing hTERT and single cell clones were isolated (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4E). Genome profiling with low pass (~5X) WGS was performed on eight hTERT-expressing control clones (CT clones), 36 Y clones from day 120, and 82 Z clones from day 150 (Table \ref{tab:tc_sequenced_clones}).
@@ -1734,6 +1713,9 @@ In conclusion, our data reveal that telomere crisis can instigate a wide spectru
 \chapter{Whole-genome characterization of lung adenocarcinomas lacking alterations in the RTK/RAS/RAF pathway} \label{chap:gdan}
 
 In this final chapter, I describe the collaborative effort within the Cancer Genome Atlas (TCGA) consortium to characterize the whole genomes of lung adenocarcinoma lacking canonical pathogenic alterations in RTK/RAS/RAF pathway as determined by whole exome sequencing (WES) and transcriptome sequencing (RNA-seq).
+
+\textit{\textbf{Individual contributions:}} The Cancer Genome Atlas consortium conceptualized, initiated the project, and collected data. Jian Carrot-Zhang, Nicolas Robine, and Marcin Imielinski, led the parts of the study shown in here. Matthew Meyerson, Ramaswamy Govindan, and Marcin Imielinski oversaw the project and the final manuscript. I executed the parts of the whole genome analysis presented here and prepared the results within the manuscript \cite{Carrot-Zhang2020-vl}.
+
 
 \section{Identification of RPA(-) LUADs}
 \begin{figure}
