@@ -13,12 +13,14 @@
 %
 %Some possible packages to include
 \usepackage{amsmath}
+\usepackage{adjustbox}
 \usepackage{graphicx,pstricks}
 \usepackage{graphics}
 \usepackage{moreverb}
 \usepackage{subfigure}
 \usepackage{epsfig}
 \usepackage{subfigure}
+% \usepackage{caption}
 \usepackage{hangcaption}
 \usepackage{txfonts}
 \usepackage{palatino}
@@ -26,15 +28,14 @@
 \usepackage[utf8]{inputenc}
 \usepackage[greek,english]{babel}
 \usepackage[hidelinks]{hyperref}
-
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{multirow}
 \usepackage{multicol}
 \usepackage{tabu}
-
 \usepackage{textcomp} % defines \textmu, which is now what inputenx seems to use for μ - probably due inpmath.. also \textdegree... but not \textrho
 \usepackage{textgreek}
+
 
 % JaBbA document dependency
 \usepackage{enumitem,amssymb}
@@ -117,6 +118,20 @@
 % done 4. When chapters are based on published materials, it must be noted appropriately. Please see guidelines for more information.
 % 5. While not necessary, it would alleviate confusion to include more of the last paragraph on page 79 with its last line appearing on page 81, as well as "6.11" appearing on page 162.
 % done 5. Captions for tables must appear above the table. (Table B.1)
+
+% Revision
+% (done) Date on title page must be month of conferral. Confirm with program coordinator and/or Registrar. Month must be written in full, IE "December".
+% (done, need to redo after other things) Please adjust widowed lines at bottom of page 6, etc, and orphaned line at top of page 10, etc.
+% (done) When noting citation for a published chapter, include the asterisk after chapter title and citation text at bottom of first chapter page. See formatting guidelines for more details.
+% While not required, it is advised to either include the figure number and title in the caption paragraph or single-space the caption paragraph so as to avoid confusion. Please be sure all captions have consistent justification, either center or left.
+% Text in figure is too small; all lettering must be readable even when reduced 25%, including axes and legends. Please enlarge the text/figure to make the text readable. Alternatively, you can separate and enlarge portions of the figures, rotate them 90 degrees, or adjust the background color for better contrast. Please see guidelines if the figure takes up or exceeds a single page. (Figures 2.3, 2.11, 3.20, 4.1, 4.2, 4.12, 5.3, 5.4, 5.22
+% When a figure/table is rotated, any text appearing on that page (EG. the caption) must be rotated in the same orientation. (Tables 2.1, 3.2, 4.2, Figure 4.11, 4.13
+% When a figure/table takes up or exceeds one page, the caption must be placed alone on the preceding page. Any subsequent pages of the figure must begin with begin with "Figure/Table X (Continued)". (Table 3.1
+% Fix margins for Figure 3.17, some of the figure is off the page.
+% Caption overlaps with page number (caption to Figures 3.21 on page 93 and 4.14 on page 124). Please revise.
+% Caption for Figure 4.3 extends over the bottom margin, as does Figure on page 167. Please revise.
+% Text on page 194 extends over right margin, please revise.
+
 
 %% \title {Structural variants in cancer genomes: representation, inference, and applications}
 \title{A genome graph paradigm for cancer genome structure}
@@ -230,6 +245,8 @@ In \cite{stephens2011}, Stephens et al. observed the phenomenon and coined the t
 In prostate carcinoma genomes, Baca et al. \cite{baca2013} discovered chained, long-range, reciprocal junctions that are formed through simutaneous multi-loci (>2) translocations. Even though it is also a complex SV event with clustered junctions, its pattern is qualitatively distinct from chromothripsis, with usually smaller footprint, long-range chains, sometimes involving many chromosomes (>=3), and less loss of genetic materials limited to the \textit{deletion bridges} between adjacent junctions along the chain. Furthermore, there are also experimental evidence that androgen receptors are co-recruited with topoisomerase II beta (\textit{TOP2B}) to sites of TMPRSS-ERG fusion and lead to double strand breaks (DSB) \cite{Haffner2010-cy}, indicating that chromoplexy may have a transcription-related origin than a chromothripsis.
 
 As a prime example of using WGS to refresh and upgrade the understanding of an old chromosomal aberration, double minutes (DM) or extrachromosomal circular DNAs (eccDNA), recently have been investigated in a series of studies \cite{Helmsauer2020-do,Wu2019-ap,Kim2020-cu} presenting its high-resolution, complex structure along with histone markers and 3-D chromatin conformations. In subsets of glioblastoma multiforme (GBM) and other central nervous system cancers, certain cancer genes like epidermal growth factor receptor (\textit{EGFR}) can detach from its original chromosome location and exist on eccDNAs, which replicates with other nucleus DNA yet inherited by daughter cells in a non-symmetric stochastic process \cite{Gaubatz1990-da}. 
+
+\newpage
 
 % (Describe PCAWG, in more details)
 In a more systematic fashion, the Pan-cancer Analysis of Whole Genomes (PCAWG) consortium catalogued WGS variants across >2,500 cases spanning 38 tumor types\cite{pcawg_marker2020-yi} to identify novel classes of complex SVs and cluster these into signatures, mirroring previous work in the categorization of single nucleotide variants (SNVs) into distinct mutational processes\cite{Li2020-ds,Alexandrov2013-zv,Nik-Zainal2012-dc,Menghi2018-er}. It also builds a taxonomy of basic repertoire of CNA outcomes given a sequence of junctions, and nominated a new event type \textit{templated insertion cycle/chain} (TIC) attributed to template switching of stalled replication forks.
@@ -345,7 +362,7 @@ Whole genome sequencing offers a chance to gain a better picture of the variants
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 2: formalize genome graphs and JaBbA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Junction-balanced genome graphs represent structurally altered genomes} \label{chap:gg}
+\chapter{Junction-balanced genome graphs represent structurally altered genomes *} \label{chap:gg}
 % I also establish the correspondance between a walk on a genome graph to the underlying karyotype and show genome graphs can unify a diverse array of putative functional events including fusion genes and enhancer hijiacking. 
 In this chapter, I give formal definitions of a genome graph, a junction balanced genome graph, and Junction Balance Analysis to infer integer copy numbers from short-read whole genome sequencing data. Taking advantage of our novel interactive genome browser \textit{gGnome.js}, I show that our complete toolset can serve as an intuitive portal for researchers to incorporate genome graphs in WGS studies. 
 
@@ -539,23 +556,35 @@ When combined with read coverage data, we can further infer JBGG by filling in a
 %  For lack of better alternative, most early cancer SV studies hitherto treat these two facets of the same rearranged sequence separately or informally combine them to describe certain patterns \cite{stephens2011,baca2013}. The PCAWG consortium made fundamental effort to build up a pool of CNA and junction patterns for different classes of SV events, but still .... 
 
 %===========================%
+\clearpage
 \section{Junction Balance Analysis infers copy numbers on genome graphs from short-read whole genome sequencing}
 
 We developed an algorithm, JaBbA, to accurately infer junction-balanced genome graphs from WGS data. In the following three subsections, we will 1) formally define this algorithm \textit{junction balance analysis}, 2) describe the pipeline implementing the algorithm, and 3) comprehensively compare its features and performance to other methods of similar purpose.
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[height=0.95\textheight]{figures/600ppi/jabba_io.png}
+    % \newpage
+    % \begin{adjustbox}{addcode={
+    %     \begin{minipage}{\width}}{
+    %     % Here is a caption of the figure which is so long that 
+    %     % it has to be wrapped over multiple lines, but should 
+    %     % not exceed the width (height after the rotation) of the image.
+    %     \end{minipage}},rotate=90,center}    
+    % % \includegraphics[scale=.6]{example-image}%
+    % \end{adjustbox}
+    % \caption{}    
+    \caption{\textbf{Inputs and outputs of Junction Balance Analysis}}
+    \label{fig:jabba_io}
+\end{figure}
+\clearpage
+% {Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordinates and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.}
+
 %Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
-
-\begin{figure}[!t]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/jabba_io.png}
-    \caption{\textbf{Inputs and outputs of Junction Balance Analysis}}{Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordinates and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.}
-    \label{fig:jabba_io}
-\end{figure}
-
 % \subsubsection*{Inferring Junction Balanced Genome Graphs}
-We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as SvABA or DELLY).
+We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as SvABA or DELLY) (Figure \ref{fig:jabba_io}).
 
 Each vertex $v \in V_I(G)$ is associated with a partition of bins $J(v) \subseteq \{1, \ldots, n\}$ (based on genomic coordinate overlap) and a mean bin value $\rho(v) = \frac{1}{|J(v)|}\sum_{j \in J(v)} x_j$.  We model each bin subset $x_{J(v)}$ as an i.i.d. sample from a Gaussian distribution with standard deviation $\sigma(v)$ and mean $\kappa(v)$.  The log likelihood is
 
@@ -906,7 +935,7 @@ We believe this suite of packages including gGnome/gGnome.js/JaBbA should greatl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 3: discovery of novel SV patterns
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Distinct Classes of Complex Amplicons Uncovered across Thousands of Cancer Genome Graphs} \label{chap:complex_events}
+\chapter{Distinct Classes of Complex Amplicons Uncovered across Thousands of Cancer Genome Graphs *} \label{chap:complex_events}
 In this chapter I will describe the classification of three distinct types of complex amplification events from 2778 genome graphs built with JaBbA from a pan-cancer cohort of over 30 types of cancers. Furthermore, I will show that the patients in this cohort can be stratified based on a total of 13 simple to complex genome graph-based SV patterns to clusters of differential overall survival, tumor type enrichment, and association with specific germline or somatic alterations.
 
 This work is part of our publication \cite{Hadi2020-um}*, led by Kevin Hadi, Julie Behr, Marcin Imielinski, and myself.
@@ -1291,7 +1320,7 @@ Two, within the high-JCN candidates in our amplicon clustering analysis, there i
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 4: SV evolution after telomere crisis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Structural variant evolution after telomere crisis} \label{chap:tel_crisis} 
+\chapter{Structural variant evolution after telomere crisis *} \label{chap:tel_crisis} 
 In this chapter I set out to capture the SV events in human cell lines directly resulting from natural telomere crisis. This chapter is based on our published article \cite{Dewhurst2021-jk}*.
 
 \textit{\textbf{Individual contributions:} Sally Dewhurst, Titia de Lange, Marcin Imielinski conceptualized and initiated the project. Sally Dewhurst collected the previous published cell lines spontaneously escaped telomere crisis. Sally Dewhurst designed and created the \textit{in vitro} telomere crisis model, executed all the experiments, and analyzed the data except for the WGS parts. I carried out all the analysis involving whole genome sequencing data. Marcin Imielinski and I designed multi-sample algorithms for inferring evolving karyotypes.}
@@ -1704,7 +1733,7 @@ In conclusion, our data reveal that telomere crisis can instigate a wide spectru
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter 5: Whole genome analysis of RPA- lung adenocarcinoma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Whole-genome characterization of lung adenocarcinomas lacking alterations in the RTK/RAS/RAF pathway} \label{chap:gdan}
+\chapter{Whole-genome characterization of lung adenocarcinomas lacking alterations in the RTK/RAS/RAF pathway *} \label{chap:gdan}
 
 In this final chapter, I describe the collaborative effort within the Cancer Genome Atlas (TCGA) consortium to characterize the whole genomes of lung adenocarcinoma lacking canonical pathogenic alterations in RTK/RAS/RAF pathway as determined by whole exome sequencing (WES) and transcriptome sequencing (RNA-seq).
 
