@@ -123,14 +123,16 @@
 % (done) Date on title page must be month of conferral. Confirm with program coordinator and/or Registrar. Month must be written in full, IE "December".
 % (done, need to redo after other things) Please adjust widowed lines at bottom of page 6, etc, and orphaned line at top of page 10, etc.
 % (done) When noting citation for a published chapter, include the asterisk after chapter title and citation text at bottom of first chapter page. See formatting guidelines for more details.
-% While not required, it is advised to either include the figure number and title in the caption paragraph or single-space the caption paragraph so as to avoid confusion. Please be sure all captions have consistent justification, either center or left.
-% Text in figure is too small; all lettering must be readable even when reduced 25%, including axes and legends. Please enlarge the text/figure to make the text readable. Alternatively, you can separate and enlarge portions of the figures, rotate them 90 degrees, or adjust the background color for better contrast. Please see guidelines if the figure takes up or exceeds a single page. (Figures 2.3, 2.11, 3.20, 4.1, 4.2, 4.12, 5.3, 5.4, 5.22
+
+% Text in figure is too small; all lettering must be readable even when reduced 25%, including axes and legends. Please enlarge the text/figure to make the text readable. Alternatively, you can separate and enlarge portions of the figures, rotate them 90 degrees, or adjust the background color for better contrast. Please see guidelines if the figure takes up or exceeds a single page. (Figures 2.3 (done), 2.11 (done), 3.20 (done), 4.1, 4.2, 4.12, 5.3, 5.4, 5.22
 % When a figure/table is rotated, any text appearing on that page (EG. the caption) must be rotated in the same orientation. (Tables 2.1, 3.2, 4.2, Figure 4.11, 4.13
 % When a figure/table takes up or exceeds one page, the caption must be placed alone on the preceding page. Any subsequent pages of the figure must begin with begin with "Figure/Table X (Continued)". (Table 3.1
 % Fix margins for Figure 3.17, some of the figure is off the page.
 % Caption overlaps with page number (caption to Figures 3.21 on page 93 and 4.14 on page 124). Please revise.
 % Caption for Figure 4.3 extends over the bottom margin, as does Figure on page 167. Please revise.
 % Text on page 194 extends over right margin, please revise.
+
+% While not required, it is advised to either include the figure number and title in the caption paragraph or single-space the caption paragraph so as to avoid confusion. Please be sure all captions have consistent justification, either center or left.
 
 
 %% \title {Structural variants in cancer genomes: representation, inference, and applications}
@@ -207,7 +209,7 @@
 
 
 \section{From patterns to mechanisms to etiology}
-Genomic instability is a hallmark of cancer \cite{Hanahan2011-ni} and genomic DNA sequencing of tumour tissues have proved the ubiquity of genomic variants \cite{pcawg_marker2020-yi}. Even though the idea that chromosomal abnormalities as an intrinsic property of cancer has been proposed \cite{Boveri2008-rl} for more than a century, the advent of massively parallel sequencing in the past decade has been revolutionary in expanding the known reportoire of somatic variants with unprecedented details including single nucleotide variants (SNV), small insertions and deletions (INDEL), and structural variants (SV) \cite{Meyerson2010-xc}.
+Genomic instability is a hallmark of cancer \cite{Hanahan2011-ni} and genomic DNA sequencing of tumour tissues have proved the ubiquity of genomic variants \cite{pcawg_marker2020-yi}. Even though the idea that chromosomal abnormalities as an intrinsic property of cancer has been proposed \cite{Boveri2008-rl} for more than a century, the advent of massively parallel sequencing in the past decade has been revolutionary in expanding the known repertoire of somatic variants with unprecedented details including single nucleotide variants (SNV), small insertions and deletions (INDEL), and structural variants (SV) \cite{Meyerson2010-xc}.
 
 % Stratton 2009; % The points of studying variant patterns at all
 % rephrase from recent Nik-Zainal review?
@@ -228,7 +230,7 @@ Second, more textured understanding of the heterogeneous background somatic muta
 Last but not least, they are bringing profound clinical impact to the prevention, diagnosis, and treatment of cancer. Using the positive association between smoking behavior of the donors and the observed SNV signature 4 burden, Alexandrov et al. \cite{Alexandrov2016-zs} estimated each pack of cigarette smoked per day for a year roughly contribute to 150 somatic mutations accumulated in lung tissue. This confirms and complements decades of public health and epidemiology conclusions about the causal link between smoking and elevated cancer risks. In diagnostics, mutation signatures combined with sophisticated machine learning techniques are shown to predict the tissue of origin with mutation patterns alone \cite{Jiao2020-le}. Homologous recombination defects of breast and ovarian tumors can be predicted by combining several feature of SNVs, INDELs, and SVs, and guide the prescription of PARP-inhibitor therapy \cite{Davies:2017642}.
 
 % Two philosophical routes
-Philosophically, the studies of variant patterns take two main routes. One is to crystallize latent classes of variants out of observed pool of variants. One of the earliest landmark examples is the extraction of \textit{mutation signatures} from the 96-dimension feature space of tri-nucleotide context of SNVs \cite{Alexandrov2013-zv}. The general idea is to count the number of variants in each patient that fall into one of the 96 categories and compile a matrix from a large patient cohort (number of patients by 96). The factorization of this matrix will produce linearly independent vectors in the feature space and the top of the list represent the common themes most prevalent in the cohort. Many of the original signatures have been associated with specific mutational processes including the most prevalent signature 1 being attributed to the spontaneous or enzymatic deamination of 5-methylcytosine to thymine resulting in C>T transitions, and it is correlated with the age of the patient, like a molecular clock for cell divisions \cite{alexandrov2013}. Since then, this methodology and signature reportoire have been instrumental in revealing the active mutational processes in different cancers \cite{Choi2021-pu} and have been revised multiple times to reflect the expanding datasets \cite{Alexandrov2020-by}. As exciting as it is, the mutation signatures are simply mathematical abstractions of observed data which requires further biochemistry understandings to link back to responsible mutational processes, which is a especially challenging task. Plus, the reportoire of the signatures are not yet finalized with respect to source data and algorithmic improvements. Last by not least, such approach requires a feature space to describe the pool of variants of each patient, which is easier for small, local variants, and still lacking for complex SVs. I will further expand on this point in the next section.
+Philosophically, the studies of variant patterns take two main routes. One is to crystallize latent classes of variants out of observed pool of variants. One of the earliest landmark examples is the extraction of \textit{mutation signatures} from the 96-dimension feature space of tri-nucleotide context of SNVs \cite{Alexandrov2013-zv}. The general idea is to count the number of variants in each patient that fall into one of the 96 categories and compile a matrix from a large patient cohort (number of patients by 96). The factorization of this matrix will produce linearly independent vectors in the feature space and the top of the list represent the common themes most prevalent in the cohort. Many of the original signatures have been associated with specific mutational processes including the most prevalent signature 1 being attributed to the spontaneous or enzymatic deamination of 5-methylcytosine to thymine resulting in C>T transitions, and it is correlated with the age of the patient, like a molecular clock for cell divisions \cite{alexandrov2013}. Since then, this methodology and signature repertoire have been instrumental in revealing the active mutational processes in different cancers \cite{Choi2021-pu} and have been revised multiple times to reflect the expanding datasets \cite{Alexandrov2020-by}. As exciting as it is, the mutation signatures are simply mathematical abstractions of observed data which requires further biochemistry understandings to link back to responsible mutational processes, which is a especially challenging task. Plus, the repertoire of the signatures are not yet finalized with respect to source data and algorithmic improvements. Last by not least, such approach requires a feature space to describe the pool of variants of each patient, which is easier for small, local variants, and still lacking for complex SVs. I will further expand on this point in the next section.
 
 The other study design is to create contolled mutagenesis experiments, for instance in human cell lines, organoids, mouse models, where a particular mutagen is introduced or a particular DNA repair pathway component is disabled for a sustained period, then identify the variants acquired during, to attribute specific types of variants to the corresponding processes. There are successful stories of evaluating the SNV/INDEL mutation signatures induced by exposure to external mutagens in cell models \cite{Zou2021-je}. Specifically for SVs, Umbreit et al. characterized the consequences of mechanically broken dicentric chromosome bridge \cite{Umbreit2020-kr}. Shoshani et al. captured the continuous instability in extra-chromosomal circular DNA (eccDNA) in response to therapeutic pressure \cite{Shoshani2020-zj}. Ly et al. constructed an elegant model of inactivated centromere that led to missegregation, which caused various complex SVs including chromothripsis and eccDNA \cite{Ly2019-bt}. Apparently, such studies are more powerful in establishing the causal links between mutational processes and signatures, but significantly harder to design, especially in the face of intricate interactions between DNA damage and repair mechanisms, extortion due to selection, and the essentiality of many DNA repair genes. After all, it also relies on an adequate framework to describe the variants.
 
@@ -291,7 +293,7 @@ There have been several studies employing the concept of \textit{interval graph}
  
 In our own publication \cite{Hadi2020-um} and more expansively Chapter \ref{chap:gg}, we have formulated a directed skew-symmetric graph data structure, called \textit{genome graph}, that is dual to the variations of interval graphs decribed above. Like the previous work, we will show that genome graphs can represent genomic rearrangements based on a reference genome and serve as a scaffold to inferring the derivative sequences. Though these implementations are functionally equivalent and only subtly different, a skew-symmetric directed graph formulation made the concept, in our opinions, much more intuitive and immediately compatible with numerous algorithms that are general to directed graphs.
 
-To our knowledge, there has not been a published software package that facilitates the analysis of genome graphs. One that can freely construct any genome graphs, parse the results from the aforementioned methods, serve as the foundation to build useful operations (e.g. subgraph, walk, shortest paths, partition, max/min flow), and generate biological meaningful events. In \nameref{chap:gg}, we set out to build such an interface in R programming language using the state-of-the-art genomic interval operations (CITE GenomicRanges), graph computation (CITE igraph), and tabular data processing tools popular in the community. Such a practical, versatile tool with intuitive design facing the biologists and oncologists will greatly advance the usage of genome graphs in the whole-genome analysis of cancers. As an example, \nameref{chap:gdan} will show our collaboration with the Cancer Genome Atlas to characterize the whole genomes of lung adenocarcinomas lacking known alterations in the RTK/RAS/RAF pathway by whole exome sequencing (WES).
+To our knowledge, there has not been a published software package that facilitates the analysis of genome graphs. One that can freely construct any genome graphs, parse the results from the aforementioned methods, serve as the foundation to build useful operations (e.g. subgraph, walk, shortest paths, partition, max/min flow), and generate biological meaningful events. In \nameref{chap:gg}, we set out to build such an interface in R programming language using the state-of-the-art genomic interval operations \cite{Lawrence2013-lh}, graph computation (https://igraph.org/), and tabular data processing tools popular in the community. Such a practical, versatile tool with intuitive design facing the biologists and oncologists will greatly advance the usage of genome graphs in the whole-genome analysis of cancers. As an example, \nameref{chap:gdan} will show our collaboration with the Cancer Genome Atlas to characterize the whole genomes of lung adenocarcinomas lacking known alterations in the RTK/RAS/RAF pathway by whole exome sequencing (WES).
 
 Another major obstacle between genome graphs and its wider adoption by the research community is the lack of proper visulization tools. Projection of data onto reference genome coordinates, or genome browsers, have been the quintessential tool of genomics \cite{Robinson2011-ra,kent2002-ke}. There have also been several tools designed to visualize SVs at different stages of the analysis. Samplot is a Python command line tool that generates static images of junction-supporting reads along with coverage data in the vincinity of the junction breakends \cite{Belyeu2021-tm}. Specifically for graph genomes like vg, sequence tube maps \cite{Beyer2019-nb} takes an creative turn and visualize reads aligned to graph genomes in a similar way to transport networks. Later, MoMI-G \cite{Yokoyama2019-xd} attempted to deliver a comprehensive suite for long-read data aligned at complex SV sites with sequence tube maps and circular plots as modular units.
 
@@ -584,7 +586,7 @@ We developed an algorithm, JaBbA, to accurately infer junction-balanced genome g
 
 \subsection{Formulation of the mixed-integer quadratic programming problem}
 % \subsubsection*{Inferring Junction Balanced Genome Graphs}
-We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as SvABA or DELLY) (Figure \ref{fig:jabba_io}).
+We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as SvABA or DELLY) (Figure \ref{fig:jabba_io}). In Figure \ref{fig:jabba_io}: Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordinates and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.
 
 Each vertex $v \in V_I(G)$ is associated with a partition of bins $J(v) \subseteq \{1, \ldots, n\}$ (based on genomic coordinate overlap) and a mean bin value $\rho(v) = \frac{1}{|J(v)|}\sum_{j \in J(v)} x_j$.  We model each bin subset $x_{J(v)}$ as an i.i.d. sample from a Gaussian distribution with standard deviation $\sigma(v)$ and mean $\kappa(v)$.  The log likelihood is
 
@@ -725,10 +727,16 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
 % \end{table}
 
 \newpage
-\begin{table}[] \label{tab:jbgg_inference}
-    \centering    
-    \caption{\textbf{Comparison of JBGG reconstruction methods.}}{Except for AmpliconArchitect and CouGaR, which only reconstruct complex amplicons, most methods build genome-wide JBGGs. MIQP, mixed-integer quadratic programming; ILP, integer linear programming; LBP, loopy belief propagation; MILP, mixed-integer linear programming.}
-    \rotatebox[]{90}{
+
+% \centering        
+% \rotatebox[]{90}{
+
+
+    \begin{table}
+        \centering
+        \caption{\textbf{Comparison of JBGG reconstruction methods.}}
+        % {Except for AmpliconArchitect and CouGaR, which only reconstruct complex amplicons, most methods build genome-wide JBGGs. MIQP, mixed-integer quadratic programming; ILP, integer linear programming; LBP, loopy belief propagation; MILP, mixed-integer linear programming.}
+        \label{tab:jbgg_inference}
         \begin{tabular}{@{}cccc@{}}
             \toprule
             Method            & Scope    & Solver                & Publication             \\
@@ -746,8 +754,9 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
             %    CCR \\
             \bottomrule
         \end{tabular}            
-    }    
-\end{table}
+    \end{table}
+% }
+
 
 \newpage
 
@@ -851,15 +860,36 @@ Next, we provide functions to replicate our algorithms in \cite{Hadi2020-um} and
 % from JaBbA 
 To visualize the genome graphs we developed \texttt{gGnome.js} (source code at \url{https://github.com/mskilab/gGnome.js}), a Javascript-based genome browser that renders genome graphs and allows for interactive browsing across discontiguous genomic intervals accompanied by various genomic annotations. Here, we describe several important and unique features of gGnome.js.
 
+\clearpage
+
+
 % gGnome.js figure
-\begin{figure}[h!]
-    %\centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/ggjs.png}
-    \caption{\textbf{A snapshot of the gGnome.js interface of a BFB cycles event in an esophageal adenocarcinoma sample.}}{From the bottom to the top: X axis is the reference genome. Y axis is mapped to JaBbA-inferred copy number. Colored bars are vertices and links edges. Viewing windows can be created by selecting regions on the whole genome bar above the plotting region. Sample information is displayed along with the currently viewing windows. Toolbar at the very top allows for quick search of samples, focus on an annotated region, locate a specific range by coordinates or gene name, as well as controlling visible tracks in the browser.}
-    \label{fig:ggjs}
+% \begin{figure}[!ht]
+%     %\centering
+%     \begin{adjustbox}{
+%         addcode={
+%             \begin{minipage}{\width}}
+%                 \caption{\textbf{A snapshot of the gGnome.js interface of a BFB cycles event in an esophageal adenocarcinoma sample.}}
+%             \end{minipage},rotate=90,center}
+%     \includegraphics[height=0.95\textheight]{figures/600ppi/ggjs.png}            
+%     \label{fig:ggjs}
+%     \end{adjustbox}
+% \end{figure}    
+
+\begin{figure}[ht]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{A snapshot of the gGnome.js interface of a BFB cycles event in an esophageal adenocarcinoma sample.}
+        \label{fig:ggjs}
+        }\end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/ggjs.png}
+    \end{adjustbox}
 \end{figure}
+
+\clearpage
+% {From the bottom to the top: X axis is the reference genome. Y axis is mapped to JaBbA-inferred copy number. Colored bars are vertices and links edges. Viewing windows can be created by selecting regions on the whole genome bar above the plotting region. Sample information is displayed along with the currently viewing windows. Toolbar at the very top allows for quick search of samples, focus on an annotated region, locate a specific range by coordinates or gene name, as well as controlling visible tracks in the browser.}
 % 
-First and foremost, the flexibility of arbitrary window browsing is crucial for complex rearrangement events, which can vary in scale and involve many distal loci. Annotations of events (or any set of vertices/edges) were read by the browser and can be searched. For example, in Figure \ref{fig:ggjs} we can visualize a multi-chromosomal breakage-fusion-bridge cycle (BFB cycles) event in 6 discontiguous windows spanning 4 different chromosomes and locate this event instantly with the \texttt{annotation} selector on the top right corner.
+First and foremost, the flexibility of arbitrary window browsing is crucial for complex rearrangement events, which can vary in scale and involve many distal loci. Annotations of events (or any set of vertices/edges) were read by the browser and can be searched. For example, in Figure \ref{fig:ggjs} we can visualize a multi-chromosomal breakage-fusion-bridge cycle (BFB cycles) event in 6 discontiguous windows spanning 4 different chromosomes and locate this event instantly with the \texttt{annotation} selector on the top right corner. In Figure \ref{fig:ggjs}, from the bottom to the top: X axis is the reference genome. Y axis is mapped to JaBbA-inferred copy number. Colored bars are vertices and links edges. Viewing windows can be created by selecting regions on the whole genome bar above the plotting region. Sample information is displayed along with the currently viewing windows. Toolbar at the very top allows for quick search of samples, focus on an annotated region, locate a specific range by coordinates or gene name, as well as controlling visible tracks in the browser.
 
 
 Annotations corresponding to segment-level and also junction-level information were included in the browser. Metadata for segments includes, but is not limited to, total copy number, allele-specific copy number (for samples and intervals in which heterozygous SNP information is available, i.e. cases with both tumor and normal pairs), and correspondence to event type if the segment was identified as part of an event. Edge metadata includes information output by the SV caller used in this study, SvABA, including number of reads supporting the SV and junction topology. These metadata can all be presented when the cursor hover over a specific element.
@@ -1217,69 +1247,84 @@ Comparing amplicon features, we found that tyfonas had significantly larger geno
 Analyzing tumor subtypes, we found tyfonas were common in dedifferentiated liposarcomas (80\%) and acral melanomas (40\%) but rarely seen ($<$ 2\%) in fibrosarcomas and cutaneous melanomas (Figure \ref{fig:tyf_ttype}).    80\% of dedifferentiated liposarcomas harbored a tyfonas on chromosome 12q, suggesting that tyfonas represent the genomic footprint of supernumerary ring chromosomes in this tumor type \cite{Reimann2008-tj}. Given the enrichment of tyfonas events in acral melanoma, an immunotherapy-responsive melanoma with a low SNV burden \cite{Shoushtari2016-de}, we hypothesized that tyfonas events may provide an alternate source of neoantigens through the generation of expressed protein-coding fusions.  Analyzing the subset of our samples with RNA-seq data within the TCGA dataset, we found that tyfonas were significantly enriched with expressed fusion transcripts relative to double minutes, BFB cycles, and even chromothripsis (CT) (Figure \ref{fig:tyf_fusion}, left), even after accounting for the larger genomic footprint of tyfonas (Figure \ref{fig:tyf_fusion}, right).
 
 \section{Clusters of pan-cancer patients based on SV event burdens show differential prognosis and is associated with tumor types and genetic backgrounds}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/sv_gallery.png}
-    \caption{\textbf{Dictionary of genome graph-derived event patterns}}{Demonstrating example loci for 5 simple and 8 complex SV patterns.}
-    \label{fig:sv_gallery}
+
+\begin{figure}[!ht]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{Dictionary of genome graph-derived event patterns}
+        \label{fig:sv_gallery}
+        }\end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/sv_gallery.png}
+    \end{adjustbox}
 \end{figure}
 
-\begin{figure}
+% \begin{figure}
+    % \centering
+    % \includegraphics[width=0.95\linewidth]{figures/600ppi/sv_gallery.png}
+    % \caption{\textbf{Dictionary of genome graph-derived event patterns}}{Demonstrating example loci for 5 simple and 8 complex SV patterns.}
+    % \label{fig:sv_gallery}
+% \end{figure}
+
+
+Tallying normalized junction counts across 13 event categories and 2,487 patients, we found 14 stable clusters using standard model selection metrics (Figure \ref{fig:find_k}). Most clusters were dominated by 1-3 event types (e.g. CT = chromothripsis, BR = BFB cycles, rigma, DDT = deletion, duplication, TIC) with the exception of two: QUIET (few events) and SPRS (sparse, miscellaneous events).
+
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_heat_tt.png}
-    \caption{\textbf{Genome graph-derived features define biologically distinct patient groups}}{Heatmap of normalized junction burden across 2,487 unique patients yields 14 clusters named after their most prevalent event types (CT, TYF [tyfonas], BFB [BFBC], BR [BFBC, rigma], SPRS [sparse], CP [chromoplexy], TIC, TRA [translocations], DM [double minute], PYR [pyrgo], DUP [various duplications], DDT [deletion, duplication, and TIC], and INVD [inverted duplications]).}
+    \caption{\textbf{Genome graph-derived features define biologically distinct patient groups}}
     \label{fig:clustering_heat_tt}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_find_k.png}
     \caption{\textbf{Metrics for determining the optimal number of clusters.}}
     \label{fig:find_k}
 \end{figure}
+% {Heatmap of normalized junction burden across 2,487 unique patients yields 14 clusters named after their most prevalent event types (CT, TYF [tyfonas], BFB [BFBC], BR [BFBC, rigma], SPRS [sparse], CP [chromoplexy], TIC, TRA [translocations], DM [double minute], PYR [pyrgo], DUP [various duplications], DDT [deletion, duplication, and TIC], and INVD [inverted duplications]).}
 
-\begin{figure}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_tt_all.png}
     \caption{\textbf{All associations between clusters and tumor types.}}
     \label{fig:clustering_tt_all}
 \end{figure}
 
-\begin{figure}
+
+Consistent with previous reports, the CT cluster was significantly enriched in prostate adenocarcinoma  (PRAD, $P = \SI{2.05e-5}{}$, $OR = 1.99$, single-sided z-test, Bayesian logistic regression, \cite{Kovtun2015-kq}) and glioblastoma multiforme (GBM, $P = \SI{5.00e-8}{}$, $OR = 2.61$, \cite{Furgason2015-rv})  (Figure \ref{fig:clustering_heat_tt},\ref{fig:clustering_tt_all}). Similarly, the CP (chromoplexy) cluster was significantly enriched in PRAD ($P = \SI{2.32e-10}{}$, $OR = 3.18$, \cite{baca2013}). DDT tumors (defined by high burdens of deletions, duplications, and templated insertion chains) were enriched in triple-negative breast cancer (TNBC) ($P < \SI{2.2e-16}{}$, $OR = 8.80$),  ovarian cancers ($P = \SI{7.03e-16}{}$, $OR = 6.89$), and more broadly sex-hormone driven tumors ($P = \SI{3.18e-14}{}$, $OR = 19.0$).
+
+Inspection of the heatmap in Figure \ref{fig:clustering_heat_tt} showed that the classes of complex SV introduced in this study (pyrgo, rigma, tyfonas) largely clustered independently from known complex SV types (double minute, BFB cycles, chromothripsis, chromoplexy). Among these, the BR (BFB cycles and Rigma dominated) cluster was primarily (60\%) composed of ESAD cases ($P < \SI{2.2e-16}{}$, $OR = 6.08$) and enriched in gastrointestinal tumors (e.g. esophageal, colorectal, and gastric adenocarcinoma) ($P < \SI{2.2e-16}{}$, $OR = 4.56$) (Figure \ref{fig:clustering_heat_tt},\ref{fig:clustering_tt_all}). The TYF (tyfonas dominated) cluster was enriched in both luminal breast cancer ($P = \SI{4.87e-8}{}$, $OR = 3.25$),  HER2+ breast cancer ($P < \SI{2.64e-9}{}$, $OR = 4.96$), dedifferentiated liposarcoma ($P < \SI{2.2e-16}{}$, $OR = 24.5$), and acral melanoma ($P < \SI{1.84e-15}{}$, $OR = 7.40$). In contrast, cutaneous melanomas were enriched in the CT cluster.  Additional associations are shown in Figure \ref{fig:clustering_tt_all} and \cite{Hadi2020-um} Table S3.
+
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_geno.png}
     \caption{\textbf{DDT cluster is associated with BRCA1 familial LoF alterations and BR cluster with \textit{TP53} LoF.}}
     \label{fig:clustering_geno}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_geno_all.png}
     \caption{\textbf{All associations between clusters and LoF alterations of tumor suppressors or DNA damage response genes.}}
     \label{fig:clustering_geno_all}
 \end{figure}
 
-\begin{figure}
+We associated somatic or constitutional genotypes in COSMIC Cancer Gene Census genes with cluster membership, after correcting for tumor subtype as a covariate. More than 20\% of cases in the DDT cluster harbored constitutional ($P = \SI{1.60e-4}{}$, $OR = 3.81$) loss of function lesions in \textit{BRCA1} (Figure \ref{fig:clustering_geno}). BR-cluster tumors were also significantly enriched in somatic \textit{TP53} mutations ($P < \SI{4.71e-7}{}$, $OR = 2.06$). Additional somatic genotype associations (Figure \ref{fig:clustering_geno_all}), including an enrichment of \textit{SMC4} ($P = \SI{2.33e-3}{}$, $OR = 3.11$) and \textit{RAD21} ($P = \SI{1.96e-3}{}$, $OR = 3.27$) mutations in the INVD (inverted duplication dominant) cluster, \textit{ARID1A} ($P = \SI{1.21e-3}{}$, $OR = 1.86$) mutations in the TIC (templated insertion chain dominant) cluster, and \textit{KMT2C} ($P = \SI{2.89e-3}{}$, $OR = 1.95$) mutations in the TRA (translocation-dominated) cluster.
+
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_km.png}
     \caption{\textbf{Overall survival worse in 6 clusters than the QUIET.}}
     \label{fig:clustering_km}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!ht]
     \centering
     \includegraphics[height=0.95\textheight]{figures/600ppi/clustering_os_full.png}
     \caption{\textbf{Cox model correcting for covariates show the associations between TYF, INVD, PYR, CP, CT, BR and worse overall survival after correction of related covariates.}}
     \label{fig:clustering_os_cox}
 \end{figure}
 
-Tallying normalized junction counts across 13 event categories and 2,487 patients, we found 14 stable clusters using standard model selection metrics (Figure \ref{fig:find_k}). Most clusters were dominated by 1-3 event types (e.g. CT = chromothripsis, BR = BFB cycles, rigma, DDT = deletion, duplication, TIC) with the exception of two: QUIET (few events) and SPRS (sparse, miscellaneous events).
-
-Consistent with previous reports, the CT cluster was significantly enriched in prostate adenocarcinoma  (PRAD, $P = \SI{2.05e-5}{}$, $OR = 1.99$, single-sided z-test, Bayesian logistic regression, \cite{Kovtun2015-kq}) and glioblastoma multiforme (GBM, $P = \SI{5.00e-8}{}$, $OR = 2.61$, \cite{Furgason2015-rv})  (Figure \ref{fig:clustering_heat_tt},\ref{fig:clustering_tt_all}). Similarly, the CP (chromoplexy) cluster was significantly enriched in PRAD ($P = \SI{2.32e-10}{}$, $OR = 3.18$, \cite{baca2013}). DDT tumors (defined by high burdens of deletions, duplications, and templated insertion chains) were enriched in triple-negative breast cancer (TNBC) ($P < \SI{2.2e-16}{}$, $OR = 8.80$),  ovarian cancers ($P = \SI{7.03e-16}{}$, $OR = 6.89$), and more broadly sex-hormone driven tumors ($P = \SI{3.18e-14}{}$, $OR = 19.0$).
-
-Inspection of the heatmap in Figure \ref{fig:clustering_heat_tt} showed that the classes of complex SV introduced in this study (pyrgo, rigma, tyfonas) largely clustered independently from known complex SV types (double minute, BFB cycles, chromothripsis, chromoplexy). Among these, the BR (BFB cycles and Rigma dominated) cluster was primarily (60\%) composed of ESAD cases ($P < \SI{2.2e-16}{}$, $OR = 6.08$) and enriched in gastrointestinal tumors (e.g. esophageal, colorectal, and gastric adenocarcinoma) ($P < \SI{2.2e-16}{}$, $OR = 4.56$) (Figure \ref{fig:clustering_heat_tt},\ref{fig:clustering_tt_all}). The TYF (tyfonas dominated) cluster was enriched in both luminal breast cancer ($P = \SI{4.87e-8}{}$, $OR = 3.25$),  HER2+ breast cancer ($P < \SI{2.64e-9}{}$, $OR = 4.96$), dedifferentiated liposarcoma ($P < \SI{2.2e-16}{}$, $OR = 24.5$), and acral melanoma ($P < \SI{1.84e-15}{}$, $OR = 7.40$). In contrast, cutaneous melanomas were enriched in the CT cluster.  Additional associations are shown in Figure \ref{fig:clustering_tt_all} and \cite{Hadi2020-um} Table S3.
-
-We associated somatic or constitutional genotypes in COSMIC Cancer Gene Census genes with cluster membership, after correcting for tumor subtype as a covariate. More than 20\% of cases in the DDT cluster harbored constitutional ($P = \SI{1.60e-4}{}$, $OR = 3.81$) loss of function lesions in \textit{BRCA1} (Figure \ref{fig:clustering_geno}). BR-cluster tumors were also significantly enriched in somatic \textit{TP53} mutations ($P < \SI{4.71e-7}{}$, $OR = 2.06$). Additional somatic genotype associations (Figure \ref{fig:clustering_geno_all}), including an enrichment of \textit{SMC4} ($P = \SI{2.33e-3}{}$, $OR = 3.11$) and \textit{RAD21} ($P = \SI{1.96e-3}{}$, $OR = 3.27$) mutations in the INVD (inverted duplication dominant) cluster, \textit{ARID1A} ($P = \SI{1.21e-3}{}$, $OR = 1.86$) mutations in the TIC (templated insertion chain dominant) cluster, and \textit{KMT2C} ($P = \SI{2.89e-3}{}$, $OR = 1.95$) mutations in the TRA (translocation-dominated) cluster.
 
 Compared to QUIET cluster, Kaplan-Meier analysis revealed poorer survival among novel SV-class dominated clusters (BR, PYR, and TYF; FDR $<$ 0.1, log rank test) as well as several clusters dominated by previously-described SV classes (CP, CT, and INVD; Figure \ref{fig:clustering_km}). These effects persisted after correcting for clinical and molecular covariates in a Cox regression analysis, with BR ($P = \SI{1.17e-2}{}$, $HR = 1.72$, likelihood ratio test, Cox regression), PYR ($P = \SI{6.13e-3}{}$, $HR = 2.01$), TYF ($P = \SI{5.37e-3}{}$, $HR = 2.12$ , CP ($P = \SI{1.76e-3}{}; HR = 1.91$), CT ($P = \SI{6.69e-4}{}; HR = 1.83$), and INVD ($P = \SI{8.79e-4}{}; HR = 2.06$) clusters each demonstrating reduced survival relative to the QUIET cluster (Figure \ref{fig:clustering_os_cox}).
 
@@ -1300,7 +1345,7 @@ Different from chromothripsis, initial shattering does not get repaired quickly 
 
 Interestingly, tyfonas also have more heterogeneous JCN composition, supporting the asynchronous genesis of junctions during the ongoing amplification process. This is fundamentally different from an 'amplified chromothripsis', where the junctions are supposedly created almost at the same time and amplified together later, which would lead to rather homogeneous elevated JCN within the final amplicon. The events arising from PCAWG's analysis of clustered variants termed 'amplified chromothripsis' \cite{pcawg_marker2020-yi} actually map to multiple classes under our taxonomy (see \cite{Hadi2020-um}, Figure S4G-K). This improvement of specificity is also visible in the tumor type enrichments for tyfonas (see \cite{Hadi2020-um}, Figure S4F).
 
-Despite the proposition of a new and likely impactful amplicon pattern, considerable amplicon candidates still remain unclassified. Some of them are excluded from our current analysis because they do not contain high-JCN junctions (JCN>7). While certain pyrgo instances can achieve this through only stacking tandem duplications, more candidates are weaved by various types of junctions of moderate JCN, both with and without fold-back inversions (see \nameref{chap:tel_crisis}, Figure \ref{fig:tc_bft3b_complex}). We also notice certain double minutes with relatively lower CN than classic examples like \textit{EGFR} amplification in glioblastoma, whose maximum JCN barely passed the current threshold (see \nameref{chap:gdan}, Figure \ref{fig:gdan_dm}), yet the homogeneous JCN composition indicates extrachromosomally amplified more than other hypotheses. It is not hard to conjecture then, that there could be other eccDNAs created by the same mechanism as high-level double minutes, yet for various reasons do not get amplified to such extraordinary levels (CITE Verner Verhaak evolution of eccDNA paper).
+Despite the proposition of a new and likely impactful amplicon pattern, considerable amplicon candidates still remain unclassified. Some of them are excluded from our current analysis because they do not contain high-JCN junctions (JCN>7). While certain pyrgo instances can achieve this through only stacking tandem duplications, more candidates are weaved by various types of junctions of moderate JCN, both with and without fold-back inversions (see \nameref{chap:tel_crisis}, Figure \ref{fig:tc_bft3b_complex}). We also notice certain double minutes with relatively lower CN than classic examples like \textit{EGFR} amplification in glioblastoma, whose maximum JCN barely passed the current threshold (see \nameref{chap:gdan}, Figure \ref{fig:gdan_dm}), yet the homogeneous JCN composition indicates extrachromosomally amplified more than other hypotheses. It is not hard to conjecture then, that there could be other eccDNAs created by the same mechanism as high-level double minutes, yet for various reasons do not get amplified to such extraordinary levels \cite{Lange2021-if}.
 
 Two, within the high-JCN candidates in our amplicon clustering analysis, there is a fourth cluster with high maximum JCN like double minutes, low fold-back inversion JCN contrary to BFB cycles and tyfonas, yet extensively rearranged with high elevated JCN junction count. The cluster is small and not as stable hence named other and left out of the discussion of this paper \cite{Hadi2020-um}. Because of the simultaneous presence of high-JCN DUP-like junctions and abundant lower JCN junctions within the amplified regions, we hypothesize this subset may be reflecting unstable double minutes that keep on accumulating new junctions extrachromosomally. Recently, Shoshani et al. published a study showing cells with eccDNA carrying the  further rearranged their amplicon structures in response to continuous selective pressure. The structure and mechanism shown in the study resembles what we observed and is of particular interest to follow up, especially in post-treatment metastatic samples \cite{Priestley:20196a6}.
 
@@ -2006,7 +2051,7 @@ Limited by the sample size, we do not have the statistical power to detect new s
 
 At this crossroad of exhausting recurrence signal to find cancer drivers, it is increasingly important to analyze genome structures, mutational processes, and getting creative ways to nominate new hypotheses.
 
-For clinical oncology, WGS is becoming recognized as a powerful alternative to the more popular and so far more cost-effective capture-based platforms (CITE Olivier opinion piece). Not only it uncovers known SV drivers at a pristine accuracy, the variant patterns (largely passengers) also indicate the vulnerability of the tumor. They can serve as a new kind of biomarkers for DNA repair defects or immunogenecity.
+For clinical oncology, WGS is becoming recognized as a powerful alternative to the more popular and so far more cost-effective capture-based platforms \cite{Meggendorfer2021-wo}. Not only it uncovers known SV drivers at a pristine accuracy, the variant patterns (largely passengers) also indicate the vulnerability of the tumor. They can serve as a new kind of biomarkers for DNA repair defects or immunogenecity.
 
 All in all, genome graphs along with the robust, intuitive software suite lay a solid foundation to the popularization of SV analysis with WGS for both research and clinical applications.
 
