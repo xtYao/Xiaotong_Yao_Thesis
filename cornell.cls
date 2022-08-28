@@ -276,8 +276,8 @@
     \begin{center}
       \@subtitlesize
       A \ifphd Dissertation \else Thesis \fi \\
-      Presented to the Faculty of the Graduate School \\
-      of Cornell University \\
+      Presented to the Faculty of the Weill Cornell Graduate School\\
+      of Medical Sciences \\
       in Partial Fulfillment of the Requirements for the Degree of \\
       \ifphd Doctor of Philosophy \else \@degreefield \fi
     \end{center}

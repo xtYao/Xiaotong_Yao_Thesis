@@ -35,6 +35,7 @@
 \usepackage{tabu}
 \usepackage{textcomp} % defines \textmu, which is now what inputenx seems to use for μ - probably due inpmath.. also \textdegree... but not \textrho
 \usepackage{textgreek}
+\usepackage{placeins}
 
 
 % JaBbA document dependency
@@ -147,10 +148,10 @@
 %% \title {Structural variants in cancer genomes: representation, inference, and applications}
 \title{A genome graph paradigm for cancer genome structure}
 \author {Xiaotong Yao}
-\conferraldate {December}{2021}
+\conferraldate {August}{2022}
 \degreefield {Ph.D. Computational Biology}
 \copyrightholder{Xiaotong Yao}
-\copyrightyear{2021}
+\copyrightyear{2022}
 
 \begin{document}
 
@@ -330,7 +331,6 @@ In the first half of Chapter \ref{chap:complex_events}, I will show the discover
 \section{Stratifying pan-cancer patient cohort by burdens of SV events}
 Using SV events as a biomarker has always been a top desired application of WGS. Early efforts includes using the burdens of tandem duplication and deletions of various sizes as a features to predict homologous recombination deficiency (HRD, \cite{Davies:2017642}). More recently, the existence of extrachromosomal circular DNA (eccDNA) has been linked to excessive replication stress in the cells. One necessary indication that SV events may possess such discriminating power is to show that non-random grouping patterns among patients can arise based solely on their burdens. For instance, like mentioned above, in \cite{baca2013}, almost half of studied prostate adenocarcinoma contain chromoplexy patterns, then if we can see a subgroup of patients differentiated by chromoplexy presence from the others, and it happens to enrich in prostate adenocarcinoma, it should be a positive indication that our patterns are confirming previous results and add to our confidence about new results.
 
-\clearpage
 In the second half of Chapter \ref{chap:complex_events}, I show our effort in using the 13 simple to complex SV event types to reveal 13 groups of patients in the pan-cancer cohort and their associations with tumor type, genotype, and overall survival. 
 
 % Cancer genomes are shaped by mutational processes that create both simple and complex structural variants (SVs). 
@@ -392,7 +392,7 @@ Based on a reference genome $C$, we define genome graph $G = (V, E)$, where the 
 
 Because the phosphodiester bonds are always connecting the outgoing (3') end of a source vertex $v_1 = C^{i_1}[q_1,r_1]$ and the receiving (5') end of a sink vertex $v_2 = C^{i_2}[q_2,r_2]$, we can denote the genomic location of an edge $e = (v_1, v_2)$ with a tuple of the connected breakends $e = (b_o(v_1), b_r(v_2))$. For a node $v$ we name the set of incoming edges to its 5' end $E_{-}(v)$ and the set of outgoing edges from its 3' end $E_{+}(v)$.
 
-Following this definition, there are at least two types of edges. The first type, \textit{REF} edges are the ones that are connecting breakends adjacent in the reference genome hence always with location $e_r = (C^{i}_{q}, C^{i}_{q + 1})$, if $i>0$, or $(C^{i}_{q_1 + 1}, C^{i}_{q_1})$, if $i<0, q \in [1,L_i)$. In contrast, the second type \textit{ALT} edges are neo-adjacencies that are not present in the reference genome and resulting from rearrangements (\textbf{Figure \ref{fig:ggraph_schematic}}).
+Following this definition, there are at least two types of edges. The first type, \textit{REF} edges are the ones that are connecting breakends adjacent in the reference genome hence always with location $e_r = (C^{i}_{q}, C^{i}_{q + 1})$, if $i>0$, or $(C^{i}_{q_1 + 1}, C^{i}_{q_1})$, if $i<0, q \in [1,L_i)$. In contrast, the second type \textit{ALT} edges are neo-adjacencies that are not present in the reference genome and resulting from rearrangements (Figure \ref{fig:ggraph_schematic}).
 
 Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-stranded DNA segment, a reverse complement pair of edges $\{e, \bar{e}\}$ compose a \textit{junction}. Trivially, $e$ and $\bar{e}$ will always be the same type of edge, so we also have two types of junctions, REF and ALT. Each junction $a = \{e, \bar{e}\}, v_1 = C^{i_1}[q_1,r_1], v_2 = C^{i_2}[q_2,r_2]$ can be represented with the two breakends it connects, namely $b_1 = \{b_o(v_1), b_r(\bar{v_1})\} = C^{i_1}_{q_1 [1-I(i_1)] + r_1 I(i_1)}$, and similarly $b_2 = C^{i_2}_{q_2 [1-I(i_2)] + r_2 I(i_2)}$, where indicator function $I:\mathbb{R}\rightarrow \{0, 1\}, I(x)=1, if x \ge 0, I(x) = 0, if x<0$.
 
@@ -403,7 +403,7 @@ Like a reverse complement pair of vertices $\{v, \bar{v}\}$ compose a double-str
     \label{fig:junction_orientations}
 \end{figure}
 
-For a breakend location in the middle of a chromosome, only one of its two sides is incident to the junction, we call this side the \textit{cis} side for it is the part of the genome that will be on the derivative molecule after introducing the junction, and the other \textit{trans} side. Based on the relative locations and orientations of its two connected breakends, we can classify a junction into four basic classes (\textbf{Figure \ref{fig:junction_orientations}}): DUP-like (tandem duplication), DEL-like (deletion), INV-like (inversion), TRA-like (translocation), named after the most common and simplest SV events that can give rise to such junctions. In WGS studies, these junctions are the direct products of SV calling methods like SvABA \cite{Wala2018-qa}, GRIDSS \cite{Cameron2017-pz}, Delly \cite{Rausch2012-ly}, Lumpy \cite{Layer2014-xq}, and many more. In the following section we show a basic algorithm to build a genome graph from a set of breakends and junctions.
+For a breakend location in the middle of a chromosome, only one of its two sides is incident to the junction, we call this side the \textit{cis} side for it is the part of the genome that will be on the derivative molecule after introducing the junction, and the other \textit{trans} side. Based on the relative locations and orientations of its two connected breakends, we can classify a junction into four basic classes (Figure \ref{fig:junction_orientations}): DUP-like (tandem duplication), DEL-like (deletion), INV-like (inversion), TRA-like (translocation), named after the most common and simplest SV events that can give rise to such junctions. In WGS studies, these junctions are the direct products of SV calling methods like SvABA \cite{Wala2018-qa}, GRIDSS \cite{Cameron2017-pz}, Delly \cite{Rausch2012-ly}, Lumpy \cite{Layer2014-xq}, and many more. In the following section we show a basic algorithm to build a genome graph from a set of breakends and junctions.
 
 % TODO!!!
 \subsection{Build genome graph from breakends and junctions}
@@ -546,10 +546,23 @@ When combined with read coverage data, we can further infer JBGG by filling in a
 %  For lack of better alternative, most early cancer SV studies hitherto treat these two facets of the same rearranged sequence separately or informally combine them to describe certain patterns \cite{stephens2011,baca2013}. The PCAWG consortium made fundamental effort to build up a pool of CNA and junction patterns for different classes of SV events, but still .... 
 
 %===========================%
-\clearpage
+%\clearpage
 \section{Junction Balance Analysis infers copy numbers on genome graphs from short-read whole genome sequencing}
 
 We developed an algorithm, JaBbA, to accurately infer junction-balanced genome graphs from WGS data. In the following three subsections, we will 1) formally define this algorithm \textit{junction balance analysis}, 2) describe the pipeline implementing the algorithm, and 3) comprehensively compare its features and performance to other methods of similar purpose.
+
+
+%\clearpage
+% {Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordinates and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.}
+
+%Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
+
+
+%\clearpage
+
+\subsection{Formulation of the mixed-integer quadratic programming problem} \label{sec:jabba_formulation}
+% \subsubsection*{Inferring Junction Balanced Genome Graphs}
+We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as SvABA or DELLY) (Figure \ref{fig:jabba_io}). In Figure \ref{fig:jabba_io}: Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordinates and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.
 
 \begin{figure}[!h]
     \centering
@@ -558,24 +571,6 @@ We developed an algorithm, JaBbA, to accurately infer junction-balanced genome g
     \label{fig:jabba_io}
 \end{figure}
 \clearpage
-% {Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordinates and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.}
-
-%Analogous to previous approaches, we define a (directed) genome graph of vertices representing strands of genomic segments and edges  representing a pair of 3' and 5' DNA ends that are adjacent in the reference genome (REF edge) or connected through rearrangement (ALT edge). A \textit{junction balanced genome-graph} assigns every vertex and edge in the graph an integer CN, while enforcing the constraint that the dosage of every interval (vertex) is equal to the sum of the JCN of the incoming (or similarly, outgoing) junctions (\textbf{Fig. \ref{fig:jabba_io}}).  The MIP optimization solved by JaBbA minimizes the residual between observed read depth and inferred interval dosage through joint assignment of CN to intervals and junctions (\textbf{Fig. {fig:Fig1}B, Fig. {fig:S1}C}, sec:methods).
-
-\begin{figure}[!h]
-    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
-        \textbf{A schematic of the mixed integer quadratic program optimization problem that JaBbA solves.}
-        \label{fig:jabba_formulation}
-        }\end{minipage}},rotate=90,center}
-        % \includegraphics[scale=.6]{example-image}%
-        \includegraphics[width=\textheight]{figures/600ppi/jabba_formulation.png}
-    \end{adjustbox}
-\end{figure}
-\clearpage
-
-\subsection{Formulation of the mixed-integer quadratic programming problem} \label{sec:jabba_formulation}
-% \subsubsection*{Inferring Junction Balanced Genome Graphs}
-We infer JBGGs from a genome graph $G$ and binned, normalized, and purity / ploidy-transformed read depth data $x \in \mathbb{R}^n$ across $n$ genomic bins (see below for read depth transformation details)  through the solution of a mixed integer quadratic program (MIQP), which assigns an integer CN $\kappa:V_I \cup E \rightarrow \mathbb{N}$ to the vertices and edges of $G$.  The genome graph $G$ is generated, as above, from a set of breakends $\mathcal{B}_{seg}$ obtained from a preliminary segmentation of genome-wide read depth (i.e. via segmentation software such as CBS) and a set of junctions $\mathcal{A}$ (i.e. from a junction caller such as SvABA or DELLY) (Figure \ref{fig:jabba_io}). In Figure \ref{fig:jabba_io}: Top left, read depth on genomic bins and junctions are the two required input data summarized from a WGS. Bottom left, an example locus showing read depth as scatter plots over reference coordinates and input junctions as red curves connecting the breakends. Top right, the network layout of the genome (sub)graph of the highlighted locus built from the junctions. Bottom right, the junction balanced genome graph (JBGG) output with integer CN for segments on the Y axis and junction CN implied.
 
 Each vertex $v \in V_I(G)$ is associated with a partition of bins $J(v) \subseteq \{1, \ldots, n\}$ (based on genomic coordinate overlap) and a mean bin value $\rho(v) = \frac{1}{|J(v)|}\sum_{j \in J(v)} x_j$.  We model each bin subset $x_{J(v)}$ as an i.i.d. sample from a Gaussian distribution with standard deviation $\sigma(v)$ and mean $\kappa(v)$.  The log likelihood is
 
@@ -607,7 +602,7 @@ is a \textit{complexity penalty}. Adding the log likelihood in  Eq. \ref{eq:join
     f(G, \kappa, x, J, \lambda) = \mathcal{V}(G,\kappa, x, J) + \lambda \mathcal{R}(G, \kappa)
 \end{equation}
 
-which combines the quadratic read depth residual $\mathcal{V}$ and $\ell_1$-norm  complexity penalty $\mathcal{R}$ into a single quadratic objective.   In practice, we apply models that penalize the number of loose ends with nonzero copy number, i.e. applying an $\ell_0$-norm penalty  $\mathcal{R}(\kappa) = \sum_{v \in V_I} [\kappa(E_L^-(v))>0]  + [(\kappa(E_L^+(v))>0])$.  We use $f$ to define a MIQP, which we solve to infer a MAP estimate for $\kappa$ given data $x$ and genome graph $G$:
+which combines the quadratic read depth residual $\mathcal{V}$ and $\ell_1$-norm  complexity penalty $\mathcal{R}$ into a single quadratic objective.   In practice, we apply models that penalize the number of loose ends with nonzero copy number, i.e. applying an $\ell_0$-norm penalty  $\mathcal{R}(\kappa) = \sum_{v \in V_I} [\kappa(E_L^-(v))>0]  + [(\kappa(E_L^+(v))>0])$.  We use $f$ to define a MIQP, which we solve to infer a MAP estimate for $\kappa$ given data $x$ and genome graph $G$ (Figure \ref*{fig:jabba_formulation}):
 
 \begin{equation} \label{eq:MIQP}
     \begin{aligned}
@@ -628,8 +623,18 @@ which combines the quadratic read depth residual $\mathcal{V}$ and $\ell_1$-norm
 %     \caption{\textbf{JaBbA formulation.}}{A schematic of the mixed integer quadratic program optimization problem that JaBbA solves.}
 % \end{figure}
 
-The resulting MAP estimate $\hat{\kappa}$ defines the JBGG $(G,\hat{\kappa})$ which is outputted and returned to the user (Figure \ref*{fig:jabba_formulation}).
+% The resulting MAP estimate $\hat{\kappa}$ defines the JBGG $(G,\hat{\kappa})$ which is outputted and returned to the user (Figure \ref*{fig:jabba_formulation}).
 
+\begin{figure}[!h]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{A schematic of the mixed integer quadratic program optimization problem that JaBbA solves.}
+        \label{fig:jabba_formulation}
+        }\end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/jabba_formulation.png}
+    \end{adjustbox}
+\end{figure}
+\clearpage
 
 \subsection{JaBbA pipeline}
 Overall, the pipeline can be split into 3 parts, 1) building a primitive genome graph from the primary segmentation of coverage, 2) fitting integer CN for vertices and edges by solving the MIQP problem, and 3) simplify the output graph and report in the form of gGraph of gGnome package (see section \ref{sec:implement_ggnome}).
@@ -717,12 +722,8 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
 %     \end{tabular}
 % \end{table}
 
-\newpage
 
-% \centering        
-% \rotatebox[]{90}{
-
-
+% \clearpage
 \begin{table}
     \centering
     \caption{\textbf{Comparison of JBGG reconstruction methods.}}
@@ -746,10 +747,7 @@ Having described JaBbA algorithm and pipeline, we next set out to comprehensivel
         \bottomrule
     \end{tabular}            
 \end{table}
-% }
-
-
-\newpage
+\clearpage
 
 \subsubsection*{Comparison to previous genome graph reconstruction methods}
 % TODO!
@@ -761,41 +759,6 @@ JaBbA differs primarily from previous genome graph methods in its robust modelin
 Second, JaBbA is robust to missing junctions by allowing (but penalizing) the use of \textit{loose ends} in its reconstructions.  Loose ends arise when a CN change is unaccompanied by a nearby junction. Such an event is a common occurrence in WGS data (e.g. due to low coverage, algorithmic filters, rearrangements in repetitive regions, etc.). Methods that do not explicitly model loose ends (e.g. PREGO, Weaver) suffer from either under- (PREGO) or over-segmentation (Weaver). Finally, by posing its inference as a MIP, JaBbA avoids analytic limitations inherent to PGM inference (ReMixT, Weaver), including the inability to identify global (expectation maximization, ReMixT) or local (loopy belief propagation, Weaver) optima or model very high-level CN states (ReMixT).  In contrast, JaBbA's MIP-based framework allows for the discovery of globally optimal model fits while allowing for an unrestricted range of CN states.
 
 \subsubsection*{Benchmarking JaBbA}
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/600ppi/jcn_accuracy_sim.png}
-    \caption{\textbf{Junction copy number accuracy.}}{Benchmarking across 40 simulated genomes and HCC1954, with four technical replicates at ten different sample purity levels by admixing with matched normal genome. The numbers in parentheses after the names of the methods indicate the numbers of successful runs out of 40. F1 score is the harmonic mean of precision and recall. Same for Figure \ref*{fig:junc_inc_f1}, \ref*{fig:cn_bp_f1}, \ref*{fig:cn_mse}, \ref*{fig:cn_scatter}. This figure shows the accuracy of JCN estimation for simulated genomes only (fraction of junctions with correctly estimated JCN).}
-    \label{fig:jcn_accuracy_sim}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[height=0.8\textheight]{figures/600ppi/junc_inc_f1.png}
-    \caption{\textbf{F1 score of junction incorporation.}}
-    \label{fig:junc_inc_f1}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[height=0.8\textheight]{figures/600ppi/cn_bp_f1.png}
-    \caption{\textbf{F1 score of copy number change point placement.}}
-    \label{fig:cn_bp_f1}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[height=0.8\textheight]{figures/600ppi/cn_mse.png}
-    \caption{\textbf{Root mean square error of estimated CN from gold standard.}}
-    \label{fig:cn_mse}
-\end{figure}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_scatter.png}
-    \caption{\textbf{Estimated versus gold standard CN in all successful runs.}}{Pearson correlation coefficients $\rho$ using all points are labeled.}
-    \label{fig:cn_scatter}
-\end{figure}
-
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/example_bfb.png}
@@ -811,17 +774,51 @@ The input junctions to all genome graph reconstruction methods were their respec
 
 \subsubsection*{Junction incorporation and JCN estimation}
 To evaluate junction incorporation and JCN estimation, the incorporated junctions were approximately matched to gold standard junctions, e.g. both breakends were within 1 kbp from the corresponding gold standard junctions with the same orientations. True positives were the number of matches, false positives were incorporated junctions without a match, and false negatives were gold standard junctions without a match. An F1 score of the incorporated junctions, the harmonic mean of precision and recall, was then computed for each benchmarking sample (Figure \ref{fig:junc_inc_f1}). Gold standard junctions for HCC1954 were defined as the consensus set inferred from the original high depth data (junctions identified by at least two callers out of SvABA, Delly, Novobreak).
+\begin{figure}[!h]
+    \centering
+    \includegraphics[height=0.8\textheight]{figures/600ppi/junc_inc_f1.png}
+    \caption{\textbf{F1 score of junction incorporation.}}{Across 40 simulated genomes and HCC1954, with four technical replicates at ten different sample purity levels by admixing with matched normal genome. Numbers of successful runs out of 40 in parentheses. F1 score is the harmonic mean of precision and recall. Same for Figure \ref*{fig:jcn_accuracy_sim}, \ref*{fig:cn_bp_f1}, \ref*{fig:cn_mse}, \ref*{fig:cn_scatter}.}
+    \label{fig:junc_inc_f1}
+\end{figure}
 
 Inferred JCNs of the graph reconstruction were compared to the matching gold standard junctions, if any, from the simulated dataset. The proportion of correctly fitted JCNs out of all incorporated junctions times recall of incorporation represented the accuracy or completeness of JCN estimation (Figure \ref{fig:jcn_accuracy_sim}).
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/600ppi/jcn_accuracy_sim.png}
+    \caption{\textbf{Junction copy number accuracy.}}
+    \label{fig:jcn_accuracy_sim}
+\end{figure}
 
 \subsubsection*{Segmental CN estimation}
 When evaluating CNA inference performance, two metrics were considered. One was the correct placement of CN change points. Analogous to matching junction breakends, we considered an inferred CN change-point to match a gold standard if their distance was within 1 kbp and they have the same direction of CN change, e.g. increasing or decreasing CN from the side with smaller coordinates to the larger. To prevent spurious matching between inferred and gold standard CN change points, occurring in cases with excessive hypersegmentation, gold standard CN change points were only matched to the nearest identically oriented inferred CN change point.  Based on the matching, F1 scores were computed and shown in Figure \ref{fig:cn_bp_f1}. For HCC1954, the gold standard CN change-points were defined as the consensus junction breakends.
+\begin{figure}[!h]
+    \centering
+    \includegraphics[height=0.8\textheight]{figures/600ppi/cn_bp_f1.png}
+    \caption{\textbf{F1 score of copy number change point placement.}}
+    \label{fig:cn_bp_f1}
+\end{figure}
+
 
 % Too many (hypersegmentation), too few (undersegmentation), too distant from the gold standard (large error margin) were all adverse indications. To prevent extreme cases of hypersegmentation being over-optimistic, each one of the gold standard CN change-points was only matched to the nearest correctly oriented inferred change point.
 
 The other set of metrics reflects the concordance between the inferred CN profile with the gold standard. For each segment in the gold standard, the overlapping inferred segments were identified. The inferred CN for that gold standard segment was then defined as the overlap width-weighted average of inferred CN. Subsequently, the root mean squared error (RMSE) $\sqrt{\frac{\sum{(\hat{x} - x_{goldstandard})^2}}{n}}$ was computed across all gold standard segments for each sample (Figure \ref{fig:cn_mse}). The gold standard for HCC1954 CN profile was derived from published microarray-based segmentation downloaded from the CCLE data portal. High-depth WGS coverage data was mapped onto these segments and transformed into copy number space using the known ploidy of 4.5 and purity of 0.99. To compactly show the relationship between inferred CN and gold standard from all runs, we drew scatter plots across all gold standard segments in all successful runs for each method, and the Pearson $\rho$ of each method was calculated from all data points pooled together (Figure \ref{fig:cn_scatter}).
+\begin{figure}[!h]
+    \centering
+    \includegraphics[height=0.8\textheight]{figures/600ppi/cn_mse.png}
+    \caption{\textbf{Root mean square error of estimated CN from gold standard.}}
+    \label{fig:cn_mse}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/cn_scatter.png}
+    \caption{\textbf{Estimated versus gold standard CN in all successful runs.}}{Pearson correlation coefficients $\rho$ using all points are labeled.}
+    \label{fig:cn_scatter}
+\end{figure}
+
 
 %===========================%
+\clearpage
 \section{Implementation of genome graphs in gGnome package} \label{sec:implement_ggnome}
 To facilitate the analyses of genome graphs, we built an R package \textit{gGnome} which allows fast and useful creation, exploration, visualization, and computation around genome graphs. The basic design principle is to keep the integrity of genome graphs, in particular the skew-symmetric property, on the back end with private fields and methods in R6 classes, while expose the most intuitive inputs and outputs like junctions and segments to the users.
 
@@ -850,41 +847,32 @@ Next, we provide functions to replicate our algorithms in \cite{Hadi2020-um} and
 %===========================%
 \section{Interactive visualization of genome graphs in arbitrary genomic windows}
 % from JaBbA 
-To visualize the genome graphs we developed \texttt{gGnome.js} (source code at \url{https://github.com/mskilab/gGnome.js}), a Javascript-based genome browser that renders genome graphs and allows for interactive browsing across discontiguous genomic intervals accompanied by various genomic annotations. Here, we describe several important and unique features of gGnome.js.
+To visualize the genome graphs we developed \texttt{gGnome.js} (source code at \url{https://github.com/mskilab/gGnome.js}), a Javascript-based genome browser that renders genome graphs and allows for interactive browsing across discontiguous genomic intervals accompanied by various genomic annotations. Here, we describe several important and unique features of gGnome.js. Example graphs computed for \cite{Hadi2020-um} are publicly available at \url{https://mskilab.com/gGraph}
 
-\clearpage
+% \clearpage
 
 
 % gGnome.js figure
-\begin{figure}[ht]
-    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
-        \textbf{A snapshot of the gGnome.js interface of a BFB cycles event in an esophageal adenocarcinoma sample.}
-        \label{fig:ggjs}
-        }\end{minipage}},rotate=90,center}
-        % \includegraphics[scale=.6]{example-image}%
-        \includegraphics[width=\textheight]{figures/600ppi/ggjs.png}
-    \end{adjustbox}
-\end{figure}
+% \begin{figure}[ht]
+%     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+%         \textbf{A snapshot of the gGnome.js interface of a BFB cycles event in an esophageal adenocarcinoma sample.}
+%         \label{fig:ggjs}
+%         }\end{minipage}},rotate=90,center}
+%         % \includegraphics[scale=.6]{example-image}%
+%         \includegraphics[width=\textheight]{figures/600ppi/ggjs.png}
+%     \end{adjustbox}
+% \end{figure}
 
-\clearpage
+% \clearpage
 % {From the bottom to the top: X axis is the reference genome. Y axis is mapped to JaBbA-inferred copy number. Colored bars are vertices and links edges. Viewing windows can be created by selecting regions on the whole genome bar above the plotting region. Sample information is displayed along with the currently viewing windows. Toolbar at the very top allows for quick search of samples, focus on an annotated region, locate a specific range by coordinates or gene name, as well as controlling visible tracks in the browser.}
 % 
-First and foremost, the flexibility of arbitrary window browsing is crucial for complex rearrangement events, which can vary in scale and involve many distal loci. Annotations of events (or any set of vertices/edges) were read by the browser and can be searched. For example, in Figure \ref{fig:ggjs} we can visualize a multi-chromosomal breakage-fusion-bridge cycle (BFB cycles) event in 6 discontiguous windows spanning 4 different chromosomes and locate this event instantly with the \texttt{annotation} selector on the top right corner. In Figure \ref{fig:ggjs}, from the bottom to the top: X axis is the reference genome. Y axis is mapped to JaBbA-inferred copy number. Colored bars are vertices and links edges. Viewing windows can be created by selecting regions on the whole genome bar above the plotting region. Sample information is displayed along with the currently viewing windows. Toolbar at the very top allows for quick search of samples, focus on an annotated region, locate a specific range by coordinates or gene name, as well as controlling visible tracks in the browser.
+First and foremost, the flexibility of arbitrary window browsing is crucial for complex rearrangement events, which can vary in scale and involve many distal loci. Annotations of events (or any set of vertices/edges) were read by the browser and can be searched. For example, at \href{http://mskilab.com/gGraph/index.html?file=DO234201.json&location=1:7002938-12522933%20|%201:118957607-118957611%20|%206:48643334-52070041%20|%2010:31506128-33159910%20|%2010:134357208-134357213%20|%2019:50109732-50109737&view=}{this link} we can visualize a multi-chromosomal breakage-fusion-bridge cycle (BFB cycles) event in 6 discontiguous windows spanning 4 different chromosomes and locate this event instantly with the \texttt{annotation} selector on the top right corner. From the bottom to the top: X axis is the reference genome. Y axis is mapped to JaBbA-inferred copy number. Colored bars are vertices and links edges. Viewing windows can be created by selecting regions on the whole genome bar above the plotting region. Sample information is displayed along with the currently viewing windows. Toolbar at the very top allows for quick search of samples, focus on an annotated region, locate a specific range by coordinates or gene name, as well as controlling visible tracks in the browser.
 
 
-Annotations corresponding to segment-level and also junction-level information were included in the browser. Metadata for segments includes, but is not limited to, total copy number, allele-specific copy number (for samples and intervals in which heterozygous SNP information is available, i.e. cases with both tumor and normal pairs), and correspondence to event type if the segment was identified as part of an event. Edge metadata includes information output by the SV caller used in this study, SvABA, including number of reads supporting the SV and junction topology. These metadata can all be presented when the cursor hover over a specific element.
+Annotations corresponding to segment-level and also junction-level information were included in the browser. Metadata for segments includes, but is not limited to, total copy number, allele-specific copy number (for samples and intervals in which heterozygous SNP information is available, i.e. cases with both tumor and normal pairs), and correspondence to event type if the segment was identified as part of an event. Edge metadata includes information output by the SV caller used in this study, SvABA, including number of reads supporting the SV and junction topology. These metadata can all be presented when the cursor hover over a specific element. Second, the \texttt{gGnome.js} browser enables visualizing any genome graph, either with CN as inferred by other graph callers, or even without CN in the case of plain genome graphs.  As a meaningful default, we plot integer copy numbers of the segments on the Y axis, that are inferred from cancer whole genome sequencing (WGS) with JaBbA (described in the next section), making it ideal for quick browsing copy number aberrations and immediately reveal the architecture of the complex events. Third, when visualizing a larger cohort an integrated tag filter helps narrow down desired samples by any metadata string, exemplified by primary cancer types, data source projects, mutation status of genes. Fourth, gGnome.js also supports visualizing additional genome tracks in the format of scatter plot, bar plot, and gene annotations, whose visibility can be controlled by the functionnalities in the top right corner.
 
-\clearpage
-Second, the \texttt{gGnome.js} browser enables visualizing any genome graph, either with CN as inferred by other graph callers, or even without CN in the case of plain genome graphs. 
-
-As a meaningful default, we plot integer copy numbers of the segments on the Y axis, that are inferred from cancer whole genome sequencing (WGS) with JaBbA (described in the next section), making it ideal for quick browsing copy number aberrations and immediately reveal the architecture of the complex events. 
-
+% \clearpage
 %Annotations on subgraphs are searchable and useful to mark interesting events (like chromothripsis). A sample level search engine accelerates the browsing on large cohorts. We can also plot possible karyotypes as walks within the graph assisting on the identification of functional neo-connectivities or clarification of complex event topologies.
-
-Third, when visualizing a larger cohort an integrated tag filter helps narrow down desired samples by any metadata string, exemplified by primary cancer types, data source projects, mutation status of genes.
-
-Fourth, gGnome.js also supports visualizing additional genome tracks in the format of scatter plot, bar plot, and gene annotations, whose visibility can be controlled by the functionnalities in the top right corner.
-
 % newly written
 %To bring genome graphs better intuition for practical use, we developed \textit{gGnome.js} (https://github.com/mskilab/gGnome.js), a web application that draws genome rearrangement graphs onto its reference coordinates and allows for interactive browsing in any number of discontinuous windows accompanied by various types of genomic annotations. By allowing arbitrary windows and navigation by connectivities, the users can traverse the genome freely and simultaneously inspect various data at multiple relevant locations, including numeric (like read coverage) and qualitative (like gene annotations).
 
@@ -1081,45 +1069,46 @@ This work is part of our publication \cite{Hadi2020-um}*, led by Kevin Hadi, Jul
 %     \end{adjustbox}
 % \end{table}
 \clearpage
-\newpage
+% \newpage
 
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/pancancer.png}
     \caption{\textbf{Pan-cancer WGS tumor types.}}{See Table \ref{tab:pancan_cohort} for abbreviations. $*$ marks datasets with multiple samples per patient.}
     \label{fig:pancancer}
-\end{figure*}
+\end{figure}
 
 \clearpage
 \section{Analysis of pan-cancer junction-balanced genome graphs}
 To investigate the topology of JCN across cancers, we assembled a dataset comprising 2,813 short-read WGS tumor or cell line samples spanning 31 primary tumor types (Table \ref{tab:pancan_cohort}), including WGS for 539 previously unpublished cases  (Table \ref{tab:pancan_dataset}). In total, our analysis included 1,648 WGS samples not included in the Pan-Cancer Analysis of Whole Genomes (PCAWG) effort \cite{pcawg_marker2020-yi}. Application of harmonized pipelines followed by JaBbA (Figure \ref{fig:jabba_io}) yielded 2,778 high quality genome graphs (Figure \ref{fig:pancancer}, see Appendix \ref{app:b} for sample characteristics and exclusion criteria).
 
-\begin{figure*}[!h]
+Analyzing junction-balanced genome graph topology, we identified subgraphs associated with previously identified complex rearrangement patterns such as chromothripsis, chromoplexy, and TICs (Figure \ref{fig:variant_subgraph}) implementing criteria described in previous publications within our framework (see Appendix \ref{app:b}).
+
+\begin{figure}[!h]
     \centering
     \includegraphics[height=0.95\textheight]{figures/600ppi/variant_subgraph.png}
     \caption{\textbf{Examples of chromothripsis and chromoplexy.}}{}
     \label{fig:variant_subgraph}
-\end{figure*}
-\clearpage
+\end{figure}
+%\clearpage
 
-Analyzing junction-balanced genome graph topology, we identified subgraphs associated with previously identified complex rearrangement patterns such as chromothripsis, hromoplexy, and TICs (Figure \ref{fig:variant_subgraph}) implementing criteria described in previous publications within our framework (see Appendix \ref{app:b}).
 
-\clearpage
-\begin{figure*}[!ht]
+% \clearpage
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn.png}
     \caption{\textbf{Illustration of elevated JCN.}}{Elevated junction copy number (JCN=2) arises from the duplication of an allele harboring a DEL-like junction, resulting in a characteristic read depth and junction pattern from which a junction-balanced genome graph can be reconstructed.}
     \label{fig:jcn}
-\end{figure*}
+\end{figure}
 
-\clearpage
-\begin{figure*}[!ht]
+% \clearpage
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn_hist.png}
     \caption{\textbf{Pan-cancer junction copy number (JCN) distribution.}}{Colored bars show categories in the cohort. Low JCN, 1 to 3; elevated JCN, >3; high JCN, >7}
     \label{fig:jcn_hist}
-\end{figure*}
+\end{figure}
 
 While the vast majority of junctions demonstrated low-JCN (JCN $\le$ 3), we observed a long tail of junctions with elevated– (JCN > 3) and high-JCN (JCN > 7) (Figure \ref{fig:jcn_hist}).
 
@@ -1153,59 +1142,62 @@ While the vast majority of junctions demonstrated low-JCN (JCN $\le$ 3), we obse
 
 % To rigorously nominate clusters of low copy DUP-like and DEL-like junctions within each tumor sample, we identified genomic tiles (1 Mbp width, 500 kbp stride) enriched in low-JCN of a given type (e.g. DEL-like) relative to a calibrated gamma-Poisson background model (see \nameref{sec:methods}). In each analysis, non-outlier tiles harbored apparent simple deletions or duplications (\textbf{Fig. \ref{fig:Fig2}A-B}). In contrast, outlier bins in the DUP-like model resembled "towers" of low-JCN DUP-like junctions  (\textbf{Fig. \ref{fig:Fig2}A, top right}) that we named \textit{pyrgo} (\textgreek{p'urgos}, Greek meaning tower). Outlier loci in the DEL-like models comprised subgraphs of interval CN "chasms" flanked by low-JCN DEL-like junctions whose interval CN often reached 0 (\textbf{Fig. \ref{fig:Fig2}B, top left}).  We named these patterns \textit{rigma} (ρήγμα, Greek meaning rift).
 
-\section{Tyfonas is massively rearranged amplicon associated with elevated number of fusion genes}
-We then sought to investigate the rearrangement patterns associated with high-JCN junctions (JCN $>$ 7) in our genome graphs.  \textit{A priori}, a junction at such an extreme of JCN may evolve through a double minute, BFB cycles, or an as yet undescribed mechanism for duplicating already rearranged DNA. To characterize classes of  amplification events associated with these high-JCN junctions, we first identified 12,588 subgraphs harboring an interval CN of at least twice ploidy among the 2,487 unique genome graphs (by patient) (Figure \ref{fig:amplicon_features}), then identified among these amplicons (amplified clusters within a genome) those that harbor at least one junction with JCN $>$ 7.  We annotated the resulting 1,703 high-JCN amplicons according to three features: 1) the maximum JCN normalized by the maximal interval CN, 2) the \textit{sum} of fold back inversion JCNs (INV-like junctions that terminate and begin at nearly the same location in the genome) relative to the maximal interval CN, and 3) the number of junctions with elevated JCN (JCN>3) (see Appendix \ref{app:a}).
-
 \clearpage
-\begin{figure}[!ht]
+\section{Tyfonas is massively rearranged amplicon associated with elevated number of fusion genes}
+\begin{figure}[!h]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
         \textbf{Candidate amplicon subgraphs and the feature space construction.}
-        \label{fig:amplicon_features}
         }\end{minipage}},rotate=90,center}
         % \includegraphics[scale=.6]{example-image}%
         \includegraphics[width=\textheight]{figures/600ppi/amplicon.png}
+        \label{fig:amplicon_features}
     \end{adjustbox}
 \end{figure}
 
+We then sought to investigate the rearrangement patterns associated with high-JCN junctions (JCN $>$ 7) in our genome graphs.  \textit{A priori}, a junction at such an extreme of JCN may evolve through a double minute, BFB cycles, or an as yet undescribed mechanism for duplicating already rearranged DNA. To characterize classes of  amplification events associated with these high-JCN junctions, we first identified 12,588 subgraphs harboring an interval CN of at least twice ploidy among the 2,487 unique genome graphs (by patient) (Figure \ref{fig:amplicon_features}), then identified among these amplicons (amplified clusters within a genome) those that harbor at least one junction with JCN $>$ 7.  We annotated the resulting 1,703 high-JCN amplicons according to three features: 1) the maximum JCN normalized by the maximal interval CN, 2) the \textit{sum} of fold back inversion JCNs (INV-like junctions that terminate and begin at nearly the same location in the genome) relative to the maximal interval CN, and 3) the number of junctions with elevated JCN (JCN>3) (see Appendix \ref{app:a}).
 
-\begin{figure*}[!ht]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_clustering.png}
-    \label{fig:amplicon_definition}
-    \caption{\textbf{Classification of amplicons with high-JCN junctions.}}
-\end{figure*}
+\begin{figure}[!h]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{
+        \caption{
+            \textbf{Classification of amplicons with high-JCN junctions.}
+        } \label{fig:amplicon_definition}
+    \end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/amplicon_clustering.png}
+    \end{adjustbox}
+\end{figure}
 
-\begin{figure*}[!ht]
+\begin{figure}[!h]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_clustering_jaccard.png}
-    \label{fig:amplicon_jaccard}
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_clustering_jaccard.png}    
     \caption{\textbf{Assessment of stability of amplicon clustering.}}{For a given setting of $k$, cluster stability was computed as the mean Jaccard similarity between each observed cluster and the most similar cluster across 100 75\% bootstraps of the data (see Appendix \ref{app:b}). The stability of each $k$ parameter setting was computed as the mean of the $k$ stability scores across the clusters generated at that setting.}
-\end{figure*}
+    \label{fig:amplicon_jaccard}
+\end{figure}
 
-\begin{figure*}[!ht]
+\begin{figure}[!h]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_pca.png}
-    \label{fig:amplicon_pca}
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_pca.png}    
     \caption{\textbf{Projection of the amplicons across the first two principal components of normalized amplicon features.}}{}
-\end{figure*}
+    \label{fig:amplicon_pca}
+\end{figure}
 \clearpage
 
-Clustering and classification of amplicons (Figure \ref{fig:amplicon_definition}) on the basis of these three features yielded three stable clusters (Figure \ref{fig:amplicon_definition},\ref{fig:amplicon_jaccard},\ref{fig:amplicon_pca}; see also Appendix \ref{app:b}).  Upon visual inspection, the first group, harboring low fold-back JCN but high maximal JCN, contained amplicons comprising a single high-JCN junction forming a high CN circular path in the graph (Figure \ref{fig:dm_example}) as well as more complex cyclic patterns spanning multiple discontiguous loci, consistent with a double minute (or extrachromosomal circular DNAs).  The second group, demonstrating high fold-back JCN ($>$ 0.5), a low burden of elevated-JCN junctions ($<$ 26), and a "stair step" pattern of copy gains, was consistent with a BFB cycles (Figure \ref{fig:bfb_example}, \cite{Zakov:2013cm,McClintock1939-oi}). The third group contained both high fold-back JCN ($\geq$0.50) and a significant burden of elevated JCN junctions ($\geq$26).  Upon visual inspection, these amplicons comprised dense webs of elevated  JCN junctions across subgraphs consisting of $>$ 100 Mbp of genomic material and often reaching CNs higher than 50 (Figure \ref{fig:tyf_example}).  We dubbed these extremely large amplicons, which did not fit in previously defined categories, \textit{tyfonas} (τύφωνας, Greek meaning typhoon) (Figure \ref{fig:tyf_example}).
+Clustering and classification of amplicons (Figure \ref{fig:amplicon_definition}) on the basis of these three features yielded three stable clusters (Figures \ref{fig:amplicon_definition}, \ref{fig:amplicon_jaccard}, \ref{fig:amplicon_pca}; see also Appendix \ref{app:b}).  Upon visual inspection, the first group, harboring low fold-back JCN but high maximal JCN, contained amplicons comprising a single high-JCN junction forming a high CN circular path in the graph (Figure \ref{fig:dm_example}) as well as more complex cyclic patterns spanning multiple discontiguous loci, consistent with a double minute (or extrachromosomal circular DNAs).  The second group, demonstrating high fold-back JCN ($>$ 0.5), a low burden of elevated-JCN junctions ($<$ 26), and a "stair step" pattern of copy gains, was consistent with a BFB cycles (Figure \ref{fig:bfb_example}, \cite{Zakov:2013cm,McClintock1939-oi}). The third group contained both high fold-back JCN ($\geq$0.50) and a significant burden of elevated JCN junctions ($\geq$26).  Upon visual inspection, these amplicons comprised dense webs of elevated  JCN junctions across subgraphs consisting of $>$ 100 Mbp of genomic material and often reaching CNs higher than 50 (Figure \ref{fig:tyf_example}).  We dubbed these extremely large amplicons, which did not fit in previously defined categories, \textit{tyfonas} (τύφωνας, Greek meaning typhoon) (Figure \ref{fig:tyf_example}).
 
 \clearpage
-\begin{figure*}[!h]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/bfb_example.png}
-    \label{fig:bfb_example}
     \caption{\textbf{An example of a BFB cycles pattern.}}
-\end{figure*}
+    \label{fig:bfb_example}
+\end{figure}
 
-\begin{figure*}[!h]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/dm_example.png}
-    \label{fig:dm_example}
     \caption{\textbf{An example of a double minute pattern.}}
-\end{figure*}
+    \label{fig:dm_example}
+\end{figure}
 
 \begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
@@ -1230,34 +1222,34 @@ Comparing amplicon features, we found that tyfonas had significantly larger geno
 
 Analyzing tumor subtypes, we found tyfonas were common in dedifferentiated liposarcomas (80\%) and acral melanomas (40\%) but rarely seen ($<$ 2\%) in fibrosarcomas and cutaneous melanomas (Figure \ref{fig:tyf_ttype}).    80\% of dedifferentiated liposarcomas harbored a tyfonas on chromosome 12q, suggesting that tyfonas represent the genomic footprint of supernumerary ring chromosomes in this tumor type \cite{Reimann2008-tj}. Given the enrichment of tyfonas events in acral melanoma, an immunotherapy-responsive melanoma with a low SNV burden \cite{Shoushtari2016-de}, we hypothesized that tyfonas events may provide an alternate source of neoantigens through the generation of expressed protein-coding fusions.  Analyzing the subset of our samples with RNA-seq data within the TCGA dataset, we found that tyfonas were significantly enriched with expressed fusion transcripts relative to double minutes, BFB cycles, and even chromothripsis (CT) (Figure \ref{fig:tyf_fusion}, left), even after accounting for the larger genomic footprint of tyfonas (Figure \ref{fig:tyf_fusion}, right).
 
-\clearpage
-\begin{figure*}[!ht]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_cn.png}
-    \label{fig:amplicon_cn}
-    \caption{\textbf{Tyfonas amplify parts of genome to higher CN states than BFB and DM.}}
-\end{figure*}
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_mass.png}
-    \label{fig:amplicon_mass}
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_mass.png}    
     \caption{\textbf{Tyfonas result in larger mass of amplified genomic DNA than BFB and DM.}}
-\end{figure*}
+    \label{fig:amplicon_mass}
+\end{figure}
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_jcn_entropy.png}
-    \label{fig:amplicon_jcn_entropy}
-    \caption{\textbf{Tyfonas contain more heterogeneous junction copy numbers than BFB and DM.}}
-\end{figure*}
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_cn.png}    
+    \caption{\textbf{Tyfonas amplify parts of genome to higher CN states than BFB and DM.}}
+    \label{fig:amplicon_cn}
+\end{figure}
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_njunc.png}
-    \label{fig:amplicon_njunc}
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_njunc.png}    
     \caption{\textbf{Tyfonas contain more junctions than BFB and DM.}}
-\end{figure*}
+    \label{fig:amplicon_njunc}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_jcn_entropy.png}    
+    \caption{\textbf{Tyfonas contain more heterogeneous junction copy numbers than BFB and DM.}}
+    \label{fig:amplicon_jcn_entropy}
+\end{figure}
 
 \begin{figure}[!ht]
     \centering
@@ -1267,51 +1259,51 @@ Analyzing tumor subtypes, we found tyfonas were common in dedifferentiated lipos
 \end{figure}
 
 \begin{figure}[!ht]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{Tyfonas, DM, and BFB enrich in different tumor types.}        
+        }\label{fig:amplicon_ttype}
+    \end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/amps_ttype.png}
+    \end{adjustbox}
+\end{figure}
+
+\begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amps_ttype.png}
-    \caption{\textbf{Tyfonas, DM, and BFB enrich in different tumor types.}}
-    \label{fig:amplicon_ttype}
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/tyf_ttype.png}    
+    \caption{\textbf{Tyfonas is highly enriched in liposarcoma and acral melanoma.}}
+    \label{fig:tyf_ttype}
 \end{figure}
 
 
-\begin{figure*}[!ht]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tyf_ttype.png}
-    \label{fig:tyf_ttype}
-    \caption{\textbf{Tyfonas is highly enriched in liposarcoma and acral melanoma.}}
-\end{figure*}
-
-\begin{figure*}[!ht]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tyf_fusion.png}
-    \label{fig:tyf_fusion}
-    \caption{\textbf{Tyfonas create more fusion genes and highly expressed fusion genes than BFB, DM, and chromothripsis.}}{Enrichment of expressed protein-coding fusion transcripts by count (left) and density per Mbp of event territory (right) in tyfonas relative to other amplicon types and CT (Wilcoxon rank-sum test). Error bars on bar plots represent 95\% confidence intervals on the Bernoulli trial parameter.}
-\end{figure*}
-
-\clearpage
+\begin{figure}[!ht]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{Tyfonas create more fusion genes and highly expressed fusion genes than BFB, DM, and chromothripsis.}}{Enrichment of expressed protein-coding fusion transcripts by count (left) and density per Mbp of event territory (right) in tyfonas relative to other amplicon types and CT (Wilcoxon rank-sum test). Error bars on bar plots represent 95\% confidence intervals on the Bernoulli trial parameter.}
+        \label{fig:tyf_fusion}
+    \end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/tyf_fusion.png}
+    \end{adjustbox}
+\end{figure}
 
 
-\section{Clusters of pan-cancer patients based on SV event burdens show differential prognosis and is associated with tumor types and genetic backgrounds}
-
-
-
-% \begin{figure}
-    % \centering
-    % \includegraphics[width=0.95\linewidth]{figures/600ppi/sv_gallery.png}
-    % \caption{\textbf{Dictionary of genome graph-derived event patterns}}{Demonstrating example loci for 5 simple and 8 complex SV patterns.}
-    % \label{fig:sv_gallery}
+% \begin{figure}[!ht]
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tyf_fusion.png}    
+%     \caption{\textbf{Tyfonas create more fusion genes and highly expressed fusion genes than BFB, DM, and chromothripsis.}}{Enrichment of expressed protein-coding fusion transcripts by count (left) and density per Mbp of event territory (right) in tyfonas relative to other amplicon types and CT (Wilcoxon rank-sum test). Error bars on bar plots represent 95\% confidence intervals on the Bernoulli trial parameter.}
+%     \label{fig:tyf_fusion}
 % \end{figure}
 
-
-Tallying normalized junction counts across 13 event categories and 2,487 patients, we found 14 stable clusters using standard model selection metrics (Figure \ref{fig:find_k}). Most clusters were dominated by 1-3 event types (e.g. CT = chromothripsis, BR = BFB cycles, rigma, DDT = deletion, duplication, TIC) with the exception of two: QUIET (few events) and SPRS (sparse, miscellaneous events).
+\clearpage
+\section{Clusters of pan-cancer patients based on SV event burdens show differential prognosis and is associated with tumor types and genetic backgrounds}
+Tallying normalized junction counts across 13 event categories (Figure \ref{fig:sv_gallery}) and 2,487 patients, we found 14 stable clusters using standard model selection metrics (Figure \ref{fig:find_k}). Most clusters were dominated by 1-3 event types (e.g. CT = chromothripsis, BR = BFB cycles, rigma, DDT = deletion, duplication, TIC) with the exception of two: QUIET (few events) and SPRS (sparse, miscellaneous events).
 
 % \clearpage
 \begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
-        \textbf{Dictionary of genome graph-derived event patterns}
-        % {Demonstrating example loci for 5 simple and 8 complex SV patterns.}
-        \label{fig:sv_gallery}
-        }\end{minipage}},rotate=90,center}
+        \textbf{Dictionary of genome graph-derived event patterns}        
+        }\label{fig:sv_gallery}
+    \end{minipage}},rotate=90,center}
         % \includegraphics[scale=.6]{example-image}%
         \includegraphics[width=\textheight]{figures/600ppi/sv_gallery.png}
     \end{adjustbox}
@@ -1364,7 +1356,7 @@ Consistent with previous reports, the CT cluster was significantly enriched in p
 \end{figure}
 
 
-\begin{figure}[ht]
+\begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
         \textbf{All associations between clusters and tumor types.}
         \label{fig:clustering_tt_all}
@@ -1471,134 +1463,118 @@ Second, considering the complications during spontaneous \textit{TERT} activatio
 
 
 \section{Genomic complexity after spontaneous telomerase activation}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_bft3b_complex.png}
+%     \caption{\textbf{Complex amplification event in BFT3K cell line.}}
+%     \label{fig:tc_bft3b_complex}
+% \end{figure}
 
-\begin{figure}
+In order to determine the SVs in post-telomere crisis genomes, we examined nine SV40 large T-transformed cell lines that had undergone spontaneous telomerase activation after passage into telomere crisis (Figure \ref{fig:tc_prev_circos}, refer to \cite{Dewhurst2021-jk} Supplementary Table 1). In Figure \ref{fig:tc_prev_circos}, binned purity- and ploidy-transformed read depth is shown in the periphery, with colored links in the center representing variant (rearrangement) junctions. A series of red colors is used to show junctions and read-depth bins belonging to distinct clusters of complex gains in each cell line. Additional colors describe junctions and bins, including those belonging to simple losses and gains. 
+
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_prev_circos.png}
     \caption{\textbf{Post-crisis SV landscape in 8 spontaneously derived cell lines.}}
     \label{fig:tc_prev_circos}
 \end{figure}
-% {Binned purity- and ploidy-transformed read depth is shown in the periphery, with colored links in the center representing variant (rearrangement) junctions. A series of red colors is used to show junctions and read-depth bins belonging to distinct clusters of complex gains in each cell line. Additional colors describe junctions and bins, including those belonging to simple losses and gains.}
 
+\begin{figure}[!h]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{Chromothripsis event in SW26 cell line.}
+        \label{fig:tc_ct_sw26}
+        }\end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/tc_fig1b_ct_sw26.png}
+    \end{adjustbox}
+\end{figure}
+
+\begin{figure}[!ht]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{Primitive BFB event in BFT3K cell line.}
+        \label{fig:tc_bft3k_bfb}
+        }\end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/tc_bft3k_bfb.png}
+    \end{adjustbox}
+\end{figure}
 
 % \begin{figure}
-%     \centering 
-%     \includegraphics[width=\linewidth]{figures/600ppi/tc_prev_all_circos.png}
-%     \caption{\textbf{Post-crisis SV landscape with pre-crisis whole genome coverage in 9 spontaneously derived cell lines.}}
-%     \label{fig:tc_prev_all_circos}
+%     \centering
+%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_bft3k_bfb.png}
+%     \caption{\textbf{Primitive BFB event in BFT3K cell line.}}
+%     \label{fig:tc_bft3k_bfb}
 % \end{figure}
-% {From innermost circle, variant junctions present only in post-crisis sample, colored by complex amplicon clusters or grey if not classified into any, JaBbA inferred copy number, purity-ploidy transformed binned coverage of the pre-crisis clone, of the post-crisis clone, and chromosome bands. SW13 is marked with an asterisk due to the presence of extensive pre-crisis structural rearrangements.}
 
-\begin{figure}
-    \centering
-    \includegraphics[height=0.95\textheight]{figures/600ppi/tc_prev_tert.png}
-    \caption{\textbf{SVs around \textit{TERT} locus in spontaneous post-crisis cell lines.}}
-    \label{fig:tc_prev_tert}
-\end{figure}
-% {Each track shows binned purity- and ploidy-transformed read depth in units of CN, with variant (rearrangement) junctions and loose ends plotted as red arcs. The bottom track highlights the TERT gene among genes on chromosome 5p15. Violin plots to the left of tracks show the genome-wide distribution of read depth in units of CN, demonstrating that 6 of 7 clones have elevated CN at the TERT locus.}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_fig1b_ct_sw26.png}
-    \caption{\textbf{Chromothripsis event in SW26 cell line.}}
-    \label{fig:tc_ct_sw26}
+\begin{figure}[!ht]
+    \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
+        \textbf{Complex amplification event in BFT3K cell line.}
+        \label{fig:tc_bft3b_complex}
+        }\end{minipage}},rotate=90,center}
+        % \includegraphics[scale=.6]{example-image}%
+        \includegraphics[width=\textheight]{figures/600ppi/tc_bft3b_complex.png}
+    \end{adjustbox}
 \end{figure}
 
-\begin{figure*}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_bft3k_bfb.png}
-    \caption{\textbf{Primitive BFB event in BFT3K cell line.}}
-    \label{fig:tc_bft3k_bfb}
-\end{figure*}
 
-\begin{figure*}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_bft3b_complex.png}
-    \caption{\textbf{Complex amplification event in BFT3K cell line.}}
-    \label{fig:tc_bft3b_complex}
-\end{figure*}
-
-In order to determine the SVs in post-telomere crisis genomes, we examined nine SV40 large T-transformed cell lines that had undergone spontaneous telomerase activation after passage into telomere crisis (Figure \ref{fig:tc_prev_circos}). In Figure \ref{fig:tc_prev_circos}, binned purity- and ploidy-transformed read depth is shown in the periphery, with colored links in the center representing variant (rearrangement) junctions. A series of red colors is used to show junctions and read-depth bins belonging to distinct clusters of complex gains in each cell line. Additional colors describe junctions and bins, including those belonging to simple losses and gains. 
 % In Figure \ref{fig:tc_prev_all_circos}, purity-ploidy transformed binned coverage of the pre-crisis clone is also shown as an extra track.
 
-\clearpage
-\begin{table}[ht]
-    \begin{adjustbox}{addcode={\begin{minipage}{\width}\caption{
-        \textbf{SV40T immortalized pre-crisis and post-crisis telomerase positive cell lines.}
-        \label{tab:tc_sv40t}
-        }}{\end{minipage}},rotate=90,center}
-        \begin{tabular}{ccccc}
-            \hline
-            \textbf{Name}                  & \textbf{Cell Line/Tissue Source}              & \textbf{Telomerase Status}   & \textbf{Reference}                 & \textbf{Kind gift of}             \\ \hline
-            HA1 p15               & Human Embryonic   Kidney cells       & -            & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
-            SW13 PD73             & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-            SW26 PD68.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-            SW39 PD72.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-            Bet3B p3              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}     & Roger Reddel, CMRI       \\
-            Bet3K p7              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
-            BFT3B p10             & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
-            BFT3G p7              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
-            BFT3K p9              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
-            HA1-IM PD216          & Human Embryonic   Kidney cells       & + & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
-            SW13 PD184            & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-            SW26 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-            SW39 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
-            Bet3B p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-            Bet3K p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-            BFT3B p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-            BFT3G p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
-            BFT3K p34 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\ \hline
-        \end{tabular}
-    \end{adjustbox}
-\end{table}
-\clearpage
+% \clearpage
+% \begin{table}[!ht]
+%     \begin{adjustbox}{addcode={\begin{minipage}{\width}\caption{
+%         \textbf{SV40T immortalized pre-crisis and post-crisis telomerase positive cell lines.}
+%         \label{tab:tc_sv40t}
+%         }}{\end{minipage}},rotate=90,center}
+%         \begin{tabular}{ccccc}
+%             \hline
+%             \textbf{Name}                  & \textbf{Cell Line/Tissue Source}              & \textbf{Telomerase Status}   & \textbf{Reference}                 & \textbf{Kind gift of}             \\ \hline
+%             HA1 p15               & Human Embryonic   Kidney cells       & -            & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
+%             SW13 PD73             & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+%             SW26 PD68.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+%             SW39 PD72.5           & IMR90 lung   fibroblasts             & -            & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+%             Bet3B p3              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}     & Roger Reddel, CMRI       \\
+%             Bet3K p7              & NHBE-10 bronchial   epithelial cells & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
+%             BFT3B p10             & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
+%             BFT3G p7              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}  & Roger Reddel, CMRI       \\
+%             BFT3K p9              & BF-10 bronchial   fibroblasts        & -            & \cite{Bryan1995-ik}    & Roger Reddel, CMRI       \\
+%             HA1-IM PD216          & Human Embryonic   Kidney cells       & + & \cite{Counter1992-yg}  & Silvia   Bacchetti/AdVec \\
+%             SW13 PD184            & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+%             SW26 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+%             SW39 PD130+           & IMR90 lung   fibroblasts             & +  & \cite{Shay1989-ua} & Jerry Shay, UTSW         \\
+%             Bet3B p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+%             Bet3K p25 post-crisis & NHBE-10 bronchial   epithelial cells & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+%             BFT3B p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+%             BFT3G p28 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\
+%             BFT3K p34 post-crisis & BF-10 bronchial   fibroblasts        & + & \cite{Bryan1995-ik}      & Roger Reddel, CMRI       \\ \hline
+%         \end{tabular}
+%     \end{adjustbox}
+% \end{table}
 
 These cell lines represent independent immortalization events in a variety of cell lineages \cite{Bryan1995-ik,Shay1989-ua,Counter1992-yg}. We carried out whole genome sequencing of these nine post-crisis cell lines and their pre-crisis counterparts to a median depth of 40X (range: 15-51) and generated junction-balanced genome graphs\cite{Hadi2020-um} via JaBbA from SvABA\cite{Wala2018-qa} and GRIDSS\cite{Cameron2021-db} junction calls (see Appendix \ref{app:tc_wgs_processing}). We then apply JaBbA algorithm (Chapter \ref{chap:gg}) to reconstruct an optimal genome graph for each cell line and identify the patterns of structural variants (Chpater \ref{chap:complex_events}).
+\newpage
 
 % Using short-read WGS data, JaBbA optimally assigns a copy number to both vertices (intervals) and edges (junctions, adjacencies) of genome graphs by fitting a probabilistic model to binned genome-wide read depth. These graphs obey a basic stoichiometric constraint of DNA dosage, namely that every copy of every (interstitial) segment must have a left and a right neighbor. The topology of these genome graphs can be further analyzed to identify simple and complex SV events, including chromothripsis and BFB cycles.
 
 Comparison of ancestral (pre-crisis) and derived (post-crisis) genome graphs showed that eight of nine post-crisis cell lines acquired virtually all (61.9\% - 100\%, median 96.6\%) of their observed Structural variant during or after crisis (Figure \ref{fig:tc_prev_circos} and Supplementary Figure 1b in \cite{Dewhurst2021-jk}). One cell line (SW13) had acquired significant aneuploidy and genome rearrangement prior to crisis and was therefore difficult to interpret (Supplementary Figure 1b in \cite{Dewhurst2021-jk}). The other eight post-crisis genome graphs demonstrated varying levels of aneuploidy (ploidy ranges: 1.9-3.4) with variable numbers of clonal junctions per genome (range: 5-115, median 25). Analysis of junction-balanced genome graphs \cite{Hadi2020-um} revealed complex multi-chromosomal gains in six samples, with the other two lines harboring only broad arm level losses or gains (Figure \ref{fig:tc_prev_circos}).
 
-\clearpage
+
+
+
 Strikingly, besides one instance of chromothripsis (Figure \ref{fig:tc_ct_sw26}), genome graph-based categorization of complex SVs \cite{Hadi2020-um} identified few classic footprints of chromothripsis or BFB cycles in these genomes. However, several amplified subgraphs were associated with step-wise copy number gains reminiscent of BFB cycles (Figure \ref{fig:tc_bft3k_bfb}). The majority of copy changes in these subgraphs could not be attributed to fold-back inversion junctions (a hallmark of BFB cycles) but were instead driven by a spectrum of duplication and translocation-like junctions and templated insertion chains. These patterns are exemplified in a 10 Mbp region of 20q of post-crisis cell line BFT3B that is amplified to 10-15 copies, incorporating Mbp scale fragments from 11 other chromosomes at lower copy number including chromosome 8 and 19 (Figure \ref{fig:tc_bft3b_complex}). Of note, five of eight cell lines showed modest increases in \textit{TERT} copy number, providing a possible genomic basis for escape from telomere crisis (Figure \ref{fig:tc_prev_tert}). In Figure \ref{fig:tc_prev_tert}, each track shows binned purity- and ploidy-transformed read depth in units of CN, with variant (rearrangement) junctions and loose ends plotted as red arcs. The bottom track highlights the TERT gene among genes on chromosome 5p15. Violin plots to the left of tracks show the genome-wide distribution of read depth in units of CN, demonstrating that 6 of 7 clones have elevated CN at the TERT locus.
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[height=0.95\textheight]{figures/600ppi/tc_prev_tert.png}
+    \caption{\textbf{SVs around \textit{TERT} locus in spontaneous post-crisis cell lines.}}
+    \label{fig:tc_prev_tert}
+\end{figure}
+
+\FloatBarrier
 In summary, across the eight post-crisis cell lines, spontaneous escape from crisis was associated with a highly variable spectrum of SV patterns, ranging from relatively unaltered genomes to complex non-canonical patterns of amplification as well as numerical gains and losses. Importantly, BFB-like patterns and chromothripsis were not a general feature of the post-crisis genomes.
 
+
+% \clearpage
 \section{An in vitro system for telomerase-mediated escape from natural telomere crisis}
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_system.png}
-%     \caption{\textbf{\textit{In vitro} iCRISPRa system to activate endogeneous TERT expression}}
-%     \label{fig:tc_system}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_tert_western.png}
-%     \caption{\textbf{Detection of TERT protein after doxycycline induction.}}
-%     \label{fig:tc_tert_western}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_tert_qpcr.png}
-%     \caption{\textbf{Expression of TERT mRNA after doxycycline induction.}}
-%     \label{fig:tc_tert_qpcr}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_growth_original.png}
-%     \caption{\textbf{Population doubling in induced versus control group over time.}}
-%     \label{fig:tc_growth_original}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics{figures/600ppi/tc_stela.png}
-%     \caption{\textbf{STELA of XpYp telomeres in MRC5/Rbsh/p21sh/iCRISPRa-TERT cells with or without doxycycline treatment at 70 and 150 days of culture.}}{}
-%     \label{fig:tc_stela}
-% \end{figure}
 
 Despite the conclusions that both simple and complex SVs can appear in genomes after spontaneous escapes from telomere crisis, it still remains unclear what SVs are the direct result of telomere crisis. These existing cell lines spent various time in crisis, represent limited lineages that emerged from crisis, probably had undergone selection \ref{fig:tc_prev_tert}. To that end, Sally Dewhurst designed a new \textit{in vitro} model of telomere crisis using MRC5 human lung fibroblasts, which is known to reach mitotic barrier after about 50 generations. The Rb and p21 pathways were silenced with shRNAs to bypass senescence (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 2A). Meanwhile, an inducible CRISPR activation system (iCRISPRa) is introduced to activate \textit{TERT} transcription (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 2B). This system couples nuclease-dead Cas9 to a tripartite transcriptional activator and is guided by four gRNAs binding to the \textit{TERT} promoter region. Upon addition of doxycycline (dox), these MRC5/Rbsh/p21sh/iCRISPRa-TERT cells acutely expressed \textit{TERT} mRNA within 96 hours, in contrast to untreated cells in which \textit{TERT} transcripts were undetectable (data not included, refer to \cite{Dewhurst2021-jk} Figure 2B). Sally further verified that the telomerase activity (TRAP assay, telomerase repeated amplification protocol; data not included, refer to \cite{Dewhurst2021-jk} Figure 2C) are detectable, but both the expression and activity are lower than the telomerase-positive control cell line HCT116. This is a desired feature of this system as it has been shown that common \textit{TERT} promoter mutations found in tumor cells only sustain a low telomerase level and are not able to restore bulk telomere lengths \cite{Chiba2017-gq}.
 
@@ -1608,7 +1584,7 @@ In about 120 days after the initial cultutre (55 days with dox treatment), the M
 
 % At approximately 120 days after the start of the experiment (55 days with dox) the MRC5/Rbsh/p21sh/iCRISPRa-TERT population was proliferating faster than their untreated counterparts (Figure \ref{fig:tc_growth_original}). Inspection of individual telomere lengths using Single Telomere Length Analysis (STELA, \cite{Baird2003-cj}) revealed that although telomerase expression was sufficient to allow the cells to proliferate, it was not sufficient to maintain bulk telomere length (Figure \ref{fig:tc_stela}). After 150 days of continuous culture, the majority (86\%) of XpYp telomeres in induced MRC5/Rbsh/p21sh/iCRISPRa-TERT cells were between 1-4 kb compared to 40\% in uninduced cells (data not included, refer to \cite{Dewhurst2021-jk} Figure 2F, Supplementary Figure 2D). Consistent with this, genomic blotting showed bulk telomere shortening in both induced and uninduced cells (data not included, refer to \cite{Dewhurst2021-jk} Figure 2G). These telomere dynamics are consistent with the expectation that in the culture without telomerase, cells with critically short telomeres will preferentially be lost, leading to a surviving population with relatively longer telomeres. In contrast, cells in the induced culture with (low) telomerase activity have the ability to elongate the shortest telomeres. As a result, the induced cells are expected to tolerate telomere attrition better and present with overall shorter telomeres at later time points.
 
-\clearpage
+% \clearpage
 \begin{figure}
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_growth.png}
@@ -1676,32 +1652,42 @@ In about 120 days after the initial cultutre (55 days with dox treatment), the M
 \section{Genomic screening of post-crisis clones}
 To assess the genome structure of proliferating post-crisis cells, single cell clones were isolated from induced MRC5/Rbsh/p21sh/iCRISPRa-TERT cells at day 120 (‘Y clones’) and day 150 (‘Z clones’) (Figure \ref{fig:tc_growth}). The clonal yield at day 150 was greater than at day 120 in induced cells but no clones could be isolated from the uninduced population at either time point. The lower clonal yield at day 120 may be due to incomplete stabilization of the telomeres since clones from this time-point showed a higher burden of fused telomeres than those derived from day 150 (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4A). Post-crisis clones from both time points showed evidence of ultra-short telomeres and reduced telomere length (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4B-C). Telomerase activity in post-crisis clones was comparable to the parental induced population, indicating that clone viability was not due to selection for increased telomerase activity (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4D). To generate control clones which had not passed through a period of telomere crisis, early passage MRC5 cells were infected with a retrovirus expressing hTERT and single cell clones were isolated (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 4E). Genome profiling with low pass (~5X) WGS was performed on eight hTERT-expressing control clones (CT clones), 36 Y clones from day 120, and 82 Z clones from day 150 (Table \ref{tab:tc_sequenced_clones}).
 
-\clearpage
-\begin{figure}[h!]
+% \clearpage
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_circos_low.png}
     \caption{\textbf{Circular heatmap showing genome-wide binned purity- and ploidy-transformed read depth.}}{Units are CN across 118 low-pass WGS-profiled clones. Heatmap rows correspond to concentric rings in the heatmap. Clones are clustered with respect to genome-wide copy number profile similarity (see “Methods”).}
     \label{fig:tc_circos_low}
 \end{figure}
 
-\begin{figure}[ht]
+% \clearpage
+
+\begin{figure}[!h]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
-        \textbf{Post-crisis clones are clustered into six groups based on CN profile of chromosome 12 and 21.}
-        \label{fig:tc_heatmap_low}
-        }\end{minipage}},rotate=90,center}
+        \textbf{Post-crisis clones are clustered into six groups based on CN profile of chromosome 12 and 21.}        
+        } \label{fig:tc_heatmap_low}
+    \end{minipage}},rotate=90,center}
         % \includegraphics[scale=.6]{example-image}%
-        \includegraphics[width=\textheight]{figures/600ppi/tc_heatmap_low.png}
+        \includegraphics[width=0.8\textheight]{figures/600ppi/tc_heatmap_low.png}
     \end{adjustbox}
 \end{figure}
-\clearpage
 
 Analysis of genome-wide read depth across 118 clones from both day 120 (Y clones) and day 150 (Z clones) demonstrated predominantly diploid genomes with a striking enrichment of clones with DNA loss on most of chromosome 12p (63\%, 74/118, Figure \ref{fig:tc_circos_low}). Within the other 44 samples, we observed a subset of clones (5\%, 6/118, Figure \ref{fig:tc_circos_low}) with gains of chromosome 21q. As expected, control CT clones showed no evidence of SVs or copy number variants (Figure \ref{fig:tc_heatmap_tert_control}). Hierarchical clustering of all clones by their coverage on chromosomes 12p and 21q revealed six distinct clusters (Figure \ref{fig:tc_heatmap_low}). A minority of clones were diploid on chromosomes 12 and 21 and elsewhere in the genome and are therefore designated as ‘unrearranged’ (32\% of clones, 38/118). Of note, the unrearranged group was enriched in day 120 (Y) samples compared to day 150 (Z) samples ($p = 1.79 \times 10^{-9}$, odds ratio 14.7, Fisher’s exact test; Figure \ref{fig:tc_heatmap_low}), suggesting that these clones may have largely avoided crisis prior to telomerase induction. The cluster of clones with 21q gain were diploid on 12p.
+
 
 The remaining 74 clones (63\%) all showed a heterogeneous pattern of copy number alterations targeting 12p (Figure \ref{fig:tc_heatmap_low}). One out of the 118 clones (0.8\%) displayed the singular pattern of distinct interspersed losses that resembled chromothripsis. Complete loss of one copy of 12p ('arm loss') was found in a cluster of 6 clones (6/118, 5\%). A second cluster of 67 clones all shared a breakpoint near the distal end of 12p and a large deletion starting ~9 Mbp from the centromere. These clones were differentiated into two clusters by the presence or absence of an amplification around 8-9 Mbp from the 12p telomere. In the 47 clones that contained this amplification, aggregated consensus read depth profiles revealed step-wise gains at the distal end of 12p, a pattern reminiscent of BFB cycles (Supplementary Figure \ref{fig:tc_sum_coverage_low}). This cluster was therefore labeled ‘BFB-like’, a designation which is further supported by data presented below. The 20 clones (17\%) that lack the amplicon around 8-9 Mbp harbored varying boundaries of the shared larger deletion; based on the analysis described below we designate these as ‘early BFB-like’. In summary, these low-pass WGS copy number profiles indicated a limited set of distinct lineages surviving telomere crisis, with at least two lineages independently converging on 12p.
 
 % insert the formulation of multisample graph fitting -- walk decomposition
 \section{Joint inference of junction balance in MRC5} \label{sec:joint_jabba_mrc5}
 To chart structural variant evolution across sub-clades of MRC5 clones, a procedure was developed to jointly infer junction balanced genome graphs in a lineage (e.g. BFB lineage in Figure \ref{fig:tc_evo_tree}). This co-calling algorithm augmented the existing JaBbA model, described in detail in \cite{Hadi2020-um}, enabling application to a compendium of genome graphs by minimizing the total number of unique loose ends assigned a nonzero copy number across the graph compendium.  
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_evo_tree.png}
+    \caption{\textbf{Evolutionary trajectory of SVs in clones with high-pass WGS.}}
+    \label{fig:tc_evo_tree}
+\end{figure}
+
 
 Formally, we define a collection ${G^i = (V^i, E^i)}, i \in 1,\dots,n$ of identical genome graphs across $n$ clones, each a replica of a \textit{prototype} genome graph $G^0 = (V^0, E^0)$. The mapping $p:V \cup E \rightarrow V^0 \cup E^0$ maps each vertex $v \in V^i$ and edge $e \in E^i,i \in 1,\dots,n$ to its corresponding vertex $p(v)\in V^0$ and edge $p(e) \in E^0$ in the prototype graph. We then jointly infer unique copy number assignments $\kappa^i$ to the vertices and edges of each genome graph $G^i$ by solving the mixed integer program:
 
@@ -1724,32 +1710,13 @@ The coupling of multiple graphs happen through a joint complexity penalty $\math
     \mathcal{R}(\{G^i\}_{i \in 0, \dots, n}, \{\kappa^i\}_{i \in 1, \dots, n}, p) = \sum_{e^{0}_{L} \in E_{L}(G^0)}[\![ \sum_{\hat{e_L}|\hat{e_L} \in E^{i}_{L}, p(\hat{e_L})=e^{0}_{L}, i \in 1,\dots,n} \kappa^i( \hat{e_L} ) ]\!]
 \end{equation}
 
-As in \ref{eq:MIQP}, the hyperparameter $\lambda$ in Equation \ref{eq:multi_sample_jabba} controls the relative contribution of the read-depth residual and complexity penalty to the objective function. 
+As in Eq. \ref{eq:MIQP}, the hyperparameter $\lambda$ in Equation \ref{eq:multi_sample_jabba} controls the relative contribution of the read-depth residual and complexity penalty to the objective function. 
 
 It is important to note that while each of the graphs $G^i$ have an identical structure, the constraints imposed by the upper bounds $u^i$ and bin profiles $x^i$ confine each graph to its junctions and read depth data, and hence lead to a unique fit $κ^i$ on the basis of this data. The $L_0$ penalty (defined using the Iverson bracket $[\![]\!]$ operator) in Equation \ref{eq:joint_loose_penalty} couples the solutions $κ^i$ by adding an exponential prior on the number of unique loose ends across the entire graph compendium, where uniqueness is defined by the mapping $p$ to the prototype graph $G^0$.
 
 This joint mixed-integer programming model in Equation \ref{eq:multi_sample_jabba} is implemented in the “balance” function of gGnome. The model was applied to a collection of genome graphs representing the structure of chromosome 12 across 13 clones. The prototype graph for this genome graph collection was built from the disjoint union of intervals of the 13 preliminary graphs (via the GenomicRanges “disjoin” function) and the union of junction calls fit across those graphs (via gGnome “merge.Junction” function). Each graph was associated using the read depth data and bin-to-node mappings as per \cite{Hadi2020-um}. The mapping $u^i$ for each reference edge was set to $\inf$ while variant edges were assigned $\inf$ if bwa mem realignments of read pairs in each clone .bam file to the corresponding junction contig via rSeqLib (https://github.com/mskilab/rSeqLib, \cite{Wala2017-ud}), otherwise they were assigned 0.
 
 Equation \ref{eq:multi_sample_jabba} was then solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package after setting the hyperparameter $\lambda$ to 100.  This value was chosen after a parameter sweep observing for the visual concordance of genome graphs, loose ends, and read depth profiles in the region.
-
-\clearpage
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_evo_tree.png}
-    \caption{\textbf{Evolutionary trajectory of SVs in clones with high-pass WGS.}}
-    \label{fig:tc_evo_tree}
-\end{figure}
-\clearpage
-% {Each terminal node in the tree is associated with a unique 12p profile comprising a representative binned read-depth pattern (bottom track) from one or more clones mapping to an identical junction-balanced genome graph (second track from bottom). The top track in each profile represents a reconstruction of the rearranged allele. Each allele is a walk of genomic intervals and reference/variant junctions that, in combination with an unrearranged 12p allele (not shown), sum to the observed genome graph. Two distinct arrows linking Y11 and Y15 demonstrate that these clones are distinct lineages.}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[angle=90,height=0.75\textheight]{figures/600ppi/tc_phylo.png}
-%     \caption{\textbf{Phylogeny reconstructed based on SNV VAFs, CNA segmentation, and the presence of junctions.}}
-%     \label{fig:tc_phylo}
-% \end{figure}
-
-% {From left to right: phylogenetic tree; heatmap of variant allele fractions (VAF) for SNVs detected among two or more clones, private SNVs are omitted for simplicity; copy number segmentation; junction presence.}
 
 \section{High-resolution reconstruction and lineage of post-crisis genomes} \label{sec:tc_joint_decomposition}
 To gain further insight into structural variant evolution along these lineages, we chose 15 representative clones spanning the 5 clusters with rearrangements involving 12p for high-depth WGS to a median read depth of 50X (range: 30-88). Phylogeny derived from genome-wide SNV patterns demonstrated a median branch length of 551 SNVs (range: 9-2,409), a low mutation density (<1 SNV/Mbp) that is consistent with previous WGS studies of clones in cell culture \cite{Petljak2019-cf}. This analysis revealed four major clades (Figure \ref{fig:tc_phylo}). These clades had good concordance with copy number alteration and rearrangement junction patterns in the same 12p region, suggesting these clones represent distinct post-crisis evolutionary lineages (Figure \ref{fig:tc_phylo}).
@@ -1773,8 +1740,8 @@ Formally, the subgraph of vertices and edges with a nonzero copy number in each 
 
 where the function $\delta(v,h)$ and $\delta(e,h)$ is 1 if vertex $v$ and edge $e$ belong to walk $h$ and 0 otherwise, just like in \ref{eq:walk_decomposition}. The Iverson bracket ($[\![]\!]$) operator in the objective function Equation \ref{eq:joint_walk_decomposition} minimizes the total number of unique walks used across the compendium, hence identifying a jointly parsimonious assignment of copy number to walks across the compendium of graphs. Equation \ref{eq:joint_walk_decomposition} was solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package. Variant cycles and paths from the resulting solution were manually combined to yield a set of consistent linear paths, i.e. somatic haplotypes, to yield allelic reconstructions in Figure \ref{fig:tc_evo_tree}.
 
-\clearpage
-\begin{figure}[ht]
+% \clearpage
+\begin{figure}[!h]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
         \textbf{Phylogeny reconstructed based on SNV VAFs, CNA segmentation, and the presence of junctions.}
         \label{fig:tc_phylo}
@@ -1783,13 +1750,13 @@ where the function $\delta(v,h)$ and $\delta(e,h)$ is 1 if vertex $v$ and edge $
         \includegraphics[width=\textheight]{figures/600ppi/tc_phylo.png}
     \end{adjustbox}
 \end{figure}
-\clearpage
+% \clearpage
 
 \section{Evolutionary trajectory of a post-crisis chromosome 12}
 Analyzing the clonal evolution of these rearranged 12p alleles, we identified 8 clones demonstrating progressive stages of a BFB cycle. This complex variant evolved after a long-range inversion junction (j1) joined a distal end of 12p to its peri-centromere. This junction was followed by subsequent fold-back inversion junctions (j2, j3, j4), clustered at the 8-9 Mbp focus on 12p, which are present in two different sets of post-crisis clones (Early BFB, BFB, Figure \ref{fig:tc_evo_tree}). The earliest of the fold-back inversion junctions (j2) in the BFB lineage was associated with a cluster of 3 G or C mutations within 2 kbp of each other, consistent with APOBEC-mediated mutagenesis \cite{Maciejowski2020-bw} (Figure \ref{fig:tc_kataegis}). The most complex locus in the BFB lineage (Z43, Late BFB, Figure \ref{fig:tc_evo_tree}), contained six variant junctions in \textit{cis}, including two late DUP-like junctions (j5, j6). Although j6, which connects the distal portion of 12p to the 12p centromere, was not directly observed in the short read WGS data, it was imputed (dashed line, j6, Figure \ref{fig:tc_evo_tree}) to resolve the duplication of j1 in clone Z43 (JCN=2), as well as two loose ends in the genome graph. Remarkably, the vast majority (97\%) of SNVs detected in this BFB lineage (Figure \ref{fig:tc_phylo}) were either shared by all clones or private to a single clone, indicating that these stages of BFB evolution occurred rapidly in the history of the experiment.
 
-\clearpage
-\begin{figure}
+% \clearpage
+\begin{figure}[!h]
     \centering
     \includegraphics[height=0.85\textheight]{figures/600ppi/tc_kataegis.png}
     \caption{\textbf{Clustered GC mutations around junction breakends.}}
@@ -1797,60 +1764,26 @@ Analyzing the clonal evolution of these rearranged 12p alleles, we identified 8 
 \end{figure}
 % {g SNV patterns as a function of GC vs AT reference nucleotide context, with y-axis showing the logarithm of the inter SNV distance. Highlighted region represents a GC mutation cluster that is found across all four clones in the BFB cluster which harbour junction j2.}
 
-\begin{figure}
+\begin{figure}[!h]
     \centering
     \includegraphics[height=0.85\textheight]{figures/600ppi/tc_12q_del.png}
     \caption{\textbf{Simple deletion on chromosome 12q present in Y15, Y8, Z43, but not Y11.}}{Junction supporting read pairs and corresponding drop in coverage at the small deletion on chromosome 12q in Y15, Y8, Z43, and lack of such evidence in Y11.}
     \label{fig:tc_12q_del}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
     \centering
     \includegraphics[height=0.85\textheight]{figures/600ppi/tc_loose_end.png}
     \caption{\textbf{Distinct loose ends among the diverging BFB clones.}}
     \label{fig:tc_loose_end}
 \end{figure}
-\clearpage
+% \clearpage
+
 We confirmed a chromothripsis event in an independent lineage (Y8), which lacked j1 and all subsequent junctions of the BFB lineage, further supporting the idea that this is an independent lineage (Figure \ref{fig:tc_evo_tree}). Integration of copy number data with the SNV phylogeny showed clones from the unrearranged lineage (Y1 and Y4) and one of the 12p arm loss clones (Y11) to be mutationally distant (>2,000 SNVs) from the chromothripsis (Y8) and BFB lineages, which shared over 1,583 SNVs (Figure \ref{fig:tc_phylo}). Supporting this, a small (~21.5 kbp) simple deletion junction was shared across Y8, Y15, and all the BFB lineage samples, yet was absent in Y11 (Figure \ref{fig:tc_12q_del}).
 
 This comparison established that the 12p loss in Y11 could not have occurred after j1 and indicates that a second independent arm loss must have given rise to Y15. Interestingly, the Y15 arm loss clone was clustered in the BFB/Y8 clade in the SNV phylogeny, sharing 30 SNVs with the BFB lineage which it did not share with Y8 (Figure \ref{fig:tc_phylo}). This indicates that the 12p arm loss in Y15 may have arisen either before or after j1. Although the breakpoints of the Y11 and Y15 arm losses could not be mapped due to their location in the 12 centromeric region, based on the SNV phylogeny, they likely represent distinct events. Taken together, these results support a model whereby at least three lineages independently rearranged a previously wild type 12p during telomere crisis (Figure \ref{fig:tc_evo_tree}). Our data appear to have captured sequential steps in the formation of an increasingly complex BFB-like event. Each of these stages must represent a stabilized allele since the post-crisis lines are clonal, and multiple clones share the same rearrangement junctions (Figure \ref{fig:tc_phylo}). This necessarily raises the question as to what caused the on-going instability, and how and where these complex alleles are terminated.
 
 \section{Resolution of BFB cycles in telomere crisis}
-% % \begin{figure}
-% %     \centering
-% %     \includegraphics[height=0.95\textheight]{figures/600ppi/tc_sky.png}
-% %     \caption{\textbf{DAPI-banded karyotypes of post-crisis clones Z43 and Y8.}}
-% %     \label{fig:tc_sky}
-% % \end{figure}
-
-% % \begin{figure}
-% %     \centering
-% %     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_sky_all.png}
-% %     \caption{\textbf{DAPI-banded karyotypes of ancestral MRC5 and post-crisis clones Y4, Z11, Z15, Z29, and Z41.}}
-% %     \label{fig:tc_sky_all}
-% % \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[height=0.9\textheight]{figures/600ppi/tc_fish_bicolor.png}
-%     \caption{\textbf{Representative images of metaphase spreads from post-crisis clones hybridized with both 12 (green) and 21 (red) chromosome paint in post-crisis clones Y8 and Z43.}}
-%     \label{fig:tc_fish_bicolor}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_fish_bicolor_all.png}
-%     \caption{\textbf{Representative images o fmetaphase spreads from post-crisis clones hybridized with both 12 (green) and 21 (red) chromosome paint in ancestral MRC5 and six post-crisis clones.}}
-%     \label{fig:tc_fish_bicolor_all}
-% \end{figure}
-
-% \begin{figure}
-%     \centering
-%     \includegraphics[height=0.7\textheight]{figures/600ppi/tc_fish_tree.png}
-%     \caption{\textbf{Images of derivative chromosome 12:21 from representative clones from each branch of the evolution of chromo-some 12 post-crisis.}}{Metaphases were hybridized with whole chromosome paints for 12 (green) and 21 (red). DNA was stained with DAPI (gray).
-%     }
-%     \label{fig:tc_fish_tree}
-% \end{figure}
 
 Analysis of junction-balanced genome graphs allows for the nomination of ‘loose ends’ (or allelic ends), representing copy number changes that cannot be resolved through assembly or mapping of short reads. We identified three distinct loose ends across the 4 variant graphs spanning the 8 clones in the BFB lineage (Figure \ref{fig:tc_loose_end}). Each of these loose ends were placed at the terminus of their respective reconstructed allele, and we posit they represent the new ‘ends’ of the derivative alleles of the BFB lineage. Distinct ends for each of these rearranged lineages suggests the derivative 12p allele could have been stabilized independently. We did not observe telomere repeat-containing reads mated to these loose ends (Appendix \ref{app:tc_loose_end}), arguing against neo-telomere formation at these loci. Instead, loose reads represented highly repetitive unmappable sequences which may be a result of the junctions being in close proximity to centromeric regions (see below).
 
@@ -1858,47 +1791,49 @@ To resolve the genomic architecture at these loci we generated karyotypes from m
 
 Unlike the BFB and chromothripsis clusters, one of the two 12p arm loss lineages (Y11) did not appear to be fused to chromosome 21. In this clone, the derivative chromosome 12 appears to contain a distinct fusion with a longer p-arm (refer to \cite{Dewhurst2021-jk}Supplementary Figure 6b). This is consistent with our analysis of the SNV phylogeny, showing Y11 to be mutationally distant from the BFB lineage (Figure \ref{fig:tc_phylo}, \ref{fig:tc_12q_del}).  We were unable to further resolve the nature of the stabilization event in this clone. It would be necessary to perform long molecule DNA sequencing across different lineages in order to confirm the distinct nature of the fusion junction in each of the post-crisis clones.
 
-\clearpage
-\begin{figure}
+% \clearpage
+
+% \clearpage
+
+\section{A short telomere renders 12p vulnerable to telomere attrition}
+The convergent evolution patterns observed in our system suggests either 12p vulnerability to rearrangements or selection for 12p loss during telomere crisis. We believe strong selection is unlikely, given the existence of day 150 clones with diploid 12p (15.8\%, 13/82, with or without 21q gain). The preferential rearrangement of the short arm of chromosome 12 in the post-crisis system could be explained if one of the two 12p telomeres is among the shortest telomeres in the MRC5 parental cells. Attrition of the shortest telomeres is predicted to generate the first telomere fusions and associated rearrangements in the culture.
+
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_phasing_define.png}
     \caption{\textbf{Defining L and R alleles of chromosome 12p based on its loss or retention in arm-loss clone Y11.}}{Genomic track plots of parental alleles phased into lost (L) and retained (R) haplotypes on chromosome 12p of clone Y11.}
     \label{fig:tc_phasing_define}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_phasing_y8.png}
     \caption{\textbf{Chromosome 12p haplotype in chromothripsis-like post-crisis clone Y8.}}
     \label{fig:tc_phasing_y8}
 \end{figure}
 
-\begin{figure}
+We first asked whether the same parental allele was targeted across the chromosome 12- associated events in our cohort. Such allele specificity would argue against a selection for loss of 12p sequences since such selection should have occurred without allele preference. We phased heterozygous SNPs on 12p on the basis of whether they belonged to the lost (L) or retained (R) allele on the early 12p arm loss clone, Y11 (Figure \ref{fig:tc_phasing_define}). Analyzing phased SNP patterns across all the high– and low-pass MRC5 clone WGS profiles in our dataset demonstrated that the L allele of 12p was the exclusive target of all chromosome 12 structural variants (Figures \ref{fig:tc_allelic_cn_high}, \ref{fig:tc_allelic_cn_low}). This included the clones from the chromothripsis (Y8, Figure \ref{fig:tc_phasing_y8}) and BFB (Z43, Figure \ref{fig:tc_phasing_z43}) lineages, which our phylogenetic clustering suggested to be likely independent events on a previously unrearranged chromosome 12 (Figure \ref{fig:tc_evo_tree}). On the basis of these results, we concluded that the short arm of the L allele of 12 was the most vulnerable to rearrangement in the MRC5 parental line.
+
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_phasing_z43.png}
     \caption{\textbf{Chromosome 12p haplotype in chromothripsis-like post-crisis clone Z43.}}
     \label{fig:tc_phasing_z43}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_allelic_cn_high.png}
     \caption{\textbf{Haplotype CN in high-pass WGS.}}{Scatter plot showing purity- and ploidy-transformed L and R haplotype-specific allelic read depth across 12p segments in high-pass WGS-profiled post-crisis clones.}
     \label{fig:tc_allelic_cn_high}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_allelic_cn_low.png}
     \caption{\textbf{Haplotype CN in low-pass WGS.}}{Scatter plot showing purity- and ploidy-transformed L and R haplotype-specific allelic read depth across 12p segments in low-pass WGS-profiled post-crisis clones.}
     \label{fig:tc_allelic_cn_low}
 \end{figure}
-\clearpage
-
-\section{A short telomere renders 12p vulnerable to telomere attrition}
-The convergent evolution patterns observed in our system suggests either 12p vulnerability to rearrangements or selection for 12p loss during telomere crisis. We believe strong selection is unlikely, given the existence of day 150 clones with diploid 12p (15.8\%, 13/82, with or without 21q gain). The preferential rearrangement of the short arm of chromosome 12 in the post-crisis system could be explained if one of the two 12p telomeres is among the shortest telomeres in the MRC5 parental cells. Attrition of the shortest telomeres is predicted to generate the first telomere fusions and associated rearrangements in the culture.
-
-We first asked whether the same parental allele was targeted across the chromosome 12- associated events in our cohort. Such allele specificity would argue against a selection for loss of 12p sequences since such selection should have occurred without allele preference. We phased heterozygous SNPs on 12p on the basis of whether they belonged to the lost (L) or retained (R) allele on the early 12p arm loss clone, Y11 (Figure \ref{fig:tc_phasing_define}). Analyzing phased SNP patterns across all the high– and low-pass MRC5 clone WGS profiles in our dataset demonstrated that the L allele of 12p was the exclusive target of all chromosome 12 structural variants (Figure \ref{fig:tc_allelic_cn_high}, \ref{fig:tc_allelic_cn_low}). This included the clones from the chromothripsis (Y8, Figure \ref{fig:tc_phasing_y8}) and BFB (Z43, Figure \ref{fig:tc_phasing_z43}) lineages, which our phylogenetic clustering suggested to be likely independent events on a previously unrearranged chromosome 12 (Figure \ref{fig:tc_evo_tree}). On the basis of these results, we concluded that the short arm of the L allele of 12 was the most vulnerable to rearrangement in the MRC5 parental line.
 
 %% shorten this part
 We next tested whether the preferential 12p events could be due to the presence of a short telomere on one of the 12p alleles. To this end, we combined telomeric FISH with BAC probes specific for chromosome 12 and two other chromosome (6 and 8) that did not show evidence for structural variants in WGS (Figure \ref{fig:tc_heatmap_low}). Comparing the ratio of the telomeric signal of the shortest 12p telomeres to the signal of all other telomeres in individual metaphase spreads revealed that one of the 12p telomeres was significantly shorter (data not included, refer to \cite{Dewhurst2021-jk} Figure 7e). The shortest telomeres of 6 and 18 (data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 7b) were also shorter than the median but not to the same extent as 12p. The relative telomere length of the shortest 21p allele showed a heterogeneous distribution that overall was significantly longer than 12p in the parental cells (data not included, refer to \cite{Dewhurst2021-jk} Figure 7e). This does not exclude the possibility of 21 becoming critically short at later time points, and indeed the observation of a low percentage of clones in the 5X WGS screening with amplifications of 21q could indicate that this chromosome end did occasionally become deprotected in this population (Figure \ref{fig:tc_heatmap_low}). Such deprotection of a chromosome 21 telomere is consistent with chromosome 21 preferentially stabilizing the derivative chromosome 12 (data not included, refer to \cite{Dewhurst2021-jk} Figure 6b, Supplementary Figure 6a).
@@ -1925,7 +1860,7 @@ The reconstructed graphs showed three main branches of outcomes to chromosome 12
 % the progression
 To reconstruct a comprehensive evolutionary trajectory, we combined evidence from the exact structural haplotype and genome-wide SNVs. We exhaust all possible haplotypes that can be derived from the graphs and search for a linear combination of them that satisfies each graphs copy numbers. To achieve that through multiple related samples, we have to extend the Eq. \ref{eq:walk_decomposition_parsimony} to the form in Eq. \ref{eq:joint_walk_decomposition}. Our exhaustive nomination of elementary paths and cycles from a graph, even though guaranteed to be feasible, any cycle is singled out and on face value form itself a circular contig, even for a true tandem duplication. This is biologically improbable so we modified the pool of haplotypes by inserting cycles back to all possible locations among the walks, and fitted copy number to a more biologically meaning full haplotype repertoire. Thanks to the knowledge of a single chromosome 12 allele being affected, we further simplify the inference by requiring a unrearranged chromosome 12 haplotype to present at copy number 1 in each sample.
 
-\clearpage
+% \clearpage
 While we inferred this tree (Figure \ref{fig:tc_evo_tree}) in a customized deduction, there is great opportunity to build a general-purpose, automated evolutionary trajectory inference method from jointly inferred haplotypes. Interestingly, the two arm-loss configurations are actually distant on the SNV phylogenetic tree, indicating convergent evolution. Y15 is closer to the BFB clones than to the other arm-loss Y11 clone, which was further supported by a small simple deletion event on the q-arm of chromosome 12. Assuming a relatively constant rate of mutation, the diverging process of the BFB clones happened in a shorter time frame. 
 
 % the stabilization
@@ -2416,7 +2351,7 @@ Subgraphs that best fit the features of chromothripsis patterning described in \
 
 \subsubsection*{Chromoplexy}
 
-Chromoplexy as first described in \cite{baca2013} can be identified by a series of reciprocal (or nearly-reciprocal, with small deletion bridges between adjacent breakends) long-range junctions (span more than 10 Mbp on the reference). Accordingly, chromoplexy was identified from a pool of low-JCN ($\leq 3$) edge clusters in which junction breakends are no further than 10 kbp away from the next junction breakend. Edge clusters that contained at least 3 long-range junctions, and whose footprints occupied at least 3 discontiguous genomic territories separated by >10 Mbp on the reference were called as chomoplexy events. This caller is implemented as the \ttt{chromoplexy} function of \ttt{gGnome}.
+Chromoplexy as first described in \cite{baca2013} can be identified by a series of reciprocal (or nearly-reciprocal, with small deletion bridges between adjacent breakends) long-range junctions (span more than 10 Mbp on the reference). Accordingly, chromoplexy was identified from a pool of low-JCN ($\leq 3$) edge clusters in which junction breakends are no further than 10 kbp away from the next junction breakend. Edge clusters that contained at least 3 long-range junctions, and whose footprints occupied at least 3 discontiguous genomic territories separated by >10 Mbp on the reference were called as chromoplexy events. This caller is implemented as the \ttt{chromoplexy} function of \ttt{gGnome}.
 
 \subsubsection*{Templated insertion chains (TICs)}
 
@@ -2546,7 +2481,7 @@ All statistical tests are carried out using R (v3.6.1) and Bioconductor (v3.10) 
 %The inference of JBGGs is a computationally challenging combinatorial optimization problem that others have approached using probabilistic graphical models (PGM) \cite{Li2016-qa,McPherson2017-ry} and mixed-integer programming (MIP) \cite{Medvedev:2010bm, Greenman:2012eg, Oesper2012-vw, Dzamba2017-wo, Aganezov2020-cu,Lee2021-rl}. A serious impediment to applying these approaches to the study of complex SVs is their inability to produce CN profiles of comparable quality to non-graph based CNA callers (e.g. CONSERTING \cite{Chen2015-sw}, BIC-Seq \cite{Xi2011-oa}) while also fitting JCN, across a wide range of tumor purities.
 
 % JaBbA method, need to adpat
-% We also validated JaBbA's estimates of JCN from short-read WGS with 10X Chromium linked-read WGS, which provides a more direct readout of JCN with its high number of long junction-spanning fragments. In the breast cancer cell line HCC1954, JaBbA-derived JCN estimates closely correlated with the coverage of junction-spanning linked-read barcodes ($R^2 = 0.91$, \textbf{Fig. \ref{fig:Fig1}C}). This included examples of low JCN (e.g. JCN = 1) junctions connecting both low and high CN intervals, as well as high JCN (JCN = 10)  junctions (\textbf{Fig. \ref{fig:Fig1}D}). These results show that JCN is a property that can be robustly inferred from short-read WGS and is independent from (interval) CN. 
+% We also validated JaBbA's estimates of JCN from short-read WGS with 10X Chromium linked-read WGS, which provides a more direct readout of JCN with its high number of long junction-spanning fragments. In the breast cancer cell line HCC1954, JaBbA-derived JCN estimates closely correlated with the coverage of junction-spanning linked-read barcodes ($R^2 = 0.91$, \textbf{Fig. \ref{fig:Fig1}C}). This included examples of low JCN (e.g. JCN = 1) junctions connecting both low and high CN intervals, as well as high JCN (JCN = 10)  junctions (\in. \ref{fig:Fig1}D}). These results show that JCN is a property that can be robustly inferred from short-read WGS and is independent from (interval) CN. 
 
 % from telomere intro
 % Structural variant is a hallmark of cancer genomes. 
