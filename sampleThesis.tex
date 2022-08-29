@@ -467,7 +467,7 @@ Each $b^i = C^ \in \mathcal{B},\ i \in 1,\ldots,c$ is an ordered and unique sequ
     \end{algorithmic}
 \end{algorithm}
 
-\newpage
+% \newpage
 
 \subsection{Walks on a genome graph map to rearranged karyotype}
 Analogous to an assembly graph, on genome graph $G$, traveling through a walk $h = (v_1, e_1, v_2, e_2, \dots, e_{k-1}, v_k), k \in \mathbb{N^+}$, where each edge $e_i = (v_i, v_{i+1}), i \in 1, 2, \dots, k-1$, is equivalent to generating a substring of DNA sequence, simply by concatenating the reference sequences of the vertices. If some of the edges along the walk belong to ALT edges $E_{A}$, then the walk represents a possible derivative sequence resulted from the SVs that gave rise to these edges. Since $G$ is skew-symmetric, every walk $h$ has a reverse complement walk $\bar{h} = (\bar{v_k}, \bar{e_{k-1}}, \dots, \bar{e_2}, \bar{v_2}, \bar{e_1}, \bar{v_1})$. We also denote the number of times a walk $h$ travel through a node $v$ or an edge $e$ using $\delta : (V \cup E, H) \rightarrow \mathbb{N}$. Based on this definition, we have two important observations.
@@ -1087,7 +1087,7 @@ Analyzing junction-balanced genome graph topology, we identified subgraphs assoc
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[height=0.95\textheight]{figures/600ppi/variant_subgraph.png}
+    \includegraphics[height=0.6\textheight]{figures/600ppi/variant_subgraph.png}
     \caption{\textbf{Examples of chromothripsis and chromoplexy.}}{}
     \label{fig:variant_subgraph}
 \end{figure}
@@ -1142,7 +1142,8 @@ While the vast majority of junctions demonstrated low-JCN (JCN $\le$ 3), we obse
 
 % To rigorously nominate clusters of low copy DUP-like and DEL-like junctions within each tumor sample, we identified genomic tiles (1 Mbp width, 500 kbp stride) enriched in low-JCN of a given type (e.g. DEL-like) relative to a calibrated gamma-Poisson background model (see \nameref{sec:methods}). In each analysis, non-outlier tiles harbored apparent simple deletions or duplications (\textbf{Fig. \ref{fig:Fig2}A-B}). In contrast, outlier bins in the DUP-like model resembled "towers" of low-JCN DUP-like junctions  (\textbf{Fig. \ref{fig:Fig2}A, top right}) that we named \textit{pyrgo} (\textgreek{p'urgos}, Greek meaning tower). Outlier loci in the DEL-like models comprised subgraphs of interval CN "chasms" flanked by low-JCN DEL-like junctions whose interval CN often reached 0 (\textbf{Fig. \ref{fig:Fig2}B, top left}).  We named these patterns \textit{rigma} (ρήγμα, Greek meaning rift).
 
-\clearpage
+% \clearpage
+\FloatBarrier
 \section{Tyfonas is massively rearranged amplicon associated with elevated number of fusion genes}
 \begin{figure}[!h]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
@@ -1169,18 +1170,18 @@ We then sought to investigate the rearrangement patterns associated with high-JC
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_clustering_jaccard.png}    
+    \includegraphics[width=0.5\linewidth]{figures/600ppi/amplicon_clustering_jaccard.png}    
     \caption{\textbf{Assessment of stability of amplicon clustering.}}{For a given setting of $k$, cluster stability was computed as the mean Jaccard similarity between each observed cluster and the most similar cluster across 100 75\% bootstraps of the data (see Appendix \ref{app:b}). The stability of each $k$ parameter setting was computed as the mean of the $k$ stability scores across the clusters generated at that setting.}
     \label{fig:amplicon_jaccard}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/amplicon_pca.png}    
+    \includegraphics[width=0.5\linewidth]{figures/600ppi/amplicon_pca.png}    
     \caption{\textbf{Projection of the amplicons across the first two principal components of normalized amplicon features.}}{}
     \label{fig:amplicon_pca}
 \end{figure}
-\clearpage
+% \clearpage
 
 Clustering and classification of amplicons (Figure \ref{fig:amplicon_definition}) on the basis of these three features yielded three stable clusters (Figures \ref{fig:amplicon_definition}, \ref{fig:amplicon_jaccard}, \ref{fig:amplicon_pca}; see also Appendix \ref{app:b}).  Upon visual inspection, the first group, harboring low fold-back JCN but high maximal JCN, contained amplicons comprising a single high-JCN junction forming a high CN circular path in the graph (Figure \ref{fig:dm_example}) as well as more complex cyclic patterns spanning multiple discontiguous loci, consistent with a double minute (or extrachromosomal circular DNAs).  The second group, demonstrating high fold-back JCN ($>$ 0.5), a low burden of elevated-JCN junctions ($<$ 26), and a "stair step" pattern of copy gains, was consistent with a BFB cycles (Figure \ref{fig:bfb_example}, \cite{Zakov:2013cm,McClintock1939-oi}). The third group contained both high fold-back JCN ($\geq$0.50) and a significant burden of elevated JCN junctions ($\geq$26).  Upon visual inspection, these amplicons comprised dense webs of elevated  JCN junctions across subgraphs consisting of $>$ 100 Mbp of genomic material and often reaching CNs higher than 50 (Figure \ref{fig:tyf_example}).  We dubbed these extremely large amplicons, which did not fit in previously defined categories, \textit{tyfonas} (τύφωνας, Greek meaning typhoon) (Figure \ref{fig:tyf_example}).
 
@@ -1209,8 +1210,8 @@ Clustering and classification of amplicons (Figure \ref{fig:amplicon_definition}
         \includegraphics[width=\textheight]{figures/600ppi/tyf_example.png}
     \end{adjustbox}
 \end{figure}
-\clearpage
-
+% \clearpage
+\FloatBarrier
 \subsection*{Tyfonas are distinct from BFB cycles and double minutes}
 Comparing amplicon features, we found that tyfonas had significantly larger genomic mass (summed interval width weighted by CN, Figure \ref{fig:amplicon_mass}), maximum interval CN (Figure \ref{fig:amplicon_cn}), junction burden (Figure \ref{fig:amplicon_njunc}), and JCN entropy (based on the distribution of JCN in the amplicon, the higher the more diversity among the JCNs, Figure \ref{fig:amplicon_jcn_entropy}) than either double minutes or BFB cycles ($P$ < \SI{2.2e-16}, Wilcoxon rank-sum test).  All three amplicon classes frequently intersected CGC cancer genes residing within GISTIC pan-cancer amplification peaks (Figure \ref{fig:amplicon_driver}, recurrent amplification peaks from \cite{Zack:2013f1f}). \textit{EGFR} was the most frequent target of double minutes.  BFB cycles were most frequently implicated in \textit{ERBB2}, \textit{CCND1}, and \textit{CCNE1} amplification. Tyfonas were associated with \textit{MDM2} and \textit{CDK4}. While double minutes were enriched in glioblastoma and small cell lung cancer, BFB cycles were enriched in esophageal squamous cell cancer, lung squamous cell cancer, and head and neck squamous cell cancer (FDR $<$ 0.25, Fisher's exact test, Figure \ref{fig:amplicon_ttype}). In contrast, tyfonas events were enriched in sarcoma, breast cancer, and melanoma (FDR $<$ 0.25).
 
@@ -1286,17 +1287,13 @@ Analyzing tumor subtypes, we found tyfonas were common in dedifferentiated lipos
     \end{adjustbox}
 \end{figure}
 
-
+\FloatBarrier
 % \begin{figure}[!ht]
 %     \centering
 %     \includegraphics[width=0.95\linewidth]{figures/600ppi/tyf_fusion.png}    
 %     \caption{\textbf{Tyfonas create more fusion genes and highly expressed fusion genes than BFB, DM, and chromothripsis.}}{Enrichment of expressed protein-coding fusion transcripts by count (left) and density per Mbp of event territory (right) in tyfonas relative to other amplicon types and CT (Wilcoxon rank-sum test). Error bars on bar plots represent 95\% confidence intervals on the Bernoulli trial parameter.}
 %     \label{fig:tyf_fusion}
 % \end{figure}
-
-\clearpage
-\section{Clusters of pan-cancer patients based on SV event burdens show differential prognosis and is associated with tumor types and genetic backgrounds}
-Tallying normalized junction counts across 13 event categories (Figure \ref{fig:sv_gallery}) and 2,487 patients, we found 14 stable clusters using standard model selection metrics (Figure \ref{fig:find_k}). Most clusters were dominated by 1-3 event types (e.g. CT = chromothripsis, BR = BFB cycles, rigma, DDT = deletion, duplication, TIC) with the exception of two: QUIET (few events) and SPRS (sparse, miscellaneous events).
 
 % \clearpage
 \begin{figure}[!ht]
@@ -1316,10 +1313,16 @@ Tallying normalized junction counts across 13 event categories (Figure \ref{fig:
     \label{fig:clustering_heat}
 \end{figure}
 
+\FloatBarrier
+% \clearpage
+\section{Clusters of pan-cancer patients based on SV event burdens show differential prognosis and is associated with tumor types and genetic backgrounds}
+Tallying normalized junction counts across 13 event categories (Figure \ref{fig:sv_gallery}) and 2,487 patients, we found 14 stable clusters using standard model selection metrics (Figure \ref{fig:find_k}). Most clusters were dominated by 1-3 event types (e.g. CT = chromothripsis, BR = BFB cycles, rigma, DDT = deletion, duplication, TIC) with the exception of two: QUIET (few events) and SPRS (sparse, miscellaneous events).
+
+
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_find_k.png}
+    \includegraphics[width=0.8\linewidth]{figures/600ppi/clustering_find_k.png}
     \caption{\textbf{Metrics for determining the optimal number of clusters.}}
     \label{fig:find_k}
 \end{figure}
@@ -1347,14 +1350,12 @@ Tallying normalized junction counts across 13 event categories (Figure \ref{fig:
 
 Consistent with previous reports, the CT cluster was significantly enriched in prostate adenocarcinoma  (PRAD, $P = \SI{2.05e-5}{}$, $OR = 1.99$, single-sided z-test, Bayesian logistic regression, \cite{Kovtun2015-kq}) and glioblastoma multiforme (GBM, $P = \SI{5.00e-8}{}$, $OR = 2.61$, \cite{Furgason2015-rv}, Figure \ref{fig:clustering_tt}, \ref{fig:clustering_tt_all}). Similarly, the CP (chromoplexy) cluster was significantly enriched in PRAD ($P = \SI{2.32e-10}{}$, $OR = 3.18$, \cite{baca2013}). DDT tumors (defined by high burdens of deletions, duplications, and templated insertion chains) were enriched in triple-negative breast cancer (TNBC) ($P < \SI{2.2e-16}{}$, $OR = 8.80$),  ovarian cancers ($P = \SI{7.03e-16}{}$, $OR = 6.89$), and more broadly sex-hormone driven tumors ($P = \SI{3.18e-14}{}$, $OR = 19.0$).
 
-\clearpage
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{figures/600ppi/clustering_tt.png}
     \caption{\textbf{Selected associations between clusters and tumor types.}}
     \label{fig:clustering_tt}
 \end{figure}
-
 
 \begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
@@ -1365,7 +1366,7 @@ Consistent with previous reports, the CT cluster was significantly enriched in p
         \includegraphics[width=\textheight]{figures/600ppi/clustering_tt_all.png}
     \end{adjustbox}
 \end{figure}
-\clearpage
+
 
 Inspection of the heatmap in Figure \ref{fig:clustering_heat} showed that the classes of complex SV introduced in this study (pyrgo, rigma, tyfonas) largely clustered independently from known complex SV types (double minute, BFB cycles, chromothripsis, chromoplexy). Among these, the BR (BFB cycles and Rigma dominated) cluster was primarily (60\%) composed of ESAD cases ($P < \SI{2.2e-16}{}$, $OR = 6.08$) and enriched in gastrointestinal tumors (e.g. esophageal, colorectal, and gastric adenocarcinoma) ($P < \SI{2.2e-16}{}$, $OR = 4.56$) (Figure \ref{fig:clustering_heat},\ref{fig:clustering_tt_all}). The TYF (tyfonas dominated) cluster was enriched in both luminal breast cancer ($P = \SI{4.87e-8}{}$, $OR = 3.25$),  HER2+ breast cancer ($P < \SI{2.64e-9}{}$, $OR = 4.96$), dedifferentiated liposarcoma ($P < \SI{2.2e-16}{}$, $OR = 24.5$), and acral melanoma ($P < \SI{1.84e-15}{}$, $OR = 7.40$). In contrast, cutaneous melanomas were enriched in the CT cluster.  Additional associations are shown in Figure \ref{fig:clustering_tt_all} and \cite{Hadi2020-um} Table S3.
 
@@ -1387,8 +1388,6 @@ We associated somatic or constitutional genotypes in COSMIC Cancer Gene Census g
 
 Compared to QUIET cluster, Kaplan-Meier analysis revealed poorer survival among novel SV-class dominated clusters (BR, PYR, and TYF; FDR $<$ 0.1, log rank test) as well as several clusters dominated by previously-described SV classes (CP, CT, and INVD; Figure \ref{fig:clustering_km}). These effects persisted after correcting for clinical and molecular covariates in a Cox regression analysis, with BR ($P = \SI{1.17e-2}{}$, $HR = 1.72$, likelihood ratio test, Cox regression), PYR ($P = \SI{6.13e-3}{}$, $HR = 2.01$), TYF ($P = \SI{5.37e-3}{}$, $HR = 2.12$ , CP ($P = \SI{1.76e-3}{}; HR = 1.91$), CT ($P = \SI{6.69e-4}{}; HR = 1.83$), and INVD ($P = \SI{8.79e-4}{}; HR = 2.06$) clusters each demonstrating reduced survival relative to the QUIET cluster (Figure \ref{fig:clustering_os_cox}).
 
-
-\clearpage
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/clustering_km.png}
@@ -1402,8 +1401,8 @@ Compared to QUIET cluster, Kaplan-Meier analysis revealed poorer survival among 
     \caption{\textbf{Cox model correcting for covariates show the associations between TYF, INVD, PYR, CP, CT, BR and worse overall survival after correction of related covariates.}}
     \label{fig:clustering_os_cox}
 \end{figure}
-\clearpage
 
+\FloatBarrier
 \section{Discussion}
 Leveraging JaBbA reconstructed genome graphs from 2778 cancer WGS datasets, we define 13 types of simple and complex classes of structural variants including pyrgo, rigma \cite{Hadi2020-um}, and tyfonas (see Chapter \ref{chap:complex_events}) that have not been described rigorously classified before. These three new event classes all have distinct associations with regional, genotypic, and tumor types from previously known complex patterns like chromothripsis or BFB cycles. They also form clusters differently within the patient cohorts. All of these suggest that they result from novel mutational processes and/or somatic selection. In this chapter, I present two important parts of our discoveries, the taxonomy of complex amplicon and patient clustering based on SV event burdens.
 
@@ -1681,12 +1680,6 @@ The remaining 74 clones (63\%) all showed a heterogeneous pattern of copy number
 \section{Joint inference of junction balance in MRC5} \label{sec:joint_jabba_mrc5}
 To chart structural variant evolution across sub-clades of MRC5 clones, a procedure was developed to jointly infer junction balanced genome graphs in a lineage (e.g. BFB lineage in Figure \ref{fig:tc_evo_tree}). This co-calling algorithm augmented the existing JaBbA model, described in detail in \cite{Hadi2020-um}, enabling application to a compendium of genome graphs by minimizing the total number of unique loose ends assigned a nonzero copy number across the graph compendium.  
 
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_evo_tree.png}
-    \caption{\textbf{Evolutionary trajectory of SVs in clones with high-pass WGS.}}
-    \label{fig:tc_evo_tree}
-\end{figure}
 
 
 Formally, we define a collection ${G^i = (V^i, E^i)}, i \in 1,\dots,n$ of identical genome graphs across $n$ clones, each a replica of a \textit{prototype} genome graph $G^0 = (V^0, E^0)$. The mapping $p:V \cup E \rightarrow V^0 \cup E^0$ maps each vertex $v \in V^i$ and edge $e \in E^i,i \in 1,\dots,n$ to its corresponding vertex $p(v)\in V^0$ and edge $p(e) \in E^0$ in the prototype graph. We then jointly infer unique copy number assignments $\kappa^i$ to the vertices and edges of each genome graph $G^i$ by solving the mixed integer program:
@@ -1717,6 +1710,14 @@ It is important to note that while each of the graphs $G^i$ have an identical st
 This joint mixed-integer programming model in Equation \ref{eq:multi_sample_jabba} is implemented in the “balance” function of gGnome. The model was applied to a collection of genome graphs representing the structure of chromosome 12 across 13 clones. The prototype graph for this genome graph collection was built from the disjoint union of intervals of the 13 preliminary graphs (via the GenomicRanges “disjoin” function) and the union of junction calls fit across those graphs (via gGnome “merge.Junction” function). Each graph was associated using the read depth data and bin-to-node mappings as per \cite{Hadi2020-um}. The mapping $u^i$ for each reference edge was set to $\inf$ while variant edges were assigned $\inf$ if bwa mem realignments of read pairs in each clone .bam file to the corresponding junction contig via rSeqLib (https://github.com/mskilab/rSeqLib, \cite{Wala2017-ud}), otherwise they were assigned 0.
 
 Equation \ref{eq:multi_sample_jabba} was then solved using the IBM CPLEX (v12.6.2) MIQP optimizer within the gGnome package after setting the hyperparameter $\lambda$ to 100.  This value was chosen after a parameter sweep observing for the visual concordance of genome graphs, loose ends, and read depth profiles in the region.
+
+% \newpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/tc_evo_tree.png}
+    \caption{\textbf{Evolutionary trajectory of SVs in clones with high-pass WGS.}}
+    \label{fig:tc_evo_tree}
+\end{figure}
 
 \section{High-resolution reconstruction and lineage of post-crisis genomes} \label{sec:tc_joint_decomposition}
 To gain further insight into structural variant evolution along these lineages, we chose 15 representative clones spanning the 5 clusters with rearrangements involving 12p for high-depth WGS to a median read depth of 50X (range: 30-88). Phylogeny derived from genome-wide SNV patterns demonstrated a median branch length of 551 SNVs (range: 9-2,409), a low mutation density (<1 SNV/Mbp) that is consistent with previous WGS studies of clones in cell culture \cite{Petljak2019-cf}. This analysis revealed four major clades (Figure \ref{fig:tc_phylo}). These clades had good concordance with copy number alteration and rearrangement junction patterns in the same 12p region, suggesting these clones represent distinct post-crisis evolutionary lineages (Figure \ref{fig:tc_phylo}).
@@ -1750,10 +1751,6 @@ where the function $\delta(v,h)$ and $\delta(e,h)$ is 1 if vertex $v$ and edge $
         \includegraphics[width=\textheight]{figures/600ppi/tc_phylo.png}
     \end{adjustbox}
 \end{figure}
-% \clearpage
-
-\section{Evolutionary trajectory of a post-crisis chromosome 12}
-Analyzing the clonal evolution of these rearranged 12p alleles, we identified 8 clones demonstrating progressive stages of a BFB cycle. This complex variant evolved after a long-range inversion junction (j1) joined a distal end of 12p to its peri-centromere. This junction was followed by subsequent fold-back inversion junctions (j2, j3, j4), clustered at the 8-9 Mbp focus on 12p, which are present in two different sets of post-crisis clones (Early BFB, BFB, Figure \ref{fig:tc_evo_tree}). The earliest of the fold-back inversion junctions (j2) in the BFB lineage was associated with a cluster of 3 G or C mutations within 2 kbp of each other, consistent with APOBEC-mediated mutagenesis \cite{Maciejowski2020-bw} (Figure \ref{fig:tc_kataegis}). The most complex locus in the BFB lineage (Z43, Late BFB, Figure \ref{fig:tc_evo_tree}), contained six variant junctions in \textit{cis}, including two late DUP-like junctions (j5, j6). Although j6, which connects the distal portion of 12p to the 12p centromere, was not directly observed in the short read WGS data, it was imputed (dashed line, j6, Figure \ref{fig:tc_evo_tree}) to resolve the duplication of j1 in clone Z43 (JCN=2), as well as two loose ends in the genome graph. Remarkably, the vast majority (97\%) of SNVs detected in this BFB lineage (Figure \ref{fig:tc_phylo}) were either shared by all clones or private to a single clone, indicating that these stages of BFB evolution occurred rapidly in the history of the experiment.
 
 % \clearpage
 \begin{figure}[!h]
@@ -1771,6 +1768,17 @@ Analyzing the clonal evolution of these rearranged 12p alleles, we identified 8 
     \label{fig:tc_12q_del}
 \end{figure}
 
+% \clearpage
+\FloatBarrier
+\section{Evolutionary trajectory of a post-crisis chromosome 12}
+Analyzing the clonal evolution of these rearranged 12p alleles, we identified 8 clones demonstrating progressive stages of a BFB cycle. This complex variant evolved after a long-range inversion junction (j1) joined a distal end of 12p to its peri-centromere. This junction was followed by subsequent fold-back inversion junctions (j2, j3, j4), clustered at the 8-9 Mbp focus on 12p, which are present in two different sets of post-crisis clones (Early BFB, BFB, Figure \ref{fig:tc_evo_tree}). The earliest of the fold-back inversion junctions (j2) in the BFB lineage was associated with a cluster of 3 G or C mutations within 2 kbp of each other, consistent with APOBEC-mediated mutagenesis \cite{Maciejowski2020-bw} (Figure \ref{fig:tc_kataegis}). The most complex locus in the BFB lineage (Z43, Late BFB, Figure \ref{fig:tc_evo_tree}), contained six variant junctions in \textit{cis}, including two late DUP-like junctions (j5, j6). Although j6, which connects the distal portion of 12p to the 12p centromere, was not directly observed in the short read WGS data, it was imputed (dashed line, j6, Figure \ref{fig:tc_evo_tree}) to resolve the duplication of j1 in clone Z43 (JCN=2), as well as two loose ends in the genome graph. Remarkably, the vast majority (97\%) of SNVs detected in this BFB lineage (Figure \ref{fig:tc_phylo}) were either shared by all clones or private to a single clone, indicating that these stages of BFB evolution occurred rapidly in the history of the experiment.
+
+We confirmed a chromothripsis event in an independent lineage (Y8), which lacked j1 and all subsequent junctions of the BFB lineage, further supporting the idea that this is an independent lineage (Figure \ref{fig:tc_evo_tree}). Integration of copy number data with the SNV phylogeny showed clones from the unrearranged lineage (Y1 and Y4) and one of the 12p arm loss clones (Y11) to be mutationally distant (>2,000 SNVs) from the chromothripsis (Y8) and BFB lineages, which shared over 1,583 SNVs (Figure \ref{fig:tc_phylo}). Supporting this, a small (~21.5 kbp) simple deletion junction was shared across Y8, Y15, and all the BFB lineage samples, yet was absent in Y11 (Figure \ref{fig:tc_12q_del}).
+
+This comparison established that the 12p loss in Y11 could not have occurred after j1 and indicates that a second independent arm loss must have given rise to Y15. Interestingly, the Y15 arm loss clone was clustered in the BFB/Y8 clade in the SNV phylogeny, sharing 30 SNVs with the BFB lineage which it did not share with Y8 (Figure \ref{fig:tc_phylo}). This indicates that the 12p arm loss in Y15 may have arisen either before or after j1. Although the breakpoints of the Y11 and Y15 arm losses could not be mapped due to their location in the 12 centromeric region, based on the SNV phylogeny, they likely represent distinct events. Taken together, these results support a model whereby at least three lineages independently rearranged a previously wild type 12p during telomere crisis (Figure \ref{fig:tc_evo_tree}). Our data appear to have captured sequential steps in the formation of an increasingly complex BFB-like event. Each of these stages must represent a stabilized allele since the post-crisis lines are clonal, and multiple clones share the same rearrangement junctions (Figure \ref{fig:tc_phylo}). This necessarily raises the question as to what caused the on-going instability, and how and where these complex alleles are terminated.
+
+\FloatBarrier
+\section{Resolution of BFB cycles in telomere crisis}
 \begin{figure}[!h]
     \centering
     \includegraphics[height=0.85\textheight]{figures/600ppi/tc_loose_end.png}
@@ -1778,12 +1786,6 @@ Analyzing the clonal evolution of these rearranged 12p alleles, we identified 8 
     \label{fig:tc_loose_end}
 \end{figure}
 % \clearpage
-
-We confirmed a chromothripsis event in an independent lineage (Y8), which lacked j1 and all subsequent junctions of the BFB lineage, further supporting the idea that this is an independent lineage (Figure \ref{fig:tc_evo_tree}). Integration of copy number data with the SNV phylogeny showed clones from the unrearranged lineage (Y1 and Y4) and one of the 12p arm loss clones (Y11) to be mutationally distant (>2,000 SNVs) from the chromothripsis (Y8) and BFB lineages, which shared over 1,583 SNVs (Figure \ref{fig:tc_phylo}). Supporting this, a small (~21.5 kbp) simple deletion junction was shared across Y8, Y15, and all the BFB lineage samples, yet was absent in Y11 (Figure \ref{fig:tc_12q_del}).
-
-This comparison established that the 12p loss in Y11 could not have occurred after j1 and indicates that a second independent arm loss must have given rise to Y15. Interestingly, the Y15 arm loss clone was clustered in the BFB/Y8 clade in the SNV phylogeny, sharing 30 SNVs with the BFB lineage which it did not share with Y8 (Figure \ref{fig:tc_phylo}). This indicates that the 12p arm loss in Y15 may have arisen either before or after j1. Although the breakpoints of the Y11 and Y15 arm losses could not be mapped due to their location in the 12 centromeric region, based on the SNV phylogeny, they likely represent distinct events. Taken together, these results support a model whereby at least three lineages independently rearranged a previously wild type 12p during telomere crisis (Figure \ref{fig:tc_evo_tree}). Our data appear to have captured sequential steps in the formation of an increasingly complex BFB-like event. Each of these stages must represent a stabilized allele since the post-crisis lines are clonal, and multiple clones share the same rearrangement junctions (Figure \ref{fig:tc_phylo}). This necessarily raises the question as to what caused the on-going instability, and how and where these complex alleles are terminated.
-
-\section{Resolution of BFB cycles in telomere crisis}
 
 Analysis of junction-balanced genome graphs allows for the nomination of ‘loose ends’ (or allelic ends), representing copy number changes that cannot be resolved through assembly or mapping of short reads. We identified three distinct loose ends across the 4 variant graphs spanning the 8 clones in the BFB lineage (Figure \ref{fig:tc_loose_end}). Each of these loose ends were placed at the terminus of their respective reconstructed allele, and we posit they represent the new ‘ends’ of the derivative alleles of the BFB lineage. Distinct ends for each of these rearranged lineages suggests the derivative 12p allele could have been stabilized independently. We did not observe telomere repeat-containing reads mated to these loose ends (Appendix \ref{app:tc_loose_end}), arguing against neo-telomere formation at these loci. Instead, loose reads represented highly repetitive unmappable sequences which may be a result of the junctions being in close proximity to centromeric regions (see below).
 
@@ -1840,6 +1842,7 @@ We next tested whether the preferential 12p events could be due to the presence 
 
 To look for evidence of chromosome 12 being involved in the initial fusion events in this system, we combined a chromosome 12 BAC probe with a centromere probe in MRC5/Rbsh/p21sh/iCRISPRa-TERT cells in crisis (at day 90). Strikingly, we observed a number of instances of chromosome 12 within chromosome fusion events (data not included, refer to \cite{Dewhurst2021-jk} Figure 7f). The fraction of chromosome fusions involving chromosome 12 is higher than expected (~50\% observed versus ~4\% expected, data not included, refer to \cite{Dewhurst2021-jk} Supplementary Figure 7c). Collectively, these data support the hypothesis that a short telomere on one allele of 12p increased the chance of 12p partaking in a fusion event that preceded subsequent rearrangement lineages.
 
+\FloatBarrier
 \section{Discussion}
 To precisely define the chromosomal consequences of telomere crisis, we have described the first whole genome profiles of cells emerging from natural telomere crisis, both in the setting of spontaneous and controlled telomerase activation. 
 
@@ -1901,24 +1904,21 @@ Whole genome sequencing offers a chance to gain a better picture of the variants
 % After we approach the full capacity of WES on defining driver events in cancer cohorts, there are usually 
 % and Concluding Remarks \ref{chap:conclude}, we shall discuss about how our genome graph paradigm achieves a more comprehensive characterization of whole genomes of clinically relevant cancer samples.
 
-
-\clearpage
-\begin{figure}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_pie.png}
     \caption{\textbf{Driver alterations composition in 501 lung adenocarcinoma of TCGA.}}{About 23\% of TCGA LUAD cases have not been associated with an known alteration in the RTK/RAS/RAF pathway.}    
     \label{fig:gdan_pie}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_cohort.png}
     \caption{\textbf{Classification of RPA(+) and RPA(-) LUADs.}}{From the entire LUAD cohort, 383 RPA(+)\textsubscript{E} and 118 RPA(-)\textsubscript{E} samples are identified based on WES and RNA-seq data, and 85/118 RPA(-)\textsubscript{E} samples are sent for WGS. Our WGS analyses re-classify 28/85 RPA(-)\textsubscript{E} cases into RPA(+)\textsubscript{G}. Among the 383 RPA(+)\textsubscript{E} cases, 40 cases have WGS data from a previously published TCGA study (Imielinski et al. 2017). Together, we use 57 RPA(-)\textsubscript{G} cases, 68 RPA(+)\textsubscript{G} cases and a total of 411 RPA(+) cases for downstream analyses.}
     \label{fig:gdan_cohort}
 \end{figure}
 
-\clearpage
-\begin{figure}[ht]
+\begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
         \textbf{RPA identified in WGS of the 85 RPA(-)\textsubscript{E} samples.}
         \label{fig:gdan_rpa_oncoprint}
@@ -1950,7 +1950,7 @@ A previously published TCGA study of lung adenocarcinoma \cite{Campbell2016-xv} 
 Our multi-step analysis schema is shown in Figure \ref{fig:gdan_cohort}. In the first step, we re-analyzed the 85 RPA(-)\textsubscript{E} cases to determine if there was truly no evidence of coding mutations in the RTK/RAS/RAF pathway. Surprisingly, we found that 20 of the 85 cases harbored \textit{KRAS} hotspot mutations, with 8 samples showing the recently targetable p.G12C mutation \cite{Canon2019-aj,Ostrem2013-lt} (Figure \ref{fig:gdan_rpa_oncoprint}). Re-examination of the WES data for those samples confirmed the mutation calls for 16 of the 20 samples, but the read support was insufficient to enable high-confidence variant calling without invoking the WGS information (refer to Figure 1C of \cite{Carrot-Zhang2020-vl}). The poor WES coverage for those \textit{KRAS} mutations was likely due to low capture efficiency \cite{Clark2011-iq} for the first coding exon of \textit{KRAS}, which contains codons 12 and 13. 
 % In addition, the samples with KRAS mutations missed by WES showed lower tumor purity than did KRAS-mutated samples identified by WES (Fig. S1C, Table S1), confirming that high sequencing depths were necessary for detecting the mutations reliably.
 
-\clearpage
+% \clearpage
 \begin{figure}
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_egfr_amp.png}
@@ -1964,7 +1964,7 @@ Our multi-step analysis schema is shown in Figure \ref{fig:gdan_cohort}. In the 
     \caption{\textbf{An example of \textit{RASA1} deletion and under-expression.}}{Top panel, \textit{RASA1} RSEM among RNA-seq of LUAD samples. Bottom panel, deletion spanning from exon 21 to the end of the gene (12 kbp).}
     \label{fig:gdan_rasa1_del}
 \end{figure}
-\clearpage
+% \clearpage
 
 Among the 85 samples, we also identified eight cases with somatic SV and copy number alterations (SCNAs) in known RTK/RAS/RAF pathway members. Among those alterations, we found complex SVs driving high-level amplification and over-expression of oncogenes including \textit{EGFR} (n=1) and \textit{MAPK1} (n=3) (Figure \ref{fig:gdan_rpa_oncoprint}). Further classification of complex SVs showed the \textit{EGFR} amplification to be driven by a breakage-fusion-bridge cycle (BFB cycles) (Figure \ref{fig:gdan_egfr_amp}). We also found deletions coupled with loss of heterozygosity (LOH) resulting in decreased expression of \textit{RASA1} (n=1) or \textit{NF1} (n=1) (Figure \ref{fig:gdan_rasa1_del}, also refer to \cite{Carrot-Zhang2020-vl} Table S2), both of which negatively regulate RTK/RAS/RAF signaling. The focal deletion (379bp length) in \textit{NF1} affected only a single exon that is not well-represented in WES or RNA-seq, highlighting the advantage of WGS for identification of focal SV events (refer to \cite{Carrot-Zhang2020-vl} Table S2). We also identified one case with \textit{ARAF} amplification and one case with \textit{NRG1} fusion, which are alterations previously shown to activate RTK/RAS/RAF signaling in LUADs \cite{Fernandez-Cuesta2014-wr,Imielinski2014-ve}. Interestingly, we found amplification and over-expression of \textit{SOS1} in one case (TCGA-62-8399, Figure \ref{fig:gdan_rpa_oncoprint}). Although \textit{SOS1} mutations have been shown to activate RTK/RAS/RAF signaling \cite{Cai2019-tw}, the role played in RTK/RAS/RAF activation by the amplification described here is unclear.
 
@@ -1978,7 +1978,7 @@ Overall, we identified 28 (33\%) additional RPA(+)\textsubscript{G} cases among 
 % \end{figure}
 
 
-\clearpage
+% \clearpage
 \begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
         \textbf{Alterations outside the conventional RTK/RAS/RAF pathway in RPA(-) samples.}
@@ -1991,19 +1991,19 @@ Overall, we identified 28 (33\%) additional RPA(+)\textsubscript{G} cases among 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_keap1_del.png}
+    \includegraphics[width=0.85\linewidth]{figures/600ppi/gdan_keap1_del.png}
     \caption{\textbf{An example of \textit{KEAP1} deletion and under-expression.}}{Top panel, \textit{KEAP1} RSEM among RNA-seq of LUAD samples. Bottom panel, 3kbp deletion covering the transcription start site.}
     \label{fig:gdan_keap1_del}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_stk11_del.png}
+    \includegraphics[width=0.85\linewidth]{figures/600ppi/gdan_stk11_del.png}
     \caption{\textbf{An example of \textit{STK11} deletion and under-expression.}}{Top panel, \textit{STK11} RSEM among RNA-seq of LUAD samples. Bottom panel, 8kbp deletion covering the transcription start site.}
     \label{fig:gdan_stk11_del}
 \end{figure}
-\clearpage
-
+% \clearpage
+\FloatBarrier
 \section{Recurrent coding alterations in RPA(-)\textsubscript{G} LUADs}
 Having identified the 57 RPA(-)\textsubscript{G} LUAD cases, we sought to define their protein-coding driver alteration landscape. Among the coding sequences of 14,987 known protein-coding genes with a median expression RSEM $\ge$ 1 in all of the TCGA LUAD tumors, we analyzed protein-altering indels and SNVs across 57 RPA(-)\textsubscript{G} LUADs to identify recurrently mutated genes. The algorithm used employs a gamma-Poisson regression background model \cite{Imielinski2017-nt} correcting for known covariates of LUAD mutation density (e.g. chromatin state, replication timing, GC content, see Appendix \ref{app:d}). We found four tumor suppressor genes, \textit{TP53}, \textit{STK11}, \textit{KEAP1} and \textit{SMARCA4} significantly mutated in the RPA(-)\textsubscript{G} samples (FDR<0.1, Figure \ref{fig:gdan_rpa_neg_oncoprint}). GISTIC analysis \cite{Mermel2011-gt} of WGS-derived single copy number alterations (SCNAs) identified significantly deleted regions harboring \textit{SETD2} and significantly amplified regions harboring \textit{NKX2-1}, \textit{KAT6A}, \textit{CCNE1}, \textit{MDM2}, \textit{MYC}, \textit{MCL1}, and \textit{MYCL} (FDR<0.1, Figure \ref{fig:gdan_rpa_neg_oncoprint}). Of note, we did not identify novel genes that were significantly mutated or amplified/deleted in the RTK/RAS/RAF pathway; in other words, we were unable to identify new putative driver alterations in an obvious candidate member gene of the RTK/RAS/RAF pathway, possibly owing to the limited sample size.
 
@@ -2014,7 +2014,7 @@ Our SV analysis (see Appendix \ref{app:d}) identified simple, focal deletions (<
 
 As opposed to 411 RPA(+) cases from the full TCGA LUAD cohort (including the 28 cases rescued from the RPA(-)\textsubscript{E} category by our WGS analysis), we found a significant enrichment of \textit{TP53} mutations ($P=5.5 \times 10^{-4}$, OR=2.97, Fisher's exact test), \textit{KEAP1} mutations ($P=4.3 \times 10^{-4}$, OR=3.06) and \textit{SMARCA4} ($P=3.4 \times 10^{-4}$, OR=4.16) in the RPA(-)\textsubscript{G} cases (Figure \ref{fig:gdan_diff_alteration}) for genes listed in Figure \ref{fig:gdan_rpa_neg_oncoprint}. When expanding the analysis to 239 COSMIC cancer genes, we found additional enrichment of mutations in \textit{NRG1} (Figure \ref{fig:gdan_nrg1_muts}, $P=1.2 \times 10^{-5}$, OR=12.0), \textit{ESR1} ($P=4.5 \times 10^{-4}$, OR=11.4), \textit{BLM} ($P=1.1 \times 10^{-3}$, OR=12.4) and \textit{FOXO3} ($P=2.3 \times 10^{-3}$, OR=9.29, Figure \ref{fig:gdan_diff_alteration}, ). The RPA(-)\textsubscript{G} samples also showed significantly higher tumor mutation burden (TMB) in a linear regression model controlled for tumor purity (Figure \ref{fig:gdan_tmb}). We found that recent smokers (last smoking year less than 15) were enriched in the RPA(-)\textsubscript{G} group compared to the RPA(+) group, although mutagen activity associated with tobacco smoking activity (COSMIC SNV signature 4) was not different between the RPA(-)\textsubscript{G} group and RPA(+)\textsubscript{G} group, controlling for tumor purity (Figure \ref{fig:gdan_recent_smoke}). We did not find additional differences between RPA(+)\textsubscript{G} and RPA(-)\textsubscript{G} LUADs in their molecular/clinical features (leukocyte fraction, genome doubling, degree of aneuploidy, age of diagnosis and genetic ancestry \cite{Carrot-Zhang2020-vl}.
 
-\clearpage
+% \clearpage
 \begin{figure}
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_diff_alteration.png}
@@ -2042,19 +2042,18 @@ As opposed to 411 RPA(+) cases from the full TCGA LUAD cohort (including the 28 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_tmb.png}
+    \includegraphics[width=0.75\linewidth]{figures/600ppi/gdan_tmb.png}
     \caption{\textbf{Higher TMB in RPA(-) than RPA(+) samples.}}{ P value is calculated from a Wilcoxon rank test. The violin plot reflects kernel density estimations.}
     \label{fig:gdan_tmb}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_recent_smoke.png}
+    \includegraphics[width=0.75\linewidth]{figures/600ppi/gdan_recent_smoke.png}
     \caption{\textbf{RPA(-) enriched in patients who smoked within 15 years from diagnosis.}}{P value is obtained from a two-proportions z-test. Error bars represent the 95\% confidence intervals from the two-proportions z-test.}
     \label{fig:gdan_recent_smoke}
 \end{figure}
-\clearpage
-
+% \clearpage
 
 
 \section{Recurrent non-coding alterations in RPA(-)\textsubscript{G} LUADs }
@@ -2063,17 +2062,17 @@ We next asked whether the RPA(-)\textsubscript{G} cases harbored recurrent novel
 
 The promoter region of \textit{ILF2} was mutated in six out of 57 cases (P=$2.7 \times 10^(-6)$, coefficient=2, Gamma Poisson Regression; Figure \ref{fig:gdan_nondocing_ilf2_lolipop}). We used the FunSeq2 method to annotate the sequence motifs bound by transcription factors \cite{Fu2014-so}. All six mutations lay in the “sensitive” and “ultrasensitive” (i.e., highly conserved) regions of the genome \cite{Khurana2013-qc}. One mutation (chr1:153643633, G->A) was predicted to disrupt a \textit{HOXB6} motif and another mutation (chr1:153643690, G->T) was predicted to disrupt an \textit{NR3C1} motif. We did not observe any mutational signature enriched in the six mutations. Moreover, RPA(-)\textsubscript{G} cases harboring \textit{ILF2} promoter mutations showed increased expression of \textit{ILF2}, compared to ILF2-wildtype cases (Figure \ref{fig:gdan_nondocing_ilf2_expr}), or cases harboring other mutations within the +/-10kbp window of the promoter region (Figure \ref{fig:gdan_ilf2_lolipop_wide}, \ref{fig:gdan_ilf2_expr_full}), after controlling for the local copy number of \textit{ILF2} and tumor purity. On the other hand, non-coding mutations near \textit{CUL2} did not affect \textit{CUL2} expression, and intronic mutations in \textit{TSN} showed a non-significant trend towards an increase in \textit{TSN} expression (P=0.066). \textit{ILF2} is located in chr1q21.3, which is frequently amplified in LUADs. In myeloma, increases in \textit{ILF2} expression through amplification have been shown to promote tolerance of genomic instability and drive resistance to DNA damaging therapies, through dysregulation of RNA splicing and DNA damage response pathways \cite{Marchesini2017-ly}. Consistent with that role of \textit{ILF2}, we found \textit{ILF2} expression to be associated with increased SV burden (P=0.01, coefficient=0.9, negative binomial regression).
 
-\clearpage
+% \clearpage
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_noncoding_all.png}
+    \includegraphics[width=0.75\linewidth]{figures/600ppi/gdan_noncoding_all.png}
     \caption{\textbf{Recurrent non-coding mutations within LUAD-specific ATAC-seq peaks in RPA(-)}}{Three genes with non-coding mutations nominated through recurrence analysis across LUAD-related ATAC peaks. Red dots indicate loci with FDR < 0.25.}
     \label{fig:gdan_noncoding_all}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/gdan_noncoding_amp.png}
+    \includegraphics[width=0.75\linewidth]{figures/600ppi/gdan_noncoding_amp.png}
     \caption{\textbf{Recurrent non-coding mutations within the intersect of LUAD-specific ATAC-seq peaks and LUAD-specific recurrent SCNA peaks in RPA(-)}}{Same as Figure \ref{fig:gdan_noncoding_all}, but restricted to ATAC-seq peaks in genes with RSEM $\ge 10$ across TCGA LUAD and recurrently amplified in RPA(-)\textsubscript{G} samples. Red dots indicate FDR < 0.1.}
     \label{fig:gdan_noncoding_amp}
 \end{figure}
@@ -2113,7 +2112,7 @@ The promoter region of \textit{ILF2} was mutated in six out of 57 cases (P=$2.7 
     \label{fig:gdan_tsn_expr}
 \end{figure}
 
-\clearpage
+% \clearpage
 \section{Complex SV patterns in RPA(-)\textsubscript{G} LUADs}
 % \begin{figure}
 %     \centering
@@ -2127,7 +2126,7 @@ Genes located inside double minute, BFB cycles, and tyfonas events were markedly
 
 Double minutes were the most common complex SV type seen in the RPA(-)\textsubscript{G} cases (12 of 57 samples, Figure \ref{fig:gdan_sv_heatmap}). Like extrachromosomal circular DNA segments, double minutes do not segregate symmetrically; thus, their dosage per cell is exquisitely responsive to selection pressure \cite{Verhaak2019,Wu2019-ap}. As a result, at least one of the genes in any given double minute likely contributes to tumor development. To leverage that intuition, we focused on a relatively small double minute identified in case TCGA-55-5899 (Figure \ref{fig:gdan_dm}). We found that this double minute fused and amplified multiple focal regions on chromosome 13 spanning 1.0 Mbp, and resulted in the high-level gain ($>$10 copies) of three intact genes (\textit{UBL3}, \textit{SOX21}, and \textit{LIG4}). Two of these, \textit{UBL3} and \textit{LIG4}, were over-expressed in TCGA-55-5899 relative to the full LUAD cohort with RNA-seq data (Figure \ref{fig:gdan_dm_expr}). Because we did not observe any genes to be amplified and over-expressed in more than one RPA(-)\textsubscript{G} case (refer to \cite{Carrot-Zhang2020-vl} Table S3), larger numbers of cases would have to be analyzed to gain an understanding of the possible role genes amplified by double minutes play in driving RPA(-) LUADs.
 
-\clearpage
+% \clearpage
 \begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
         \textbf{Burden of simple and complex SV events in RPA(-) samples.}
@@ -2140,7 +2139,7 @@ Double minutes were the most common complex SV type seen in the RPA(-)\textsubsc
 
 \begin{figure}
     \centering
-    \includegraphics[height=0.75\textheight]{figures/600ppi/gdan_del_vs_p53.png}
+    \includegraphics[height=0.4\textheight]{figures/600ppi/gdan_del_vs_p53.png}
     \caption{\textbf{Excess deletion burden associated with \textit{TP53} loss of function alterations.}}{P value is obtained from Mann-Whitney U test. Violin plots reflect kernel density estimations.}
     \label{fig:gdan_del_vs_p53}
 \end{figure}
@@ -2179,8 +2178,8 @@ Double minutes were the most common complex SV type seen in the RPA(-)\textsubsc
     \caption{\textbf{Over-expression of genes amplified by any of the three complex amplification events.}}{}
     \label{fig:gdan_amp_expr}
 \end{figure}
-\clearpage
 
+\FloatBarrier
 
 \section{Discussion}
 Although large-scale genomic studies have shown LUADs to be molecularly heterogeneous, the majority of LUAD cases share the common feature of RTK/RAS/RAF signaling activation through a genetic driver \cite{Desai2014-qe,Swanton2016-lg}. A key question, however, is whether RPA(-) LUADs – which, by definition, lack RTK/RAS/RAF drivers – represent a biologically distinct entity. Our results suggest that they are heterogeneous but that they do share common biological features, including a high frequency of \textit{TP53} mutations and high mutation burden. Those features tend to distinguish RPA(-) LUADs from their RPA(+) counterparts.
@@ -2195,6 +2194,7 @@ If the 57 RPA(-)\textsubscript{G} cases identified in this study indeed represen
 
 Taken together, our findings suggest that RPA(-) LUAD is likely to represent a heterogeneous entity and that WGS of much larger cohorts of RPA(-) and RPA(+) LUADs would be necessary to fully address the nature of their underlying biology.
 
+\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Concluding remarks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
