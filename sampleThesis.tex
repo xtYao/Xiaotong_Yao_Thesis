@@ -265,7 +265,7 @@ Despite these extraordinary advancements, the discoveries of SV patterns have be
 
 % Second, tumor clones may have accumulated SVs repeatedly throughout their life history, it is very often that multiple events overlap at the same locus, blurring the boundaries of individual events when mapped to a single linear reference.
 % \clearpage
-Second, though copy number is primarily a concept applied the dosage of genomic \textit{intervals}, a junction may also be present in one or more copies per cell, and thus be associated with a \textit{junction copy number} (JCN). Elevated JCN might occur through the focal (e.g. extrachromosomal) amplification \cite{Verhaak2019,Wu2019-ap} or whole chromosome (or genome) duplication of an already rearranged allele (Figure \ref{fig:jcn}). We argue the topology of JCNs are important pieces of evidence that all efforts hitherto tend to omit or use implicitly, due to the lack of reliable inference methods.
+Second, though copy number is primarily a concept applied the dosage of genomic \textit{intervals}, a junction may also be present in one or more copies per cell, and thus be associated with a \textit{junction copy number} (JCN). Elevated JCN might occur through the focal (e.g. extrachromosomal) amplification \cite{Verhaak2019,Wu2019-ap} or whole chromosome (or genome) duplication of an already rearranged allele. We argue the topology of JCNs are important pieces of evidence that all efforts hitherto tend to omit or use implicitly, due to the lack of reliable inference methods.
 
 Third, unlike small variants which can be each counted as an irreducible edit, rearranged genome is not simply the sum of all junctions. When junctions overlap over the reference genome, their interpretations are interdependent. Two junctions can be on the same molecule (in \textit{cis}) or different (in \textit{trans}), and their multiplicity allow for different copies of a junction to have different localizations. To actually guess the final derivative sequence resulted from complex SVs, we need a general paradigm that can represent this complexity, and serve as an intermediate scaffold to integrate long-molecule profiling technologies.
 
@@ -316,7 +316,7 @@ To represent coherent double stranded genomic DNA, or karyotype, we need to anno
 
 Despite its clear conceptual advantage, genome graph has not been ubiquitously adopted as the mainstream framework for SV analysis. The main reason is that the numeric quality of the copy numbers in the reconstructed graphs have not shown high enough fidelity for the heterogeneous landscape of complex somatic SVs, as well as varying sample purity. 
 
-There have been several approaches proposed to reconstruct junction-balance genome graphs with different objectives, underlying models, inference methods, and scopes (Table \ref{tab:jbgg_inference}, \cite{Oesper2012-vw,McPherson2017-ry,Li2016-qa,Dzamba2017-wo,Deshpande2019-gs,Li2020-ds,Lee2021-rl,Aganezov2019-yh}). In Chapter \ref{chap:gg}, I will present a mixed-integer quadratic programming method, Junction Balance Analysis (JaBbA) to infer coherent and optimal copy numbers of a genome graph from WGS data. Besides, I will show a comprehensive benchmarking of some of the aforementioned methods and discuss the potential reasons for their strengths and limitations. With recent improvements and proof of application in large pan-cancer WGS cohorts \cite{Hadi2020-um}, it shows a promising trend that genome graph-based SV analyses are becoming robust enough to power general SV analysis.
+There have been several approaches proposed to reconstruct junction-balance genome graphs with different objectives, underlying models, inference methods, and scopes (\cite{Oesper2012-vw,McPherson2017-ry,Li2016-qa,Dzamba2017-wo,Deshpande2019-gs,Li2020-ds,Lee2021-rl,Aganezov2019-yh}). In Chapter \ref{chap:gg}, I will present a mixed-integer quadratic programming method, Junction Balance Analysis (JaBbA) to infer coherent and optimal copy numbers of a genome graph from WGS data. Besides, I will show a comprehensive benchmarking of some of the aforementioned methods and discuss the potential reasons for their strengths and limitations. With recent improvements and proof of application in large pan-cancer WGS cohorts \cite{Hadi2020-um}, it shows a promising trend that genome graph-based SV analyses are becoming robust enough to power general SV analysis.
 
 \section{SV pattern discovery guided by junction copy numbers}
 % In WGS, CNAs are detected as change-points \cite{chiang2009} in sequencing read depth along the genome \mbox{(e.g. BIC-seq \cite{Xi2011-oa})} while rearrangements are nominated through the analysis of junction-spanning read pairs (e.g. SvABA \cite{wala2018}, GRIDSS \cite{Cameron2017-pz}). CNAs and junctions are, however, intrinsically coupled, since every copy of every non-telomeric segment must have a left (towards smaller coordinates) and a right (towards larger coordinates) neighbor, whether that neighbor is already adjacent on the reference (via a reference or REF junction) or introduced through rearrangement (via a variant or ALT junction) \cite{Medvedev:2010bm, Greenman:2012eg}. Furthermore, 
@@ -324,23 +324,23 @@ There have been several approaches proposed to reconstruct junction-balance geno
 %% how to use genome graphs in SV pattern recognition, classification
 The inference of JCN in WGS involves the fitting of a genome graph to read depth and junction data through the application of a junction balance constraint, which requires the CN of every genomic interval (i.e. vertex) to be in balance with the JCN of its neighboring junctions (i.e. edges) (Figure \ref{fig:ggraph_schematic}, \ref{fig:jabba_io})\cite{Medvedev:2010bm, Greenman:2012eg, Oesper2012-vw, Li2016-qa, Dzamba2017-wo, McPherson2017-ry}. We hypothesized that the topology and CN of both vertices and edges on junction-balanced genome graphs might reveal novel classes of complex SV events and mutational processes. 
 
-In particular, high junction copy numbers (JCN) must arise through subsequent alterations that replicates existing junctions, and hence are an indication of complex amplification events. As touched upon before, there are well known mechanisms like double minutes and breakage-fusion-bridge cycles active in various cancers and WGS has painted detailed structures of them. Yet, the same mechanism can generate a wide range of complexity \cite{Deshpande2019-gs} and it is unknown if there are other amplification patterns. One such example is neochromosomes found in several liposarcoma cell lines that do not fit in either DM or BFB cycles \cite{garsed2014}. Hence, a systematic, data-driven classification of complex amplicons in a comprehensive dataset is crucial to answer these questions.
-
-In the first half of Chapter \ref{chap:complex_events}, I will show the discovery of 3 stable classes arising from hierarchical clustering of amplified subgraphs from out pan-cancer genome graphs and show that tyfonas is a distinct amplification pattern.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.6\linewidth]{figures/600ppi/jcn.png}
+    \caption{\textbf{Illustration of elevated JCN.}}{Elevated junction copy number (JCN=2) arises from the duplication of an allele harboring a DEL-like junction, resulting in a characteristic read depth and junction pattern from which a junction-balanced genome graph can be reconstructed.}
+    \label{fig:jcn}
+\end{figure}
+\newpage
+In particular, high junction copy numbers (JCN, Figure \ref{fig:jcn}) must arise through subsequent alterations that replicates existing junctions, and hence are an indication of complex amplification events. As touched upon before, there are well known mechanisms like double minutes and breakage-fusion-bridge cycles active in various cancers and WGS has painted detailed structures of them. Yet, the same mechanism can generate a wide range of complexity \cite{Deshpande2019-gs} and it is unknown if there are other amplification patterns. One such example is neochromosomes found in several liposarcoma cell lines that do not fit in either DM or BFB cycles \cite{garsed2014}. Hence, a systematic, data-driven classification of complex amplicons in a comprehensive dataset is crucial to answer these questions. In the first half of Chapter \ref{chap:complex_events}, I will show the discovery of 3 stable classes arising from hierarchical clustering of amplified subgraphs from out pan-cancer genome graphs and show that tyfonas is a distinct amplification pattern.
 
 \section{Stratifying pan-cancer patient cohort by burdens of SV events}
-Using SV events as a biomarker has always been a top desired application of WGS. Early efforts includes using the burdens of tandem duplication and deletions of various sizes as a features to predict homologous recombination deficiency (HRD, \cite{Davies:2017642}). More recently, the existence of extrachromosomal circular DNA (eccDNA) has been linked to excessive replication stress in the cells. One necessary indication that SV events may possess such discriminating power is to show that non-random grouping patterns among patients can arise based solely on their burdens. For instance, like mentioned above, in \cite{baca2013}, almost half of studied prostate adenocarcinoma contain chromoplexy patterns, then if we can see a subgroup of patients differentiated by chromoplexy presence from the others, and it happens to enrich in prostate adenocarcinoma, it should be a positive indication that our patterns are confirming previous results and add to our confidence about new results.
-
-In the second half of Chapter \ref{chap:complex_events}, I show our effort in using the 13 simple to complex SV event types to reveal 13 groups of patients in the pan-cancer cohort and their associations with tumor type, genotype, and overall survival. 
+Using SV events as a biomarker has always been a top desired application of WGS. Early efforts includes using the burdens of tandem duplication and deletions of various sizes as a features to predict homologous recombination deficiency (HRD, \cite{Davies:2017642}). More recently, the existence of extrachromosomal circular DNA (eccDNA) has been linked to excessive replication stress in the cells. One necessary indication that SV events may possess such discriminating power is to show that non-random grouping patterns among patients can arise based solely on their burdens. For instance, like mentioned above, in \cite{baca2013}, almost half of studied prostate adenocarcinoma contain chromoplexy patterns, then if we can see a subgroup of patients differentiated by chromoplexy presence from the others, and it happens to enrich in prostate adenocarcinoma, it should be a positive indication that our patterns are confirming previous results and add to our confidence about new results. In the second half of Chapter \ref{chap:complex_events}, I show our effort in using the 13 simple to complex SV event types to reveal 13 groups of patients in the pan-cancer cohort and their associations with tumor type, genotype, and overall survival. 
 
 % Cancer genomes are shaped by mutational processes that create both simple and complex structural variants (SVs). 
 \section{Evolution of SVs after telomere crisis}
 The studies of the relationship between variant outcomes and mutational processes usually take one of two directions. Most of the studies including our efforts described above are searching for common patterns from (hopefully unbiased) observations about genomes, and trace back to their possible mechanisms. However, more traditionally, the genome maintenance and DNA repair research community has always taken the more hypothesis-driven approach to create controlled experiments of mutagenesis. However, there is significant gap between the most advanced variant profiling technology and pattern recognition methods and the delicately designed experimental systems where we can clearly attribute any DNA changes to a particular mutagenesis process. Furthermore, this gap can be complicated by the fact that the same "type" or "class" of variants can be generated by multiple mechanisms, and a mechanism leads to diverse outcomes. Therefore, the integration between advanced analysis and finely controlled experimental systems are the key moving forward.
 
-At this point, we have demonstrated the power of our genome graph paradigm in delineating SV events from large observational pan-cancer WGS cohorts. Beginning the next chapter \ref{chap:tel_crisis}, I will use it to investigate the chromosome structural consequences of an crucial and (nearly) universal mutagenesis process, telomere crisis.
-
-
-In Chapter \ref{chap:tel_crisis} I will dive deep into this detailed characterization of the structural outcomes of telomere crisis, and discuss about the implications of adopting our genome graph framework to resolve evolving genome structures among multiple related samples in the Concluding Remarks \ref{chap:conclude}.
+At this point, we have demonstrated the power of our genome graph paradigm in delineating SV events from large observational pan-cancer WGS cohorts. Beginning the next chapter \ref{chap:tel_crisis}, I will use it to investigate the chromosome structural consequences of an crucial and (nearly) universal mutagenesis process, telomere crisis. In Chapter \ref{chap:tel_crisis} I will dive deep into this detailed characterization of the structural outcomes of telomere crisis, and discuss about the implications of adopting our genome graph framework to resolve evolving genome structures among multiple related samples in the Chapter \ref{chap:conclude}.
 
 \section{Genome graphs facilitates whole genome analysis of tumors}
 The most important goal of sequencing cancer genomes is to pinpoint the somatic alterations responsible for the malignant phenotype, or \textit{drivers}. To achieve that, the main signal to rely on is the recurrent alteration of a particular region of the genome from independent patients tumors. To put simply, each patient's tumor can be regarded an independent clonal expansion, if a particular genomic region is altered in a cohort more than expected from a null distribution where the region is not positively selected, it can be nominated as selected in these cancers. In theory, whole genome sequencing (WGS) is a more ideal tool to profiling the cancer genomes for such purpose since it samples reads from the whole genome, while whole exome sequencing (WES) only mainly captures the known exonic sequences. Yet, limited by higher cost and difficulty to analyze, WGS was not the primary choice of earlier cancer genome profiling efforts. For example, the Cancer Genome Atlas (TCGA), as one of the earliest large-scale cancer sequencing projects, relied mainly on WES, while powerful at discovering recurrent coding mutations, also misses by design non-coding mutations, and the vast majority of SVs.
@@ -1068,7 +1068,7 @@ This work is part of our publication \cite{Hadi2020-um}*, led by Kevin Hadi, Jul
 %         % \includegraphics[width=\textheight]{figures/600ppi/ggjs.png}
 %     \end{adjustbox}
 % \end{table}
-\clearpage
+% \clearpage
 % \newpage
 
 
@@ -1095,12 +1095,6 @@ Analyzing junction-balanced genome graph topology, we identified subgraphs assoc
 
 
 % \clearpage
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/jcn.png}
-    \caption{\textbf{Illustration of elevated JCN.}}{Elevated junction copy number (JCN=2) arises from the duplication of an allele harboring a DEL-like junction, resulting in a characteristic read depth and junction pattern from which a junction-balanced genome graph can be reconstructed.}
-    \label{fig:jcn}
-\end{figure}
 
 % \clearpage
 \begin{figure}[!ht]
@@ -1148,14 +1142,13 @@ While the vast majority of junctions demonstrated low-JCN (JCN $\le$ 3), we obse
 \begin{figure}[!h]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
         \textbf{Candidate amplicon subgraphs and the feature space construction.}
-        }\end{minipage}},rotate=90,center}
+        }\label{fig:amplicon_features}\end{minipage}},rotate=90,center}
         % \includegraphics[scale=.6]{example-image}%
-        \includegraphics[width=\textheight]{figures/600ppi/amplicon.png}
-        \label{fig:amplicon_features}
+        \includegraphics[width=\textheight]{figures/600ppi/amplicon.png}        
     \end{adjustbox}
 \end{figure}
 
-We then sought to investigate the rearrangement patterns associated with high-JCN junctions (JCN $>$ 7) in our genome graphs.  \textit{A priori}, a junction at such an extreme of JCN may evolve through a double minute, BFB cycles, or an as yet undescribed mechanism for duplicating already rearranged DNA. To characterize classes of  amplification events associated with these high-JCN junctions, we first identified 12,588 subgraphs harboring an interval CN of at least twice ploidy among the 2,487 unique genome graphs (by patient) (Figure \ref{fig:amplicon_features}), then identified among these amplicons (amplified clusters within a genome) those that harbor at least one junction with JCN $>$ 7.  We annotated the resulting 1,703 high-JCN amplicons according to three features: 1) the maximum JCN normalized by the maximal interval CN, 2) the \textit{sum} of fold back inversion JCNs (INV-like junctions that terminate and begin at nearly the same location in the genome) relative to the maximal interval CN, and 3) the number of junctions with elevated JCN (JCN>3) (see Appendix \ref{app:a}).
+We then sought to investigate the rearrangement patterns associated with high-JCN junctions (JCN $>$ 7) in our genome graphs.  \textit{A priori}, a junction at such an extreme of JCN may evolve through a double minute, BFB cycles, or an as yet undescribed mechanism for duplicating already rearranged DNA. To characterize classes of  amplification events associated with these high-JCN junctions, we first identified 12,588 subgraphs harboring an interval CN of at least twice ploidy among the 2,487 unique genome graphs (by patient) (Figure \ref{fig:amplicon_features}), then identified among these amplicons (amplified clusters within a genome) those that harbor at least one junction with JCN $>$ 7.  We annotated the resulting 1,703 high-JCN amplicons according to three features: 1) the maximum JCN normalized by the maximal interval CN, 2) the \textit{sum} of fold back inversion JCNs (INV-like junctions that terminate and begin at nearly the same location in the genome) relative to the maximal interval CN, and 3) the number of junctions with elevated JCN (JCN>3) (Figure \ref{fig:amplicon_features}, for more details see Appendix \ref{app:a}).
 
 \begin{figure}[!h]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{
@@ -1185,7 +1178,14 @@ We then sought to investigate the rearrangement patterns associated with high-JC
 
 Clustering and classification of amplicons (Figure \ref{fig:amplicon_definition}) on the basis of these three features yielded three stable clusters (Figures \ref{fig:amplicon_definition}, \ref{fig:amplicon_jaccard}, \ref{fig:amplicon_pca}; see also Appendix \ref{app:b}).  Upon visual inspection, the first group, harboring low fold-back JCN but high maximal JCN, contained amplicons comprising a single high-JCN junction forming a high CN circular path in the graph (Figure \ref{fig:dm_example}) as well as more complex cyclic patterns spanning multiple discontiguous loci, consistent with a double minute (or extrachromosomal circular DNAs).  The second group, demonstrating high fold-back JCN ($>$ 0.5), a low burden of elevated-JCN junctions ($<$ 26), and a "stair step" pattern of copy gains, was consistent with a BFB cycles (Figure \ref{fig:bfb_example}, \cite{Zakov:2013cm,McClintock1939-oi}). The third group contained both high fold-back JCN ($\geq$0.50) and a significant burden of elevated JCN junctions ($\geq$26).  Upon visual inspection, these amplicons comprised dense webs of elevated  JCN junctions across subgraphs consisting of $>$ 100 Mbp of genomic material and often reaching CNs higher than 50 (Figure \ref{fig:tyf_example}).  We dubbed these extremely large amplicons, which did not fit in previously defined categories, \textit{tyfonas} (τύφωνας, Greek meaning typhoon) (Figure \ref{fig:tyf_example}).
 
-\clearpage
+% \clearpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/600ppi/dm_example.png}
+    \caption{\textbf{An example of a double minute pattern.}}
+    \label{fig:dm_example}
+\end{figure}
+
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.95\linewidth]{figures/600ppi/bfb_example.png}
@@ -1193,12 +1193,6 @@ Clustering and classification of amplicons (Figure \ref{fig:amplicon_definition}
     \label{fig:bfb_example}
 \end{figure}
 
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/600ppi/dm_example.png}
-    \caption{\textbf{An example of a double minute pattern.}}
-    \label{fig:dm_example}
-\end{figure}
 
 \begin{figure}[!ht]
     \begin{adjustbox}{addcode={\begin{minipage}{\width}}{\caption{
@@ -1667,7 +1661,7 @@ To assess the genome structure of proliferating post-crisis cells, single cell c
         } \label{fig:tc_heatmap_low}
     \end{minipage}},rotate=90,center}
         % \includegraphics[scale=.6]{example-image}%
-        \includegraphics[width=0.8\textheight]{figures/600ppi/tc_heatmap_low.png}
+        \includegraphics[width=0.95\textheight]{figures/600ppi/tc_heatmap_low.png}
     \end{adjustbox}
 \end{figure}
 
@@ -2060,7 +2054,7 @@ As opposed to 411 RPA(+) cases from the full TCGA LUAD cohort (including the 28 
 % TODO!!! add Khurana 2016
 We next asked whether the RPA(-)\textsubscript{G} cases harbored recurrent novel SNVs or indels outside of the coding genome. We focused the search on regions nominated by a recent TCGA ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) study that identified regions of open chromatin, and required that the region be identified in at least 2 of the 44 LUAD samples subject to ATAC-seq \cite{Corces2018-nl}. Open chromatin regions are associated with active promoters, enhancers, and transcription factor binding sites, and thus may be targets of positive somatic selection \cite{Fu2014-so,Khurana2016-vj}. When we analyzed 60,572 total mutations in 139,841 LUAD-specific open chromatin regions (2.7\% of the genome) using gamma-Poisson regression with known covariates of LUAD passenger mutation density (Appendix \ref{app:d}), we found three loci that were nominally enriched (FDR<0.25) in SNVs or indels, located near \textit{ILF2}, \textit{CUL2}, and \textit{TSN} (Figure \ref{fig:gdan_noncoding_all}). Applying the intuition that expressed and dosage sensitive genes might be targets of non-coding alteration, we examined genes that were consistently expressed across TCGA LUAD (median RSEM>10) and recurrently amplified in RPA(-)\textsubscript{G} samples (see Appendix \ref{app:d}, \cite{Zack:2013f1f}). This analysis yielded \textit{ILF2} as the sole significant peak (FDR<0.1, Figure \ref{fig:gdan_noncoding_amp}).
 
-The promoter region of \textit{ILF2} was mutated in six out of 57 cases (P=$2.7 \times 10^(-6)$, coefficient=2, Gamma Poisson Regression; Figure \ref{fig:gdan_nondocing_ilf2_lolipop}). We used the FunSeq2 method to annotate the sequence motifs bound by transcription factors \cite{Fu2014-so}. All six mutations lay in the “sensitive” and “ultrasensitive” (i.e., highly conserved) regions of the genome \cite{Khurana2013-qc}. One mutation (chr1:153643633, G->A) was predicted to disrupt a \textit{HOXB6} motif and another mutation (chr1:153643690, G->T) was predicted to disrupt an \textit{NR3C1} motif. We did not observe any mutational signature enriched in the six mutations. Moreover, RPA(-)\textsubscript{G} cases harboring \textit{ILF2} promoter mutations showed increased expression of \textit{ILF2}, compared to ILF2-wildtype cases (Figure \ref{fig:gdan_nondocing_ilf2_expr}), or cases harboring other mutations within the +/-10kbp window of the promoter region (Figure \ref{fig:gdan_ilf2_lolipop_wide}, \ref{fig:gdan_ilf2_expr_full}), after controlling for the local copy number of \textit{ILF2} and tumor purity. On the other hand, non-coding mutations near \textit{CUL2} did not affect \textit{CUL2} expression, and intronic mutations in \textit{TSN} showed a non-significant trend towards an increase in \textit{TSN} expression (P=0.066). \textit{ILF2} is located in chr1q21.3, which is frequently amplified in LUADs. In myeloma, increases in \textit{ILF2} expression through amplification have been shown to promote tolerance of genomic instability and drive resistance to DNA damaging therapies, through dysregulation of RNA splicing and DNA damage response pathways \cite{Marchesini2017-ly}. Consistent with that role of \textit{ILF2}, we found \textit{ILF2} expression to be associated with increased SV burden (P=0.01, coefficient=0.9, negative binomial regression).
+The promoter region of \textit{ILF2} was mutated in six out of 57 cases (P=$2.7 \times 10^(-6)$, coefficient=2, Gamma Poisson Regression; Figure \ref{fig:gdan_nondocing_ilf2_lolipop}). We used the FunSeq2 method to annotate the sequence motifs bound by transcription factors \cite{Fu2014-so}. All six mutations lay in the “sensitive” and “ultrasensitive” (i.e., highly conserved) regions of the genome \cite{Khurana2013-qc}. One mutation (chr1:153643633, G->A) was predicted to disrupt a \textit{HOXB6} motif and another mutation (chr1:153643690, G->T) was predicted to disrupt an \textit{NR3C1} motif. We did not observe any mutational signature enriched in the six mutations. Moreover, RPA(-)\textsubscript{G} cases harboring \textit{ILF2} promoter mutations showed increased expression of \textit{ILF2}, compared to ILF2-wildtype cases (Figure \ref{fig:gdan_nondocing_ilf2_expr}), or cases harboring other mutations within the +/-10kbp window of the promoter region (Figure \ref{fig:gdan_ilf2_lolipop_wide}, \ref{fig:gdan_ilf2_expr_full}), after controlling for the local copy number of \textit{ILF2} and tumor purity. On the other hand, non-coding mutations near \textit{CUL2} did not affect \textit{CUL2} expression, and intronic mutations in \textit{TSN} showed a non-significant trend towards an increase in \textit{TSN} expression (Figure \ref{fig:gdan_tsn_expr}, P=0.066). \textit{ILF2} is located in chr1q21.3, which is frequently amplified in LUADs. In myeloma, increases in \textit{ILF2} expression through amplification have been shown to promote tolerance of genomic instability and drive resistance to DNA damaging therapies, through dysregulation of RNA splicing and DNA damage response pathways \cite{Marchesini2017-ly}. Consistent with that role of \textit{ILF2}, we found \textit{ILF2} expression to be associated with increased SV burden (P=0.01, coefficient=0.9, negative binomial regression).
 
 % \clearpage
 \begin{figure}
